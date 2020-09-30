@@ -3,7 +3,8 @@ media/*/*
 static/*
 host_admin.txt
 git commands.txt
-
+local_settings.json
+OwenCloud API.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
