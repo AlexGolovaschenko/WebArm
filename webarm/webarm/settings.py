@@ -25,7 +25,12 @@ SECRET_KEY = 'e&g7g&oz29m+x9x-zr4cyk+azsb_8k_#31w+)5c)f2y7cm)wwk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost', 
+    '172.104.202.18', 
+    'bfcloud.space', 
+    'www.bfcloud.space'
+]
 
 
 # Application definition
