@@ -1,0 +1,55 @@
+{
+	"Devices": [
+		{
+			"Device_id": "18764628",
+			"Status": "GOOD",
+			"Tags":[
+				{
+					"Id": "2132",
+					"Value": -17.051,
+					"Status": "GOOD"
+				},
+				{
+					"Id": "2556",									
+					"Value": 48,
+					"Status": "GOOD"
+				},
+				{
+					"Id": "7985",									
+					"Value": "True",
+					"Status": "GOOD"
+				}				
+			]
+		},
+		{
+			"Device_id": "156987",
+			"Status": "GOOD",
+			"Tags":[
+				{
+					"Id": "78445",					
+					"Value": "None",
+					"Status": "BAD",
+					"Error": "21"
+				},
+				{
+					"Id": "87465",									
+					"Value": "None",
+					"Status": "BAD",
+					"Error": "21"
+				},
+				{
+					"Id": "5454",									
+					"Value": "None",
+					"Status": "BAD",
+					"Error": "21"
+				}				
+			]
+		},
+		{
+			"Device_id": "889552",
+			"Status": "BAD",
+			"Error": "255",
+			"Tags":[]
+		}
+	]
+}

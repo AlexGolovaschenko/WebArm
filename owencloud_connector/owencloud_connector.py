@@ -3,6 +3,10 @@ import json, urllib3, certifi
 import logging, pprint
 
 
+API_URL_RU = 'https://api.owencloud.ru/v1/'
+API_URL_UA = 'https://cloudapi.owen.ua/v1/'
+
+
 
 def printJson(js):
     '''pretty print json data'''
@@ -15,8 +19,13 @@ class OwenCloudConnector():
     def __init__(self, **kwargs):
         self.debug = kwargs.get('debug', False)
         self.Http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where()) 
-        self.API_URL = 'https://api.owencloud.ru/v1/'
         self.token = kwargs.get('token', 'None')
+
+        self.user_domain = kwargs.get('user_domain', 'RU')
+        if self.user_domain == 'UA':
+            self.API_URL = API_URL_UA
+        else:
+            self.API_URL = API_URL_RU
 
         if self.debug is True:
             logging.basicConfig()
@@ -27,9 +36,9 @@ class OwenCloudConnector():
 
       
     def login(self, user, password):
-        ''' logining in cloud
+        ''' logining on cloud
         you must call it first, before use other methods
-        or pass the token when init this class 
+        or pass the token whith __init__() 
         WARNING! some time token from owencloud received is invalide 
                 ( if user dont set constant token on cloud settings 
                 or if user registred on cloud.ua )

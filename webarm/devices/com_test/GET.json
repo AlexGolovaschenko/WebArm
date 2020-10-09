@@ -1,0 +1,91 @@
+{
+	"Devices": [
+		{
+			"Device_id": "18764628",
+			"Addres": "16",
+			"Baudrate": "9600",
+			"Parity": "NONE",
+			"StopBit": "1",
+			"FirsByteForvard": "False",
+			"FirsRegisterForvard": "True",
+			"Tags":[
+				{
+					"Id": "2132",
+					"Register": "256",
+					"Type": "FLOAT",
+					"RegistersCount": "2"
+				},
+				{
+					"Id": "2556",					
+					"Register": "258",
+					"Type": "WORD",
+					"RegistersCount": "1"
+				},
+				{
+					"Id": "7985",					
+					"Register": "258",
+					"Bit": "3",
+					"Type": "BOOL"
+				}				
+			]
+		},
+		{
+			"Device_id": "156987",
+			"Addres": "18",
+			"Baudrate": "9600",
+			"Parity": "NONE",
+			"StopBit": "1",
+			"FirsByteForvard": "False",
+			"FirsRegisterForvard": "True",
+			"Tags":[
+				{
+					"Id": "78445",					
+					"Register": "256",
+					"Type": "FLOAT",
+					"RegistersCount": "2"
+				},
+				{
+					"Id": "87465",					
+					"Register": "258",
+					"Type": "WORD",
+					"RegistersCount": "1"
+				},
+				{
+					"Id": "5454",					
+					"Register": "258",
+					"Bit": "3",
+					"Type": "BOOL"
+				}				
+			]
+		},
+		{
+			"Device_id": "889552",
+			"Addres": "18",
+			"Baudrate": "9600",
+			"Parity": "NONE",
+			"StopBit": "1",
+			"FirsByteForvard": "False",
+			"FirsRegisterForvard": "True",
+			"Tags":[
+				{
+					"Id": "54541",					
+					"Register": "256",
+					"Type": "FLOAT",
+					"RegistersCount": "2"
+				},
+				{
+					"Id": "99655",					
+					"Register": "258",
+					"Type": "WORD",
+					"RegistersCount": "1"
+				},
+				{
+					"Id": "657454",					
+					"Register": "258",
+					"Bit": "3",
+					"Type": "BOOL"
+				}				
+			]
+		}
+	]
+}

@@ -12,7 +12,8 @@ if __name__ == '__main__':
     # -----------------------------------------------------------
     # login to cloud
     token = local.get('MY_TOKEN', None)
-    connector = OwenCloudConnector(debug = False, token = token)
+    user_domain = local.get('DOMAIN', 'RU')
+    connector = OwenCloudConnector(debug = False, token = token, user_domain=user_domain)
     if not token:
         connector.login(local['MY_LOGIN'], local['MY_PASS'])
 
