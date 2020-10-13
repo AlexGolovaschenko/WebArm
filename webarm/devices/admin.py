@@ -45,32 +45,7 @@ class ModbusDeviceParametersInline(admin.StackedInline):
 # -------------------------------------------------------------------
 # admin models
 class DeviceAdmin(admin.ModelAdmin):
-    inlines_1 = [ModbusDeviceParametersInline, TagsInline]
-    inlines_2 = [TagsInline]
-
-    def get_inline_instances(self, request, obj=None):
-        inline_instances = []
-
-        if obj is not None and obj.connector_type == choices.CONNECTOR_KAPITONOV_M1:
-            inlines = self.inlines_1
-        else:
-            inlines = self.inlines_2
-
-        for inline_class in inlines:
-            inline = inline_class(self.model, self.admin_site)
-            if request:
-                if not (inline.has_add_permission(request, obj) or
-                        inline.has_change_permission(request, obj) or
-                        inline.has_delete_permission(request, obj)):
-                    continue
-                if not inline.has_add_permission(request, obj):
-                    inline.max_num = 0
-            inline_instances.append(inline)
-        return inline_instances
-
-    def get_formsets(self, request, obj=None):
-        for inline in self.get_inline_instances(request, obj):
-            yield inline.get_formset(request, obj)
+    inlines = [ModbusDeviceParametersInline, TagsInline]
 
     class Media:
         css = {

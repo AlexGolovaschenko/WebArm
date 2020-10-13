@@ -2,11 +2,16 @@ from django.db import models
 
 from . import choices
 
+
 class Device(models.Model):
     name = models.CharField(max_length = 200, verbose_name='Наименование устройства', blank=False)
     polling_period = models.PositiveSmallIntegerField(verbose_name='Период опроса устройства, сек', default=300)
     timeout = models.PositiveSmallIntegerField(verbose_name='Таймайут потери связи с устройством, сек', default=1500)
     connector_type = models.CharField(max_length=20, verbose_name='Тип подключения', choices=choices.CONNECTORS)
+
+    @property
+    def modbus_parameters(self):
+        return ModbusDeviceParameters.objects.get(device=self)
 
     def __str__(self):
         return self.name
@@ -14,6 +19,7 @@ class Device(models.Model):
     class Meta():
         verbose_name = 'Устройство'
         verbose_name_plural = 'Устройства'
+
 
 class ModbusDeviceParameters(models.Model):
     device = models.OneToOneField(Device, on_delete = models.CASCADE)
