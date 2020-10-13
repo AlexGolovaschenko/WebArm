@@ -3,6 +3,8 @@ from django.utils.html import mark_safe
 from django.urls import reverse
 from django.forms.models import ModelForm
 
+from nested_inline.admin import NestedStackedInline, NestedModelAdmin, NestedTabularInline
+
 from .models import Device, Tag, ModbusTagParameters, ModbusDeviceParameters
 from . import choices
 
@@ -17,40 +19,27 @@ class AlwaysChangedModelForm(ModelForm):
 
 # -------------------------------------------------------------------
 # inline form sets
-class TagsInline(admin.TabularInline):
-    model = Tag
-    show_change_link = True
-    fields = ['code', 'name', 'change_link']
-    readonly_fields  = [ 'change_link']
-    extra = 0
-
-    def change_link(self, obj):
-        if obj.id:
-            return mark_safe('<a href="%s">Редактировать</a>' % \
-                            reverse('admin:devices_tag_change',
-                            args=(obj.id,)))
-        else:
-            return mark_safe('<a href="%s">Создать</a>' % \
-                            reverse('admin:devices_tag_add'))            
-
-class ModbusTagParametersInline(admin.StackedInline):
+class ModbusTagParametersInline(NestedStackedInline):
     model = ModbusTagParameters
     form = AlwaysChangedModelForm
 
-class ModbusDeviceParametersInline(admin.StackedInline):
+class ModbusDeviceParametersInline(NestedStackedInline):
     model = ModbusDeviceParameters
     form = AlwaysChangedModelForm
 
+class TagsInline(NestedTabularInline):
+    model = Tag
+    show_change_link = True
+    fields = ['code', 'name']
+    extra = 0
+    inlines = [ModbusTagParametersInline] 
+    
 
 # -------------------------------------------------------------------
 # admin models
-class DeviceAdmin(admin.ModelAdmin):
+class DeviceAdmin(NestedModelAdmin):
     inlines = [ModbusDeviceParametersInline, TagsInline]
 
-    class Media:
-        css = {
-            'all': ('devices/custom_admin.css', )     # Include extra css
-        }
 
 class TagAdmin(admin.ModelAdmin):
     inlines = [ModbusTagParametersInline]

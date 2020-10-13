@@ -47,8 +47,10 @@ INSTALLED_APPS = [
     # third party apps
     'rest_framework',
     'corsheaders',
+    'nested_inline',
     # inner apps
     'devices.apps.DevicesConfig',
+    'web.apps.WebConfig'
 ]
 
 MIDDLEWARE = [

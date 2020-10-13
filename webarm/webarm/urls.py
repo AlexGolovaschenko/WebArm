@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
 from devices import views
+from web import views as web_views
 
 urlpatterns = [
+    path('', web_views.home),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/v1/device', views.DeviceDataView.as_view(), name='device-data'),
-    path('api/v1/test', views.TestDataView.as_view())
+    path('api/v1/device/', views.DeviceDataView.as_view(), name='device-data'),
+    path('api/v1/test/', views.TestDataView.as_view()),
 ]

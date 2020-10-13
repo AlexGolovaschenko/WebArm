@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +17,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 
   <!-- styles -->
-  <link rel="stylesheet" href="./static/style/style.css">
+  <link rel="stylesheet" href="{% static 'web/style/style.css' %}">
 
 
 </head>
@@ -108,6 +110,6 @@
   </div>
 
 
-<script src="static/scripts/scripts.js"></script>
+<script src="{% static 'web/scripts/scripts.js' %}"></script>
 </body>
 </html>
