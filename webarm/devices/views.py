@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import DeviceSerializer
-from .models import Device
+from .serializers import DeviceSerializer, TagValueSerializer
+from .models import Device, Tag
 
 import json, os
 
@@ -17,6 +17,19 @@ class DeviceDataView(APIView):
 		obj = Device.objects.first()
 		serializer = DeviceSerializer(obj)
 		return Response(serializer.data)
+
+
+class DeviceTagsCurrentValueView(APIView):
+	def get(self, request, *args, **kwargs):
+		try:
+			device_id = request.GET.device_id
+			device = Device.objects.get(id=device_id)
+		except:
+			device = Device.objects.first()
+		tags = Tag.objects.filter(device=device)
+		data = TagValueSerializer(tags, many=True).data
+		return Response(data, status=status.HTTP_200_OK)
+
 
 class TestDataView(APIView):
 	def get(self, request, *args, **kwargs):

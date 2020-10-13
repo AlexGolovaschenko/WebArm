@@ -7,9 +7,12 @@ app.controller('PlaygroundControll', function($scope, $http, $interval) {
     $http.get("http://localhost:8000/api/v1/device").then(function (response) {
       $scope.DeviceData = response.data;
     });
+    $http.get("http://localhost:8000/api/v1/device/current-values").then(function (response) {
+      $scope.Tags = response.data;
+    });
   };
 
- // initial request
+  // initial request
   requestData();
 
   // start requesting by interval

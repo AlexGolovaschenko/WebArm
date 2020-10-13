@@ -47,6 +47,10 @@ class Tag(models.Model):
     device = models.ForeignKey(Device, on_delete = models.CASCADE)
     data_type = models.CharField(max_length=20, verbose_name='Тип данных', choices=choices.WEBARM_SUPPORTED_DATA_TYPES)
 
+    @property
+    def value(self):
+        return 17  
+
     def __str__(self):
         return self.code
 

@@ -21,4 +21,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 			'modbus_parameters', 
 		)
 
-
+class TagValueSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Tag
+		fields = ('code', 'name', 'data_type', 'value')
