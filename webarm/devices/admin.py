@@ -30,7 +30,7 @@ class ModbusDeviceParametersInline(NestedStackedInline):
 class TagsInline(NestedTabularInline):
     model = Tag
     show_change_link = True
-    fields = ['code', 'name']
+    fields = ['code', 'name', 'data_type']
     extra = 0
     inlines = [ModbusTagParametersInline] 
     

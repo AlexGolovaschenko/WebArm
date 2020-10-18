@@ -7,12 +7,16 @@ CONNECTORS = {
    (CONNECTOR_OWENCLOUD_GATEWAY, 'OwenCloud API Gateway'),      
 }
 
+WEBARM_DATA_TYPE_INT = 'INT'
+WEBARM_DATA_TYPE_FLOAT = 'FLOAT'
+WEBARM_DATA_TYPE_STRING = 'STRING'
+WEBARM_DATA_TYPE_BOOL = 'BOOL'
 
 WEBARM_SUPPORTED_DATA_TYPES = {
-    ('INT',     'INT'), 
-    ('FLOAT',   'FLOAT'), 
-    ('STRING',  'STRING'), 
-    ('BOOL',    'BOOL'),    
+    (WEBARM_DATA_TYPE_INT,     'INT'), 
+    (WEBARM_DATA_TYPE_FLOAT,   'FLOAT'), 
+    (WEBARM_DATA_TYPE_STRING,  'STRING'), 
+    (WEBARM_DATA_TYPE_BOOL,    'BOOL'),    
 }
 
 # ------------------------------------------------------------

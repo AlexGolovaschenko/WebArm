@@ -1,9 +1,16 @@
 from django.urls import path
 
-from .views import DeviceDataView, TestDataView, DeviceTagsCurrentValueView
+from .views import (
+	DeviceParametersView, 
+	DeviceTagsParametersView,
+	TestDataView, 
+	DeviceTagsCurrentValueView,
+)
 
 urlpatterns = [
-    path('device/', DeviceDataView.as_view(), name='device-data'),
-    path('test/', TestDataView.as_view()),
+    path('device/', DeviceParametersView.as_view(), name='device-data'),
+    path('device/tags', DeviceTagsParametersView.as_view()),
     path('device/current-values', DeviceTagsCurrentValueView.as_view()),
+    
+    path('test/', TestDataView.as_view()),
 ]

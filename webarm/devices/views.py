@@ -6,17 +6,32 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import DeviceSerializer, TagValueSerializer
+from .serializers import DeviceParametersSerializer, TagsParametersSerializer, TagsValueSerializer
 from .models import Device, Tag
 
 import json, os
 
 
-class DeviceDataView(APIView):
+class DeviceParametersView(APIView):
 	def get(self, request, *args, **kwargs):
 		obj = Device.objects.first()
-		serializer = DeviceSerializer(obj)
+		serializer = DeviceParametersSerializer(obj)
 		return Response(serializer.data)
+
+
+class DeviceTagsParametersView(APIView):
+	def get(self, request, *args, **kwargs):
+		try:
+			device_id = request.GET.device_id
+			device = Device.objects.get(id=device_id)
+		except:
+			device = Device.objects.first()
+		tags = Tag.objects.filter(device=device)
+		data = TagsParametersSerializer(tags, many=True).data
+		return Response(data, status=status.HTTP_200_OK)
+
+	def post(self, request, *args, **kwargs):
+		pass	
 
 
 class DeviceTagsCurrentValueView(APIView):
@@ -27,7 +42,7 @@ class DeviceTagsCurrentValueView(APIView):
 		except:
 			device = Device.objects.first()
 		tags = Tag.objects.filter(device=device)
-		data = TagValueSerializer(tags, many=True).data
+		data = TagsValueSerializer(tags, many=True).data
 		return Response(data, status=status.HTTP_200_OK)
 
 

@@ -49,7 +49,32 @@ class Tag(models.Model):
 
     @property
     def value(self):
-        return 17  
+        if self.data_type == choices.WEBARM_DATA_TYPE_INT:
+            try:
+                return CurrentIntValue.objects.get(tag=self).value
+            except:
+                return 'none'  
+        elif self.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+            try:
+                return CurrentFloatValue.objects.get(tag=self).value
+            except:
+                return 'none'
+        elif self.data_type == choices.WEBARM_DATA_TYPE_STRING:
+            try:
+                return CurrentStringValue.objects.get(tag=self).value
+            except:
+                return 'none'      
+        elif self.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+            try:
+                return CurrentBooleanValue.objects.get(tag=self).value
+            except:
+                return 'none'   
+        else:
+            return 'Error: data type not supported'       
+
+    @property
+    def modbus_parameters(self):
+        return ModbusTagParameters.objects.get(tag=self)
 
     def __str__(self):
         return self.code
@@ -60,7 +85,7 @@ class Tag(models.Model):
 
 class ModbusTagParameters(models.Model):
     tag = models.OneToOneField(Tag, on_delete = models.CASCADE)
-    data_type = models.CharField(max_length = 50, blank=False)
+    data_type = models.CharField(max_length = 50, blank=False, choices=choices.MODBUS_DATA_TYPES)
     register_address = models.PositiveSmallIntegerField(blank=False)
     read_function = models.CharField(max_length=2, choices=choices.MODBUS_READ_FUNCTIONS, default='4')
     write_function = models.CharField(max_length=2, choices=choices.MODBUS_WRITE_FUNCTIONS, default='16')
