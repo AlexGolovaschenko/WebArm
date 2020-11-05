@@ -32,7 +32,9 @@ class ModbusDeviceParameters(models.Model):
     bit_timout = models.PositiveSmallIntegerField(verbose_name='Таймаут бита, мс', default=100)
     packet_timout = models.PositiveSmallIntegerField(verbose_name='Таймаут соединения, мс', default=300)
     allow_group_reading = models.BooleanField(verbose_name='Разрешить груповое чтение', default=False)
-
+    lower_byte_forward = models.BooleanField(default=True)
+    lower_register_forward = models.BooleanField(default=False)
+    
     def __str__(self):
         return 'Параметры Modbus ' + self.device.name
 
@@ -41,6 +43,7 @@ class ModbusDeviceParameters(models.Model):
         verbose_name_plural = 'Параметры устройств модбас'
 
 
+#--------------------------------------------------------------------------------------------------------
 class Tag(models.Model):
     code = models.CharField(max_length=40, verbose_name='Код', unique=True)
     name = models.CharField(max_length=100, verbose_name='Наименование')
@@ -89,8 +92,6 @@ class ModbusTagParameters(models.Model):
     register_address = models.PositiveSmallIntegerField(blank=False)
     read_function = models.CharField(max_length=2, choices=choices.MODBUS_READ_FUNCTIONS, default='4')
     write_function = models.CharField(max_length=2, choices=choices.MODBUS_WRITE_FUNCTIONS, default='16')
-    lower_byte_forward = models.BooleanField(default=True)
-    lower_register_forward = models.BooleanField(default=False)
 
     def __str__(self):
         return 'Параметры регистра Modbus ' + str(self.tag.code)

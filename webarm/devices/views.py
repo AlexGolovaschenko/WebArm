@@ -46,6 +46,21 @@ class DeviceTagsCurrentValueView(APIView):
 		return Response(data, status=status.HTTP_200_OK)
 
 
+# view for polling modbus devices
+class ModbusDeviceView(APIView):
+	def get(self, request, *args, **kwargs):
+		device = Device.objects.first()
+		tags = Tag.objects.filter(device=device)
+		data = {
+			'device_parametes': DeviceParametersSerializer(device).data
+		}
+		data['device_parametes']['tags'] = TagsParametersSerializer(tags, many=True).data
+		return Response(data)
+
+	def post(self, request, *args, **kwargs):
+		pass
+
+'''
 class TestDataView(APIView):
 	def get(self, request, *args, **kwargs):
 		data = {}
@@ -61,3 +76,5 @@ class TestDataView(APIView):
 		with open(path, 'r', encoding='utf-8') as file:
 			data = json.load(file)	
 		return Response(data, status=status.HTTP_201_CREATED)
+
+'''
