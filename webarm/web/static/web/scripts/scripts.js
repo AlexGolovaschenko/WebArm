@@ -1,13 +1,16 @@
-var app = angular.module('Playground', []);
+// var BASE_URL = "http://bfcloud.space/"
+var BASE_URL = "http://localhost:8000/"
 
+
+var app = angular.module('Playground', []);
 
 app.controller('PlaygroundControll', function($scope, $http, $interval) {
 
   requestData = function() {
-    $http.get("http://bfcloud.space/api/v1/device").then(function (response) {
+    $http.get(BASE_URL + "api/v1/device").then(function (response) {
       $scope.DeviceData = response.data;
     });
-    $http.get("http://bfcloud.space/api/v1/device/current-values").then(function (response) {
+    $http.get(BASE_URL + "api/v1/device/current-values").then(function (response) {
       $scope.Tags = response.data;
     });
   };

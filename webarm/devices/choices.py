@@ -84,7 +84,9 @@ MODBUS_WRITE_FUNCTIONS = [
 
 # ------------------------------------------------------------
 # tag values
+TAG_VALUE_QUALITY_GOOD = 'GOOD'
+TAG_VALUE_QUALITY_BAD = 'BAD'
 TAG_VALUE_QUALITY = [
-    ('GOOD', 'GOOD'), 
-    ('BAD', 'BAD')
+    (TAG_VALUE_QUALITY_GOOD, 'GOOD'), 
+    (TAG_VALUE_QUALITY_BAD, 'BAD')
 ]

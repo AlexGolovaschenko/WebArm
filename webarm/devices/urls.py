@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .views import (
-	DeviceParametersView, 
-	DeviceTagsParametersView,
-	DeviceTagsCurrentValueView,
-	ModbusDeviceView,
+    DeviceParametersView, 
+    DeviceTagsParametersView,
+    DeviceTagsCurrentValueView,
+    ModbusDeviceView,
 )
 
 urlpatterns = [
