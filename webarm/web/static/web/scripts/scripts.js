@@ -1,5 +1,5 @@
-// var BASE_URL = "http://bfcloud.space/"
-var BASE_URL = "http://localhost:8000/"
+var BASE_URL = "http://bfcloud.space/"
+// var BASE_URL = "http://localhost:8000/"
 
 
 var app = angular.module('Playground', []);
