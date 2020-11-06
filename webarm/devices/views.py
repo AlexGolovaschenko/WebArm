@@ -55,8 +55,9 @@ class ModbusDeviceView(APIView):
         data = {
             'device_parametes': serializers.DeviceParametersSerializer(device).data
         }
-        data['device_parametes']['tags'] = serializers.TagsParametersSerializer(tags, many=True).data
-        data['device_parametes']['tags_count'] = len(data['device_parametes']['tags'])
+        tags_list = serializers.TagsParametersSerializer(tags, many=True).data
+        data['device_parametes']['tags_count'] = len(tags_list)        
+        data['device_parametes']['tags'] = tags_list
         return Response(data)
 
     def post(self, request, *args, **kwargs):
