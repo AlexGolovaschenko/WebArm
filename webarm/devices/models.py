@@ -101,19 +101,7 @@ class ModbusTagParameters(models.Model):
         verbose_name_plural = 'Параметры регистров модбас'
 
 
-class CurrentStringValue(models.Model):
-    tag = models.OneToOneField(Tag, on_delete = models.CASCADE)
-    value = models.CharField(max_length = 200, verbose_name='STRING-значение', blank=True)
-    quality = models.CharField(max_length = 4, verbose_name='Качество', choices=choices.TAG_VALUE_QUALITY, default='BAD')
-
-    def __str__(self):
-        return 'Текущее значение ' + str(self.tag.code)
-
-    class Meta():
-        verbose_name = 'Текущее STRING-значение тега'
-        verbose_name_plural = 'Текущие STRING-значения тега'
-
-
+#--------------------------------------------------------------------------------------------------------
 class CurrentIntValue(models.Model):
     tag = models.OneToOneField(Tag, on_delete = models.CASCADE)
     value = models.IntegerField(verbose_name='INTEGER-значение', blank=True)
@@ -140,6 +128,19 @@ class CurrentFloatValue(models.Model):
         verbose_name_plural = 'Текущие FLOAT-значения тега'
 
 
+class CurrentStringValue(models.Model):
+    tag = models.OneToOneField(Tag, on_delete = models.CASCADE)
+    value = models.CharField(max_length = 200, verbose_name='STRING-значение', blank=True)
+    quality = models.CharField(max_length = 4, verbose_name='Качество', choices=choices.TAG_VALUE_QUALITY, default='BAD')
+
+    def __str__(self):
+        return 'Текущее значение ' + str(self.tag.code)
+
+    class Meta():
+        verbose_name = 'Текущее STRING-значение тега'
+        verbose_name_plural = 'Текущие STRING-значения тега'
+
+
 class CurrentBooleanValue(models.Model):
     tag = models.OneToOneField(Tag, on_delete = models.CASCADE)
     value = models.BooleanField(verbose_name='BOOLEAN-значение', blank=True)
@@ -151,3 +152,60 @@ class CurrentBooleanValue(models.Model):
     class Meta():
         verbose_name = 'Текущее BOOLEAN-значение тега'
         verbose_name_plural = 'Текущие BOOLEAN-значения тега'
+
+
+#--------------------------------------------------------------------------------------------------------
+class HistoricalIntValue(models.Model):
+    tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
+    value = models.IntegerField(verbose_name='INTEGER-значение', blank=True)
+    quality = models.CharField(max_length = 4, verbose_name='Качество', choices=choices.TAG_VALUE_QUALITY, default='BAD')
+    add_date = models.DateTimeField(auto_now=False, auto_now_add=True, verbose_name='Дата и время')
+
+    def __str__(self):
+        return f'Архивное значение {self.tag.code} = {self.value} ({self.add_date.strftime("%d.%m.%Y %H:%M:%S")})'
+
+    class Meta():
+        verbose_name = 'Архивное INTEGER-значение тега'
+        verbose_name_plural = 'Архивные INTEGER-значения тега'
+
+
+class HistoricalFloatValue(models.Model):
+    tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
+    value = models.FloatField(verbose_name='FLOAT-значение', blank=True)
+    quality = models.CharField(max_length = 4, verbose_name='Качество', choices=choices.TAG_VALUE_QUALITY, default='BAD')
+    add_date = models.DateTimeField(auto_now=False, auto_now_add=True, verbose_name='Дата и время')
+
+    def __str__(self):
+        return f'Архивное значение {self.tag.code} = {self.value} ({self.add_date.strftime("%d.%m.%Y %H:%M:%S")})'
+
+    class Meta():
+        verbose_name = 'Архивное FLOAT-значение тега'
+        verbose_name_plural = 'Архивные FLOAT-значения тега'
+
+
+class HistoricalStringValue(models.Model):
+    tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
+    value = models.CharField(max_length = 200, verbose_name='STRING-значение', blank=True)
+    quality = models.CharField(max_length = 4, verbose_name='Качество', choices=choices.TAG_VALUE_QUALITY, default='BAD')
+    add_date = models.DateTimeField(auto_now=False, auto_now_add=True, verbose_name='Дата и время')
+
+    def __str__(self):
+        return f'Архивное значение {self.tag.code} = {self.value} ({self.add_date.strftime("%d.%m.%Y %H:%M:%S")})'
+
+    class Meta():
+        verbose_name = 'Архивное STRING-значение тега'
+        verbose_name_plural = 'Архивные STRING-значения тега'
+
+
+class HistoricalBooleanValue(models.Model):
+    tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
+    value = models.BooleanField(verbose_name='BOOLEAN-значение', blank=True)
+    quality = models.CharField(max_length = 4, verbose_name='Качество', choices=choices.TAG_VALUE_QUALITY, default='BAD')
+    add_date = models.DateTimeField(auto_now=False, auto_now_add=True, verbose_name='Дата и время')
+
+    def __str__(self):
+        return f'Архивное значение {self.tag.code} = {self.value} ({self.add_date.strftime("%d.%m.%Y %H:%M:%S")})'
+
+    class Meta():
+        verbose_name = 'Архивное BOOLEAN-значение тега'
+        verbose_name_plural = 'Архивные BOOLEAN-значения тега'

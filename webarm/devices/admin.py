@@ -5,8 +5,17 @@ from django.forms.models import ModelForm
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin, NestedTabularInline
 
-from .models import Device, Tag, ModbusTagParameters, ModbusDeviceParameters
+
 from . import choices
+from .models import (
+        Device, 
+        Tag, 
+        ModbusTagParameters, 
+        ModbusDeviceParameters, 
+        HistoricalIntValue, 
+        HistoricalFloatValue 
+    )
+
 
 # -------------------------------------------------------------------
 # custom forms
@@ -54,3 +63,5 @@ class TagAdmin(admin.ModelAdmin):
 # registration
 admin.site.register(Device, DeviceAdmin)
 admin.site.register(Tag, TagAdmin)
+# admin.site.register(HistoricalIntValue)
+# admin.site.register(HistoricalFloatValue)
