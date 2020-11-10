@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import TagsCurrentValueRow from './TagsCurrentValueRow'
 
-export default function TagsCurrentValueList() {
+function TagsCurrentValueList(props) {
     return (
         <div>
             <p>Устройство: <b><span>DEVICE NAME</span></b></p>
@@ -16,15 +18,21 @@ export default function TagsCurrentValueList() {
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="t in Tags">
-                    <td ng-bind="$index + 1"> INDEX </td>   
-                    <td ng-bind="t.code"> CODE </td>
-                    <td ng-bind="t.name"> NAME </td>
-                    <td ng-bind="t.value"> VALUE </td>
-                </tr>
+                    { props.tags.map((tag, index) => {
+                        return (
+                            <TagsCurrentValueRow tag={tag} key={tag.code} index={index} />
+                        )
+                    }) }
                 </tbody>
             </table>
             </div>
         </div>
     )
 }
+
+
+TagsCurrentValueList.propTypes = {
+    tags: PropTypes.arrayOf(PropTypes.object).isRequired
+}
+
+export default TagsCurrentValueList
