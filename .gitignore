@@ -1,6 +1,7 @@
 mysqlclient-1.4.6-cp37-cp37m-win32.whl
 media/*/*
 static/*
+docs/
 host_admin.txt
 git commands.txt
 local_settings.json
