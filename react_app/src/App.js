@@ -8,8 +8,8 @@ import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList'
 import '../node_modules/react-vis/dist/style.css'
 import Graph from './components/TagsList/TagsHistoricalGraph'
 
-const BASE_URL = "http://bfcloud.space/"
-// const BASE_URL = "http://localhost:8000/"
+// const BASE_URL = "http://bfcloud.space/"
+const BASE_URL = "http://localhost:8000/"
 
 
 function App() {
