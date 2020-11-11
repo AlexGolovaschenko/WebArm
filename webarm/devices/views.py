@@ -6,12 +6,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Device, Tag, CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue
+import traceback
+
+from .models import (
+    Device, Tag, 
+    CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue,
+    HistoricalIntValue, HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
+)
 from . import serializers
 from . import choices
 
-import json, os
-import traceback
+
 
 class DeviceParametersView(APIView):
     def get(self, request, *args, **kwargs):
@@ -47,6 +52,31 @@ class DeviceTagsCurrentValueView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+class DeviceTagsHistoricalValueView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            device_id = request.GET.device_id
+            device = Device.objects.get(id=device_id)
+        except:
+            device = Device.objects.first()
+        tags = Tag.objects.filter(device=device)       
+        data = serializers.TagsValueSerializer(tags, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    def get_historical_values(self, tag):
+        if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
+            return HistoricalIntValue.objects.filter(tag=tag)
+        elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+            return HistoricalFloatValue.objects.filter(tag=tag)
+        elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
+            return HistoricalStringValue.objects.filter(tag=tag)            
+        elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+            return HistoricalBoleanValue.objects.filter(tag=tag)            
+        else:
+            return {'Error: data type not supported'} 
+
+        
+
 # view for polling modbus devices
 class ModbusDeviceView(APIView):
     def get(self, request, *args, **kwargs):
@@ -71,7 +101,7 @@ class ModbusDeviceView(APIView):
                 r = self.update_tag_value(tag_obj, tag_value, tag_staus)
                 tags_response.append(r)
             response = Response({'tags': tags_response})
-        except Exception as e:
+        except:
             traceback.print_exc()
             response = Response({'Internal error':  traceback.format_exc()})
         return response
@@ -119,22 +149,3 @@ class ModbusDeviceView(APIView):
  
 
 
-
-'''
-class TestDataView(APIView):
-    def get(self, request, *args, **kwargs):
-        data = {}
-        path = os.path.join(settings.BASE_DIR, 'devices/com_test/GET.json')
-        print(path)
-        with open(path, 'r', encoding='utf-8') as file:
-            data = json.load(file)  
-        return Response(data, status=status.HTTP_200_OK)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        path = os.path.join(settings.BASE_DIR, 'devices/com_test/POST.json')
-        with open(path, 'r', encoding='utf-8') as file:
-            data = json.load(file)  
-        return Response(data, status=status.HTTP_201_CREATED)
-
-'''

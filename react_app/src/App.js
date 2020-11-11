@@ -10,6 +10,12 @@ const BASE_URL = "http://bfcloud.space/"
 // const BASE_URL = "http://localhost:8000/"
 
 
+function readDeviceTags() {
+  fetch(BASE_URL + "api/v1/device/current-values")
+  .then(responce => responce.json())
+  .then(tags => setTags(tags) )  
+}
+
 function App() {
   const [tags, setTags] = React.useState([])
   const [deviceName, setDeviceName] = React.useState('')
@@ -24,14 +30,10 @@ function App() {
 
   // get Tags current values from server
   useEffect(() => {
-    fetch(BASE_URL + "api/v1/device/current-values")
-      .then(responce => responce.json())
-      .then(tags => { 
-        setTimeout( () => {
-          setTags(tags) 
-          setLoadingTags(false)
-        }, 2000)
-      })  
+    setTimeout( () => {
+      readDeviceTags()
+      setLoadingTags(false)
+    }, 2000)
   }, [])
 
   // render the page
