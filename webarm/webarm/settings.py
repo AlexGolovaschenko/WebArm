@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'nested_inline',
     # inner apps
     'devices.apps.DevicesConfig',
-    'web.apps.WebConfig'
 ]
 
 MIDDLEWARE = [
