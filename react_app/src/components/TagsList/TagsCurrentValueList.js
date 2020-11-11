@@ -4,9 +4,7 @@ import TagsCurrentValueRow from './TagsCurrentValueRow'
 
 function TagsCurrentValueList(props) {
     return (
-        <div>
-            <p>Устройство: <b><span>DEVICE NAME</span></b></p>
-        
+        <div>     
             <div className="table-responsive">
             <table className="table table-striped table-sm">
                 <thead> 

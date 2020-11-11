@@ -1,32 +1,55 @@
-import './App.css' 
-import Header from './BaseParts/Header'
-import Sidebar from './BaseParts/Sidebar'
-import TagsCurrentValueList from './Devices/TagsCurrentValueList'
+import './App.css'
+import React, { useEffect } from 'react' 
+import Navbar from './components/BaseParts/Navbar'
+import Sidebar from './components/BaseParts/Sidebar'
+import Loader from './components/BaseParts/Loader'
+import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList'
+
+
+const BASE_URL = "http://bfcloud.space/"
+// const BASE_URL = "http://localhost:8000/"
+
 
 function App() {
-  const tags = [
-    {code: 'HSF', name: 'Temperature 1', value: 12.3},
-    {code: 'HSF1', name: 'Temperature 3', value: 22.3},
-    {code: 'HSF2', name: 'Temperature 2', value: 23.3},
-    {code: 'HSF3', name: 'Temperature 4', value: 45.3},
-  ]
+  const [tags, setTags] = React.useState([])
+  const [deviceName, setDeviceName] = React.useState('')
+  const [loadingTags, setLoadingTags] = React.useState(true)
 
+  // get Device parameters from server and set Device Name
+  useEffect(() => {
+    fetch(BASE_URL + "api/v1/device")
+      .then(responce => responce.json())
+      .then(deviceParameters => { setDeviceName(deviceParameters.name) })
+  }, [])
+
+  // get Tags current values from server
+  useEffect(() => {
+    fetch(BASE_URL + "api/v1/device/current-values")
+      .then(responce => responce.json())
+      .then(tags => { 
+        setTimeout( () => {
+          setTags(tags) 
+          setLoadingTags(false)
+        }, 2000)
+      })  
+  }, [])
+
+  // render the page
   return (
-    <div>
-      <Header />
-
+    <React.Fragment>
+      <Navbar />
       <div className="row m-0 p-0">
         <Sidebar />
         <div className="col-10 m-0 p-0">
           <div className="content-height">
             <div className="p-3">
-              <TagsCurrentValueList tags={tags} />
+              <p>Устройство: <b>{deviceName}</b></p>
+              {loadingTags ? <Loader /> : <TagsCurrentValueList tags={tags} />}
             </div>
           </div>
         </div>
       </div>
-     
-    </div>
+    </React.Fragment>
   );
 }
 
