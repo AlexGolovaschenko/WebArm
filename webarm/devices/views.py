@@ -74,16 +74,16 @@ class DeviceTagsHistoricalValueView(APIView):
 
     def get_historical_values_data(self, tag, max=50):
         if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
-            values = HistoricalIntValue.objects.filter(tag=tag)[:max]
+            values = HistoricalIntValue.objects.filter(tag=tag)[:-(max+1):-1].order_by('add_date')
             return serializers.HistoricalIntValuesSerializer(values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
-            values = HistoricalFloatValue.objects.filter(tag=tag)[:max]
+            values = HistoricalFloatValue.objects.filter(tag=tag)[:-(max+1):-1].order_by('add_date')
             return serializers.HistoricalFloatValuesSerializer(values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
-            values = HistoricalStringValue.objects.filter(tag=tag)[:max]
+            values = HistoricalStringValue.objects.filter(tag=tag)[:-(max+1):-1].order_by('add_date')
             return serializers.HistoricalStringValuesSerializer(values, many=True)           
         elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
-            values = HistoricalBooleanValue.objects.filter(tag=tag)[:max]
+            values = HistoricalBooleanValue.objects.filter(tag=tag)[:-(max+1):-1].order_by('add_date')
             return serializers.HistoricalBooleanValuesSerializer(values, many=True)           
         else:
             return {'Error: data type not supported'} 
