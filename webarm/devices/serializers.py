@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import (
     Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
     CurrentStringValue, CurrentIntValue, CurrentFloatValue, CurrentBooleanValue,
+    HistoricalStringValue, HistoricalIntValue, HistoricalFloatValue, HistoricalBooleanValue,
 ) 
 
 # ---------------------------------------------------------------------
@@ -70,3 +71,25 @@ class BooleanValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = CurrentBooleanValue
         fields = ('tag', 'value', 'quality')
+
+
+
+class HistoricalIntValuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistoricalIntValue
+        fields = ('add_date', 'value')
+
+class HistoricalFloatValuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistoricalFloatValue
+        fields = ('add_date', 'value')
+
+class HistoricalStringValuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistoricalStringValue
+        fields = ('add_date', 'value')
+
+class HistoricalBooleanValuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistoricalBooleanValue
+        fields = ('add_date', 'value')

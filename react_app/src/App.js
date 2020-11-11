@@ -5,10 +5,11 @@ import Sidebar from './components/BaseParts/Sidebar'
 import Loader from './components/BaseParts/Loader'
 import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList'
 
+import '../node_modules/react-vis/dist/style.css'
+import Graph from './components/TagsList/TagsHistoricalGraph'
 
 const BASE_URL = "http://bfcloud.space/"
 // const BASE_URL = "http://localhost:8000/"
-
 
 
 function App() {
@@ -16,10 +17,18 @@ function App() {
   const [deviceName, setDeviceName] = React.useState('')
   const [loadingTags, setLoadingTags] = React.useState(true)
 
+  const [tagsHistory, setTagsHistory] = React.useState([])
+
   function readDeviceTags() {
     fetch(BASE_URL + "api/v1/device/current-values")
     .then(responce => responce.json())
     .then(tags => setTags(tags) )  
+  }
+
+  function readTagsHistory() {
+    fetch(BASE_URL + "api/v1/device/tags/history")
+    .then(responce => responce.json())
+    .then(tags => setTagsHistory(tags) )  
   }
 
   // set update unterval
@@ -41,6 +50,7 @@ function App() {
   useEffect(() => {
     setTimeout( () => {
       readDeviceTags()
+      readTagsHistory()
       setLoadingTags(false)
     }, 2000)
   }, [])
@@ -57,6 +67,9 @@ function App() {
               <p>Устройство: <b>{deviceName}</b></p>
               {loadingTags ? <Loader /> : <TagsCurrentValueList tags={tags} />}
             </div>
+
+            <Graph tagsHistory={tagsHistory}/>
+
           </div>
         </div>
       </div>

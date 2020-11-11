@@ -59,19 +59,32 @@ class DeviceTagsHistoricalValueView(APIView):
             device = Device.objects.get(id=device_id)
         except:
             device = Device.objects.first()
-        tags = Tag.objects.filter(device=device)       
-        data = serializers.TagsValueSerializer(tags, many=True).data
-        return Response(data, status=status.HTTP_200_OK)
 
-    def get_historical_values(self, tag):
+        tags = Tag.objects.filter(device=device)
+        tags_data = []
+        for t in tags:
+            serializer = self.get_historical_values_data(t) 
+            tags_data.append({
+                'tag_id': t.id, 
+                'tag_code': t.code, 
+                'tag_name': t.name, 
+                'values': serializer.data
+            })         
+        return Response(tags_data, status=status.HTTP_200_OK)
+
+    def get_historical_values_data(self, tag, max=50):
         if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
-            return HistoricalIntValue.objects.filter(tag=tag)
+            values = HistoricalIntValue.objects.filter(tag=tag)[:max]
+            return serializers.HistoricalIntValuesSerializer(values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
-            return HistoricalFloatValue.objects.filter(tag=tag)
+            values = HistoricalFloatValue.objects.filter(tag=tag)[:max]
+            return serializers.HistoricalFloatValuesSerializer(values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
-            return HistoricalStringValue.objects.filter(tag=tag)            
+            values = HistoricalStringValue.objects.filter(tag=tag)[:max]
+            return serializers.HistoricalStringValuesSerializer(values, many=True)           
         elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
-            return HistoricalBoleanValue.objects.filter(tag=tag)            
+            values = HistoricalBooleanValue.objects.filter(tag=tag)[:max]
+            return serializers.HistoricalBooleanValuesSerializer(values, many=True)           
         else:
             return {'Error: data type not supported'} 
 
@@ -100,7 +113,7 @@ class ModbusDeviceView(APIView):
                 tag_staus = choices.TAG_VALUE_QUALITY_GOOD
                 r = self.update_tag_value(tag_obj, tag_value, tag_staus)
                 tags_response.append(r)
-            response = Response({'tags': tags_response})
+            response = Response({'tags': tags_response}, status=status.HTTP_201_CREATED)
         except:
             traceback.print_exc()
             response = Response({'Internal error':  traceback.format_exc()})
