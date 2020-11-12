@@ -78,3 +78,16 @@
 	border-right: 1px solid white;
 	border-left: 1px solid white;
 }
+
+/*------------------------------------ graph buttons ------------------------------------*/
+.btn-graph {
+  display: block;
+  position: absolute !important;
+  top: -10px;
+  left: 830px;
+  opacity: 0.4;
+  transition: opacity 300ms;
+}
+.btn-graph:hover {
+  opacity: 1;
+}

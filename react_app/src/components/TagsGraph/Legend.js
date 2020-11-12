@@ -28,7 +28,7 @@ export default class Legend extends React.Component {
     return (
     <div className='d-block pl-3'>
       <SearchableDiscreteColorLegend
-        // height={400}
+        height={400}
         // width={300}
         onSearchChange={this._searchChangeHandler}
         searchText={searchText}

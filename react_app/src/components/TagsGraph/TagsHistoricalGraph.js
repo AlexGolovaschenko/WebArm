@@ -4,6 +4,7 @@ import Graph from './Graph'
 import Legend from './Legend'
 import getColor from './GraphColors'
 
+
 function TagsHistoricalGraph(props) {
     const tags = props.tagsHistory
     const prepared_tags = tags.map( (tag, index) => {

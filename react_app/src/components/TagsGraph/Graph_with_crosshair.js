@@ -5,6 +5,7 @@ import {
     XAxis, 
     YAxis, 
     LineSeries,
+    Crosshair, 
     // VerticalGridLines, 
     HorizontalGridLines, 
     Highlight} from 'react-vis';
@@ -14,6 +15,7 @@ import {
 function Graph(props) {
     const tags = props.tags   
     const [lastDrawLocation, setLastDrawLocation] = React.useState(null)
+    const [crosshairValues, setCrosshairValues] = React.useState([])
 
     const resetZoomBtn = (
         <button
@@ -22,6 +24,27 @@ function Graph(props) {
             >
             Вернуть масштаб
         </button>)
+
+    const crosshairData = tags.map( (tag) => {
+        return tag.values.map((value) => {
+            value.titel = tag.tag_name
+            return value
+        })
+    });  
+
+    const _onMouseLeave = () => {
+        setCrosshairValues([]);
+    };
+
+    const _onNearestX = (value, {index}) => {
+        setCrosshairValues( crosshairData.map(d => d[index]) );
+    };
+
+    const _crosshairItemsFormat = (points) => {
+        return points.map((point)=>{
+            return {title: point.titel, value: point.y}
+        })
+    };
 
     return (
         <React.Fragment>
@@ -43,13 +66,14 @@ function Graph(props) {
                             lastDrawLocation.bottom,
                             lastDrawLocation.top
                         ]
-                    }       
+                    }
+                    onMouseLeave={_onMouseLeave}        
                 >
                     <HorizontalGridLines />
                     <XAxis />
                     <YAxis />
                     { tags.map((tag)=>{
-                        return <LineSeries data={tag.values} color={tag.curve_color} key={tag.tag_id} />
+                        return <LineSeries onNearestX={_onNearestX} data={tag.values} color={tag.curve_color} key={tag.tag_id} />
                     }) }
 
                     <Highlight
@@ -64,6 +88,11 @@ function Graph(props) {
                                 }
                             });
                         }}
+                    />
+
+                    <Crosshair
+                        values={crosshairValues}
+                        itemsFormat = {_crosshairItemsFormat}
                     />
                 </XYPlot>
             </div>
