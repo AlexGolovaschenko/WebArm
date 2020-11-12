@@ -55,7 +55,12 @@
 }
 
 .content-height {
-	height: 94vh;
+  height: 94vh;
+  overflow: auto;
+}
+
+.graph-container {
+  overflow: auto;
 }
 
 /*------------------------------------ borders ------------------------------------*/

@@ -6,18 +6,23 @@ import Loader from './components/BaseParts/Loader'
 import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList'
 
 import '../node_modules/react-vis/dist/style.css'
-import Graph from './components/TagsList/TagsHistoricalGraph'
+import TagsHistoricalGraph from './components/TagsGraph/TagsHistoricalGraph'
 
-// const BASE_URL = "http://bfcloud.space/"
-const BASE_URL = "http://localhost:8000/"
+const BASE_URL = "http://bfcloud.space/"
+// const BASE_URL = "http://localhost:8000/"
 
 
 function App() {
   const [tags, setTags] = React.useState([])
   const [deviceName, setDeviceName] = React.useState('')
-  const [loadingTags, setLoadingTags] = React.useState(true)
-
+  const [loading, setLoading] = React.useState(true)
   const [tagsHistory, setTagsHistory] = React.useState([])
+
+  function readDeviceParameters() {
+    fetch(BASE_URL + "api/v1/device")
+      .then(responce => responce.json())
+      .then(deviceParameters => { setDeviceName(deviceParameters.name) }) 
+  }
 
   function readDeviceTags() {
     fetch(BASE_URL + "api/v1/device/current-values")
@@ -31,30 +36,23 @@ function App() {
     .then(tags => setTagsHistory(tags) )  
   }
 
-  // set update unterval
+  // read parameters
   useEffect(() => {
-    const interval = setInterval(readDeviceTags, 2000)
+    readDeviceParameters();
+    readDeviceTags();
+    readTagsHistory();
+    setTimeout( () => { setLoading(false) }, 2000);
+
+    // set update interval
+    const tagsUpdateInterval = setInterval(readDeviceTags, 2000);
+    const graphUpdateInterval = setInterval(readTagsHistory, 10000)
     return () => {
-      clearInterval(interval);
+      clearInterval(tagsUpdateInterval);
+      clearInterval(graphUpdateInterval);
     };
-  }, []);
-
-  // get Device parameters from server and set Device Name
-  useEffect(() => {
-    fetch(BASE_URL + "api/v1/device")
-      .then(responce => responce.json())
-      .then(deviceParameters => { setDeviceName(deviceParameters.name) })
   }, [])
 
-  // get Tags current values from server
-  useEffect(() => {
-    setTimeout( () => {
-      readDeviceTags()
-      readTagsHistory()
-      setLoadingTags(false)
-    }, 2000)
-  }, [])
-
+  
   // render the page
   return (
     <React.Fragment>
@@ -65,11 +63,11 @@ function App() {
           <div className="content-height">
             <div className="p-3">
               <p>Устройство: <b>{deviceName}</b></p>
-              {loadingTags ? <Loader /> : <TagsCurrentValueList tags={tags} />}
+              {loading ? <Loader /> : <TagsCurrentValueList tags={tags} />}
             </div>
 
-            <Graph tagsHistory={tagsHistory}/>
-
+            {loading ? null : <TagsHistoricalGraph tagsHistory={tagsHistory}/> }
+            
           </div>
         </div>
       </div>
