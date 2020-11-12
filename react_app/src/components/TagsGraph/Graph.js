@@ -46,7 +46,7 @@ function Graph(props) {
                     }       
                 >
                     <HorizontalGridLines />
-                    <XAxis />
+                    <XAxis tickTotal={20} />
                     <YAxis />
                     { tags.map((tag)=>{
                         return <LineSeries data={tag.values} color={tag.curve_color} key={tag.tag_id} />

@@ -72,8 +72,13 @@ function Graph(props) {
                     <HorizontalGridLines />
                     <XAxis />
                     <YAxis />
-                    { tags.map((tag)=>{
-                        return <LineSeries onNearestX={_onNearestX} data={tag.values} color={tag.curve_color} key={tag.tag_id} />
+                    { tags.map((tag, index)=>{
+                        if (index === 0) {
+                            return <LineSeries onNearestX={_onNearestX} data={tag.values} color={tag.curve_color} key={tag.tag_id} />
+                        }
+                        else {
+                            return <LineSeries data={tag.values} color={tag.curve_color} key={tag.tag_id} />
+                        }
                     }) }
 
                     <Highlight
