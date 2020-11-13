@@ -33,6 +33,7 @@ export default class Legend extends React.Component {
         height={400}
         // width={300}
         onSearchChange={this._searchChangeHandler}
+        // searchPlaceholder={'Поиск...'}
         searchText={searchText}
         onItemClick={this._clickHandler}
         items={items}

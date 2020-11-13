@@ -9,7 +9,7 @@ function TagsHistoricalGraph(props) {
 
     return (
         <React.Fragment>
-            <div className="row m-0 p-3">
+            <div className="row m-0 p-0">
                 <div className="col-8 m-0 p-0">
                     <Graph tags={tags} disabledGraphs={props.disabledGraphs} />
                 </div>
