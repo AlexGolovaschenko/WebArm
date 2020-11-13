@@ -6,16 +6,18 @@ export default class Legend extends React.Component {
     super(props);
     this.state = {
       items: [],
-      searchText: ''
+      searchText: '',
+      onClick: props.onClick
     };
     this.state.items = this.props.tags.map((tag) => {
-        return {title: tag.tag_name, color: tag.curve_color}
+        return {title: tag.tag_name, color: tag.curve_color, tag_id:tag.tag_id, disabled:tag.disabled}
     });
   }
 
   _clickHandler = item => {
     const {items} = this.state;
     item.disabled = !item.disabled;
+    this.state.onClick(item.tag_id);    
     this.setState({items});
   };
 
