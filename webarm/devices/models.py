@@ -1,13 +1,13 @@
 from django.db import models
 
 from . import choices
-
+from connectors.models import Connector
 
 class Device(models.Model):
+    connector = models.ForeignKey(Connector, on_delete=models.SET_NULL, null=True, verbose_name='Коннектор')
     name = models.CharField(max_length = 200, verbose_name='Наименование устройства', blank=False)
     polling_period = models.PositiveSmallIntegerField(verbose_name='Период опроса устройства, сек', default=300)
     timeout = models.PositiveSmallIntegerField(verbose_name='Таймайут потери связи с устройством, сек', default=1500)
-    connector_type = models.CharField(max_length=20, verbose_name='Тип подключения', choices=choices.CONNECTORS)
 
     @property
     def modbus_parameters(self):

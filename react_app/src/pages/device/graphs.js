@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react' 
 import Loader from '../../components/BaseParts/Loader'
-import TagsCurrentValueList from '../../components/TagsList/TagsCurrentValueList'
 
 import TagsHistoricalGraph from '../../components/TagsGraph/TagsHistoricalGraph'
 import getColor from '../../components/TagsGraph/GraphColors'
