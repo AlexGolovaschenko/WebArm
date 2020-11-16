@@ -17,49 +17,56 @@ from . import serializers
 from . import choices
 
 
+def get_device_obj(request):
+    authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
+    key, authorization_token = authorization_token.split(' ')
+    device_id = request.META.get('HTTP_DEVICE', None)
+    obj = Device.objects.filter(id=device_id, connector__token=authorization_token)
+    if obj.exists():
+        return obj.first()
+    else:
+        return Device.objects.first()
+
+
 
 class DeviceParametersView(APIView):
+    ''' 
+    return device configuration parameters 
+    '''
     def get(self, request, *args, **kwargs):
-        obj = Device.objects.first()
+        obj = get_device_obj(request)
         serializer = serializers.DeviceParametersSerializer(obj)
         return Response(serializer.data)
 
 
 class DeviceTagsParametersView(APIView):
+    ''' 
+    return tags configuration parameters 
+    '''
     def get(self, request, *args, **kwargs):
-        try:
-            device_id = request.GET.device_id
-            device = Device.objects.get(id=device_id)
-        except:
-            device = Device.objects.first()
+        device = get_device_obj(request)
         tags = Tag.objects.filter(device=device)
         data = serializers.TagsParametersSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
-        pass    
-
 
 class DeviceTagsCurrentValueView(APIView):
+    ''' 
+    return current values of device tags 
+    '''
     def get(self, request, *args, **kwargs):
-        try:
-            device_id = request.GET.device_id
-            device = Device.objects.get(id=device_id)
-        except:
-            device = Device.objects.first()
+        device = get_device_obj(request)
         tags = Tag.objects.filter(device=device)
         data = serializers.TagsValueSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
 
 class DeviceTagsHistoricalValueView(APIView):
+    ''' 
+    return list of historycal values of device tags (value and date/time)
+    '''    
     def get(self, request, *args, **kwargs):
-        try:
-            device_id = request.GET.device_id
-            device = Device.objects.get(id=device_id)
-        except:
-            device = Device.objects.first()
-
+        device = get_device_obj(request)
         tags = Tag.objects.filter(device=device)
         tags_data = []
         for t in tags:
@@ -73,6 +80,7 @@ class DeviceTagsHistoricalValueView(APIView):
         return Response(tags_data, status=status.HTTP_200_OK)
 
     def get_historical_values_data(self, tag, max=50):
+        ''' return tag value depending on tag data type '''    
         if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
             values = HistoricalIntValue.objects.filter(tag=tag).order_by('-add_date')[:max][::-1]
             return serializers.HistoricalIntValuesSerializer(values, many=True)
@@ -92,8 +100,12 @@ class DeviceTagsHistoricalValueView(APIView):
 
 # view for polling modbus devices
 class ModbusDeviceView(APIView):
+    ''' 
+    through this vie you can get modbus parameters for polling modbus device
+    and post tags value data  
+    '''
     def get(self, request, *args, **kwargs):
-        device = Device.objects.first()
+        device = get_device_obj(request)
         tags = Tag.objects.filter(device=device)
         data = {
             'device_parametes': serializers.DeviceParametersSerializer(device).data
@@ -121,6 +133,7 @@ class ModbusDeviceView(APIView):
 
 
     def update_tag_value(self, tag_obj, tag_value, tag_quality):
+        ''' write tag value depending on tag data type '''    
         data = {'tag': tag_obj.id, 'value':tag_value, 'quality':tag_quality}
         if tag_obj.data_type == choices.WEBARM_DATA_TYPE_INT:
             try:

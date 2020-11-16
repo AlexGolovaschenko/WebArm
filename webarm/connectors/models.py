@@ -10,7 +10,7 @@ class Connector(models.Model):
     registration_code = models.CharField(max_length=10, unique=True, blank=True, null=True, verbose_name='Код регистрации')
 
     def __str__(self):
-        return str(self.connector_type) + ' (token: ' + str(self.token) + ')'
+        return str(self.connector_type) + ' (code: %s)' %(self.registration_code) 
 
     class Meta:
         verbose_name = 'Коннектор'
