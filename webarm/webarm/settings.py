@@ -28,9 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost', 
-    '172.104.202.18', 
-    'bfcloud.space', 
-    'www.bfcloud.space'
 ]
 
 
@@ -155,3 +152,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+
+# Load local settings
+try:
+    from owen_agriculture.local_settings import *
+except ImportError:
+    pass
