@@ -159,7 +159,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Load local settings
 try:
     from webarm.local_settings import *
-    print('Local settings loaded! ')
-except ImportError as e:
-    print('Cant import local settings! ')
-    print(e)
+except ImportError:
+    pass

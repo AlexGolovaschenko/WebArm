@@ -18,13 +18,16 @@ from . import choices
 
 
 def get_device_obj(request):
-    authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
-    key, authorization_token = authorization_token.split(' ')
-    device_id = request.META.get('HTTP_DEVICE', None)
-    obj = Device.objects.filter(id=device_id, connector__token=authorization_token)
-    if obj.exists():
-        return obj.first()
-    else:
+    try:
+        authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
+        key, authorization_token = authorization_token.split(' ')
+        device_id = request.META.get('HTTP_DEVICE', None)
+        obj = Device.objects.filter(id=device_id, connector__token=authorization_token)
+        if obj.exists():
+            return obj.first()
+        else:
+            return Device.objects.first()
+    except:
         return Device.objects.first()
 
 
