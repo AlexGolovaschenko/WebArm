@@ -1,12 +1,14 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
 import traceback
+from datetime import timedelta
 
 from .models import (
     Device, Tag, 
@@ -82,23 +84,42 @@ class DeviceTagsHistoricalValueView(APIView):
             })         
         return Response(tags_data, status=status.HTTP_200_OK)
 
-    def get_historical_values_data(self, tag, max=50):
-        ''' return tag value depending on tag data type '''    
+    def get_historical_values_data(self, tag):
+        ''' return tag value depending on tag data type '''  
+        one_h_ago = timezone.now()-timezone.timedelta(hours=1)
+        print(one_h_ago)
         if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
-            values = HistoricalIntValue.objects.filter(tag=tag).order_by('-add_date')[:max][::-1]
+            values = HistoricalIntValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
+            selected_values = self._select_values(values)
             return serializers.HistoricalIntValuesSerializer(values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
-            values = HistoricalFloatValue.objects.filter(tag=tag).order_by('-add_date')[:max][::-1]
+            values = HistoricalFloatValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
+            selected_values = self._select_values(values)            
             return serializers.HistoricalFloatValuesSerializer(values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
-            values = HistoricalStringValue.objects.filter(tag=tag).order_by('-add_date')[:max][::-1]
+            values = HistoricalStringValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
+            selected_values = self._select_values(values)            
             return serializers.HistoricalStringValuesSerializer(values, many=True)           
         elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
-            values = HistoricalBooleanValue.objects.filter(tag=tag).order_by('-add_date')[:max][::-1]
+            values = HistoricalBooleanValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
+            selected_values = self._select_values(values)            
             return serializers.HistoricalBooleanValuesSerializer(values, many=True)           
         else:
             return {'Error: data type not supported'} 
 
+    def _select_values(self, values):
+        sv = []
+        first = True
+        for v in values:
+            if first:
+                first = False
+                sv.append(v)
+                prev = v
+            else:
+                if v.add_date > (prev.add_date + timedelta(minutes=1)):
+                    sv.append(v)
+                    prev = v
+        return sv
         
 
 # view for polling modbus devices

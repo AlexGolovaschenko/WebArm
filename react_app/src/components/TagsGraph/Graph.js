@@ -31,7 +31,7 @@ function Graph(props) {
                     <XYPlot 
                         height={400} 
                         width={1000}
-                        margin={{left: 30, right: 0, top: 0, bottom: 30}} 
+                        margin={{left: 40, right: 0, top: 0, bottom: 30}} 
                         xType="time"
                         animation
                         xDomain={
@@ -48,7 +48,7 @@ function Graph(props) {
                         }       
                     >
                         <HorizontalGridLines />
-                        <XAxis tickTotal={20} />
+                        <XAxis tickTotal={15} />
                         <YAxis />
                         { tags.map((tag)=>{ 
                             return !tag.disabled ? <LineSeries data={tag.values} color={tag.curve_color} key={tag.tag_id} /> : null
