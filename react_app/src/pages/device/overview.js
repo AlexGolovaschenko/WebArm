@@ -35,6 +35,7 @@ export default function DeviceOverviewPage() {
           tag_id: tag.tag_id,
           tag_code: tag.tag_code,
           tag_name: tag.tag_name,
+          disabled: !tag.gisplay_on_garaph,
           curve_color : getColor(index),
           values: tag.values.map( (value) => {
             return {x: new Date(value.add_date), y: value.value}
@@ -44,7 +45,7 @@ export default function DeviceOverviewPage() {
       setTagsHistory( (prev) => {
         return prepared_tags.map( (tag)=> {
           const fltr = prev.filter( entry=>entry.tag_id === tag.tag_id )
-          var disabled = (fltr.length > 0) ? fltr[0].disabled : false
+          var disabled = (fltr.length > 0) ? fltr[0].disabled : tag.disabled
           return {...tag, disabled: disabled}
         })
       })
@@ -60,7 +61,7 @@ export default function DeviceOverviewPage() {
 
     // set update interval
     const tagsUpdateInterval = setInterval(readDeviceTags, 2000);
-    const graphUpdateInterval = setInterval( readTagsHistory, 10000)
+    const graphUpdateInterval = setInterval( readTagsHistory, 60000)
     return () => {
       clearInterval(tagsUpdateInterval);
       clearInterval(graphUpdateInterval);

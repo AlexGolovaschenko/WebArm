@@ -87,24 +87,23 @@ class DeviceTagsHistoricalValueView(APIView):
 
     def get_historical_values_data(self, tag):
         ''' return tag value depending on tag data type '''  
-        one_h_ago = timezone.now()-timezone.timedelta(hours=1)
-        print(one_h_ago)
+        one_h_ago = timezone.now()-timezone.timedelta(hours=3)
         if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
             values = HistoricalIntValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
             selected_values = self._select_values(values)
-            return serializers.HistoricalIntValuesSerializer(values, many=True)
+            return serializers.HistoricalIntValuesSerializer(selected_values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
             values = HistoricalFloatValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
             selected_values = self._select_values(values)            
-            return serializers.HistoricalFloatValuesSerializer(values, many=True)
+            return serializers.HistoricalFloatValuesSerializer(selected_values, many=True)
         elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
             values = HistoricalStringValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
             selected_values = self._select_values(values)            
-            return serializers.HistoricalStringValuesSerializer(values, many=True)           
+            return serializers.HistoricalStringValuesSerializer(selected_values, many=True)           
         elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
             values = HistoricalBooleanValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
             selected_values = self._select_values(values)            
-            return serializers.HistoricalBooleanValuesSerializer(values, many=True)           
+            return serializers.HistoricalBooleanValuesSerializer(selected_values, many=True)           
         else:
             return {'Error: data type not supported'} 
 
@@ -117,7 +116,7 @@ class DeviceTagsHistoricalValueView(APIView):
                 sv.append(v)
                 prev = v
             else:
-                if v.add_date > (prev.add_date + timedelta(minutes=1)):
+                if v.add_date > (prev.add_date + timezone.timedelta(minutes=1)):
                     sv.append(v)
                     prev = v
         return sv
