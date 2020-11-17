@@ -80,6 +80,7 @@ class DeviceTagsHistoricalValueView(APIView):
                 'tag_id': t.id, 
                 'tag_code': t.code, 
                 'tag_name': t.name, 
+                'gisplay_on_garaph': t.display_on_graph_by_default,
                 'values': serializer.data
             })         
         return Response(tags_data, status=status.HTTP_200_OK)
