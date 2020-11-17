@@ -49,6 +49,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=100, verbose_name='Наименование')
     device = models.ForeignKey(Device, on_delete = models.CASCADE)
     data_type = models.CharField(max_length=20, verbose_name='Тип данных', choices=choices.WEBARM_SUPPORTED_DATA_TYPES)
+    display_on_graph_by_default = models.BooleanField(default=False, verbose_name='Отображать на историческом графике (значение по умолчанию)')
 
     @property
     def value(self):

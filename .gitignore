@@ -3,9 +3,11 @@ media/*/*
 static/*
 docs/
 host_admin.txt
+install_postgresql.txt
 git commands.txt
 local_settings.json
 OwenCloud API.pdf
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
