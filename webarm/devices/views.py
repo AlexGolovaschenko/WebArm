@@ -80,7 +80,7 @@ class DeviceTagsHistoricalValueView(APIView):
                 'tag_id': t.id, 
                 'tag_code': t.code, 
                 'tag_name': t.name, 
-                'gisplay_on_garaph': t.display_on_graph_by_default,
+                'display_on_garaph': t.display_on_graph_by_default,
                 'values': serializer.data
             })         
         return Response(tags_data, status=status.HTTP_200_OK)
@@ -116,7 +116,7 @@ class DeviceTagsHistoricalValueView(APIView):
                 sv.append(v)
                 prev = v
             else:
-                if v.add_date > (prev.add_date + timezone.timedelta(minutes=10)):
+                if v.add_date > (prev.add_date + timezone.timedelta(minutes=15)):
                     sv.append(v)
                     prev = v
         return sv

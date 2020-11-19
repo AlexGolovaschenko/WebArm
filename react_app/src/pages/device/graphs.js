@@ -27,7 +27,7 @@ export default function DeviceOverviewPage() {
           tag_id: tag.tag_id,
           tag_code: tag.tag_code,
           tag_name: tag.tag_name,
-          disabled: !tag.gisplay_on_garaph,
+          disabled: !tag.display_on_garaph,
           curve_color : getColor(index),
           values: tag.values.map( (value) => {
             return {x: new Date(value.add_date), y: value.value}
