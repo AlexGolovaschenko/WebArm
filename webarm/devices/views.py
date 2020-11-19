@@ -87,7 +87,7 @@ class DeviceTagsHistoricalValueView(APIView):
 
     def get_historical_values_data(self, tag):
         ''' return tag value depending on tag data type '''  
-        one_h_ago = timezone.now()-timezone.timedelta(hours=24)
+        one_h_ago = timezone.now()-timezone.timedelta(hours=12)
         if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
             values = HistoricalIntValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
             selected_values = self._select_values(values)
@@ -116,7 +116,7 @@ class DeviceTagsHistoricalValueView(APIView):
                 sv.append(v)
                 prev = v
             else:
-                if v.add_date > (prev.add_date + timezone.timedelta(minutes=30)):
+                if v.add_date > (prev.add_date + timezone.timedelta(minutes=10)):
                     sv.append(v)
                     prev = v
         return sv
