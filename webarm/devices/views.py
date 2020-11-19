@@ -116,7 +116,7 @@ class DeviceTagsHistoricalValueView(APIView):
                 sv.append(v)
                 prev = v
             else:
-                if v.add_date > (prev.add_date + timezone.timedelta(minutes=15)):
+                if v.add_date > (prev.add_date + timezone.timedelta(minutes=30)):
                     sv.append(v)
                     prev = v
         return sv
