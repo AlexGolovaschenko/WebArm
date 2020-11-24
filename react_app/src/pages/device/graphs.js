@@ -48,7 +48,7 @@ export default function DeviceOverviewPage() {
   useEffect(() => {
     readDeviceParameters();
     readTagsHistory();
-    setTimeout( () => { setLoading(false) }, 2000);
+    setTimeout( () => { setLoading(false) }, 1000);
 
     // set update interval
     const graphUpdateInterval = setInterval( readTagsHistory, 10000)

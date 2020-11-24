@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react' 
+
 import Loader from '../../components/BaseParts/Loader'
 import TagsCurrentValueList from '../../components/TagsList/TagsCurrentValueList'
-
 import TagsHistoricalGraph from '../../components/TagsGraph/TagsHistoricalGraph'
+import axiosInstance from "../../utils/axiosApi";
 import getColor from '../../components/TagsGraph/GraphColors'
-
 import getBaseUrl from '../../utils/localSettings'
 const BASE_URL = getBaseUrl()
 
@@ -15,20 +15,20 @@ export default function DeviceOverviewPage() {
   const [tagsHistory, setTagsHistory] = React.useState([])
 
   function readDeviceParameters() {
-    fetch(BASE_URL + "api/v1/device")
-      .then(responce => responce.json())
+    axiosInstance.get(BASE_URL + "api/v1/device")
+      .then(responce => responce.data)
       .then(deviceParameters => { setDeviceName(deviceParameters.name) }) 
   }
 
   function readDeviceTags() {
-    fetch(BASE_URL + "api/v1/device/current-values")
-    .then(responce => responce.json())
+    axiosInstance.get(BASE_URL + "api/v1/device/current-values")
+    .then(responce => responce.data)
     .then(tags => setTags(tags) )  
   }
 
   function readTagsHistory() {
-    fetch(BASE_URL + "api/v1/device/tags/history")
-    .then(responce => responce.json())
+    axiosInstance.get(BASE_URL + "api/v1/device/tags/history")
+    .then(responce => responce.data)
     .then(tags => {
       const prepared_tags = tags.map( (tag, index) => {
         return ({
@@ -57,7 +57,7 @@ export default function DeviceOverviewPage() {
     readDeviceParameters();
     readDeviceTags();
     readTagsHistory();
-    setTimeout( () => { setLoading(false) }, 2000);
+    setTimeout( () => { setLoading(false) }, 1000);
 
     // set update interval
     const tagsUpdateInterval = setInterval(readDeviceTags, 2000);

@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 
 import traceback
 from datetime import timedelta
@@ -128,6 +128,9 @@ class ModbusDeviceView(APIView):
     through this vie you can get modbus parameters for polling modbus device
     and post tags value data  
     '''
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
     def get(self, request, *args, **kwargs):
         device = get_device_obj(request)
         tags = Tag.objects.filter(device=device)

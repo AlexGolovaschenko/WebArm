@@ -2,9 +2,12 @@ from django.db import models
 
 from . import choices
 from connectors.models import Connector
+from facilities.models import Facility
 
 class Device(models.Model):
     connector = models.ForeignKey(Connector, on_delete=models.SET_NULL, null=True, verbose_name='Коннектор')
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE, verbose_name='Объект')
+
     name = models.CharField(max_length = 200, verbose_name='Наименование устройства', blank=False)
     polling_period = models.PositiveSmallIntegerField(verbose_name='Период опроса устройства, сек', default=300)
     timeout = models.PositiveSmallIntegerField(verbose_name='Таймайут потери связи с устройством, сек', default=1500)
