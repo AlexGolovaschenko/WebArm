@@ -56,28 +56,37 @@ class Tag(models.Model):
 
     @property
     def value(self):
+        try:
+            v = self.CurrentValueModel.objects.get(tag=self).value
+        except:
+            v = 'none'        
+        return v   
+
+    @property
+    def CurrentValueModel(self):
         if self.data_type == choices.WEBARM_DATA_TYPE_INT:
-            try:
-                return CurrentIntValue.objects.get(tag=self).value
-            except:
-                return 'none'  
+            return CurrentIntValue
         elif self.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
-            try:
-                return CurrentFloatValue.objects.get(tag=self).value
-            except:
-                return 'none'
+            return CurrentFloatValue
         elif self.data_type == choices.WEBARM_DATA_TYPE_STRING:
-            try:
-                return CurrentStringValue.objects.get(tag=self).value
-            except:
-                return 'none'      
+            return CurrentStringValue     
         elif self.data_type == choices.WEBARM_DATA_TYPE_BOOL:
-            try:
-                return CurrentBooleanValue.objects.get(tag=self).value
-            except:
-                return 'none'   
+            return CurrentBooleanValue
         else:
-            return 'Error: data type not supported'       
+            raise('Error: tag data type "%s" not supported' %(self.data_type))           
+
+    @property
+    def HistoricalValueModel(self):
+        if self.data_type == choices.WEBARM_DATA_TYPE_INT:
+            return HistoricalIntValue
+        elif self.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+            return HistoricalFloatValue
+        elif self.data_type == choices.WEBARM_DATA_TYPE_STRING:
+            return HistoricalStringValue     
+        elif self.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+            return HistoricalBooleanValue
+        else:
+            raise('Error: tag data type "%s" not supported' %(self.data_type))  
 
     @property
     def modbus_parameters(self):

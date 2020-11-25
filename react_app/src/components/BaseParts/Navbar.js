@@ -1,7 +1,8 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link, Route} from 'react-router-dom'
 
 import LogoutBtn from './LogoutBtn'
+
 
 export default function Navbar() {
     return (

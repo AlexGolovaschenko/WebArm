@@ -12,8 +12,9 @@ from .models import (
         Tag, 
         ModbusTagParameters, 
         ModbusDeviceParameters, 
-        HistoricalIntValue, 
-        HistoricalFloatValue 
+        # CurrentFloatValue,
+        # HistoricalIntValue, 
+        # HistoricalFloatValue 
     )
 
 
@@ -65,3 +66,4 @@ admin.site.register(Device, DeviceAdmin)
 admin.site.register(Tag, TagAdmin)
 # admin.site.register(HistoricalIntValue)
 # admin.site.register(HistoricalFloatValue)
+# admin.site.register(CurrentFloatValue)

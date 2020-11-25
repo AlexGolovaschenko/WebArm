@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import {
-    XYPlot, 
+    FlexibleWidthXYPlot, 
     XAxis, 
     YAxis, 
     LineSeries,
@@ -28,9 +28,9 @@ function Graph(props) {
         return (
             <React.Fragment>
                 <div className='graph-container'>
-                    <XYPlot 
+                    <FlexibleWidthXYPlot 
                         height={400} 
-                        width={1000}
+                        
                         margin={{left: 40, right: 0, top: 0, bottom: 30}} 
                         xType="time"
                         animation
@@ -67,7 +67,7 @@ function Graph(props) {
                                 });
                             }}
                         />
-                    </XYPlot>
+                    </FlexibleWidthXYPlot>
                 </div>
                 {lastDrawLocation ? resetZoomBtn : null}
             </ React.Fragment>
@@ -76,9 +76,9 @@ function Graph(props) {
         return (
             <React.Fragment>
             <div className='graph-container'>
-                <XYPlot 
+                <FlexibleWidthXYPlot 
                     height={400} 
-                    width={1000}
+                    
                     dontCheckIfEmpty
                     margin={{left: 30, right: 0, top: 0, bottom: 30}}      
                 >
@@ -86,7 +86,7 @@ function Graph(props) {
                     <XAxis />
                     <YAxis />
                     <LineSeries data={[{x:0, y:0}]} /> 
-                </XYPlot>
+                </FlexibleWidthXYPlot>
             </div>
             </ React.Fragment> 
         )                   

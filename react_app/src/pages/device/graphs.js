@@ -3,7 +3,7 @@ import Loader from '../../components/BaseParts/Loader'
 
 import TagsHistoricalGraph from '../../components/TagsGraph/TagsHistoricalGraph'
 import getColor from '../../components/TagsGraph/GraphColors'
-
+import axiosInstance from "../../utils/axiosApi";
 import getBaseUrl from '../../utils/localSettings'
 const BASE_URL = getBaseUrl()
 
@@ -13,14 +13,14 @@ export default function DeviceOverviewPage() {
   const [tagsHistory, setTagsHistory] = React.useState([])
 
   function readDeviceParameters() {
-    fetch(BASE_URL + "api/v1/device")
-      .then(responce => responce.json())
+    axiosInstance.get(BASE_URL + "api/v1/device")
+      .then(responce => responce.data)
       .then(deviceParameters => { setDeviceName(deviceParameters.name) }) 
   }
 
   function readTagsHistory() {
-    fetch(BASE_URL + "api/v1/device/tags/history")
-    .then(responce => responce.json())
+    axiosInstance.get(BASE_URL + "api/v1/device/tags/history")
+    .then(responce => responce.data)
     .then(tags => {
       const prepared_tags = tags.map( (tag, index) => {
         return ({

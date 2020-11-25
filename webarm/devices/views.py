@@ -18,7 +18,6 @@ from .models import (
 from . import serializers
 from . import choices
 
-
 def get_device_obj(request):
     try:
         authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
@@ -82,30 +81,16 @@ class DeviceTagsHistoricalValueView(APIView):
                 'tag_name': t.name, 
                 'display_on_garaph': t.display_on_graph_by_default,
                 'values': serializer.data
-            })         
+            })       
         return Response(tags_data, status=status.HTTP_200_OK)
 
     def get_historical_values_data(self, tag):
         ''' return tag value depending on tag data type '''  
-        one_h_ago = timezone.now()-timezone.timedelta(hours=12)
-        if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
-            values = HistoricalIntValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
-            selected_values = self._select_values(values)
-            return serializers.HistoricalIntValuesSerializer(selected_values, many=True)
-        elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
-            values = HistoricalFloatValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
-            selected_values = self._select_values(values)            
-            return serializers.HistoricalFloatValuesSerializer(selected_values, many=True)
-        elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
-            values = HistoricalStringValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
-            selected_values = self._select_values(values)            
-            return serializers.HistoricalStringValuesSerializer(selected_values, many=True)           
-        elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
-            values = HistoricalBooleanValue.objects.filter(tag=tag, add_date__gte=one_h_ago)
-            selected_values = self._select_values(values)            
-            return serializers.HistoricalBooleanValuesSerializer(selected_values, many=True)           
-        else:
-            return {'Error: data type not supported'} 
+        some_time_ago = timezone.now()-timezone.timedelta(hours=12)
+        values = tag.HistoricalValueModel.objects.filter(tag=tag, add_date__gte=some_time_ago)
+        selected_values = self._select_values(values)
+        serializer = serializers.get_historical_tag_value_serializer(tag)
+        return serializer(selected_values, many=True)
 
     def _select_values(self, values):
         sv = []
@@ -162,36 +147,13 @@ class ModbusDeviceView(APIView):
     def update_tag_value(self, tag_obj, tag_value, tag_quality):
         ''' write tag value depending on tag data type '''    
         data = {'tag': tag_obj.id, 'value':tag_value, 'quality':tag_quality}
-        if tag_obj.data_type == choices.WEBARM_DATA_TYPE_INT:
-            try:
-                obj = CurrentIntValue.objects.get(tag=tag_obj)
-                v_serializer = serializers.IntValueSerializer(obj, data=data) # update
-            except:
-                v_serializer = serializers.IntValueSerializer(data=data) # create new
 
-        elif tag_obj.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
-            try:
-                obj = CurrentFloatValue.objects.get(tag=tag_obj)
-                v_serializer = serializers.FloatValueSerializer(obj, data=data) # update
-            except:
-                traceback.print_exc()
-                v_serializer = serializers.FloatValueSerializer(data=data) # create new
-
-        elif tag_obj.data_type == choices.WEBARM_DATA_TYPE_STRING:
-            try:
-                obj = CurrentStringValue.objects.get(tag=tag_obj)
-                v_serializer = serializers.StringValueSerializer(obj, data=data) # update
-            except:
-                v_serializer = serializers.StringValueSerializer(data=data) # create new            
-
-        elif tag_obj.data_type == choices.WEBARM_DATA_TYPE_BOOL:
-            try:
-                obj = CurrentBooleanValue.objects.get(tag=tag_obj)
-                v_serializer = serializers.BooleanValueSerializer(obj, data=data) # update
-            except:
-                v_serializer = serializers.BooleanValueSerializer(data=data) # create new             
-        else:
-            return {'Error: data type not supported'}  
+        serializer = serializers.get_current_tag_value_serializer(tag_obj)
+        try:
+            obj = tag_obj.CurrentValueModel.objects.get(tag=tag_obj)
+            v_serializer = serializer(obj, data=data) # update
+        except:
+            v_serializer = serializer(data=data) # create new
 
         if v_serializer.is_valid():
             v_serializer.save()

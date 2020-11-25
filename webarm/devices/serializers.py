@@ -5,6 +5,7 @@ from .models import (
     CurrentStringValue, CurrentIntValue, CurrentFloatValue, CurrentBooleanValue,
     HistoricalStringValue, HistoricalIntValue, HistoricalFloatValue, HistoricalBooleanValue,
 ) 
+from . import choices
 
 # ---------------------------------------------------------------------
 # devices
@@ -93,3 +94,29 @@ class HistoricalBooleanValuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistoricalBooleanValue
         fields = ('add_date', 'value')
+
+
+
+def get_current_tag_value_serializer(tag):
+    if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
+        return IntValueSerializer
+    elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+        return FloatValueSerializer
+    elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
+        return StringValueSerializer       
+    elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+        return BooleanValueSerializer        
+    else:
+        raise('Error: data type not supported')
+
+def get_historical_tag_value_serializer(tag):
+    if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
+        return HistoricalIntValuesSerializer
+    elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+        return HistoricalFloatValuesSerializer
+    elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
+        return HistoricalStringValuesSerializer       
+    elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+        return HistoricalBooleanValuesSerializer        
+    else:
+        raise('Error: data type not supported')

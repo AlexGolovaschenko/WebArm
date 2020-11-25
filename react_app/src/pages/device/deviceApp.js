@@ -1,5 +1,5 @@
 import React from 'react' 
-import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom'
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 
 import Sidebar from '../../components/BaseParts/Sidebar'
 import DeviceOverviewPage from './overview'
@@ -8,8 +8,7 @@ import DeviceEventsLogPage from './eventsLog'
 import DeviceGraphsPage from './graphs'
 import Page404 from '../pageNotFound'
 
-export default function DeviceApp() {
-
+export default function DeviceApp() { 
   return (
     <React.Fragment>
       <Router>

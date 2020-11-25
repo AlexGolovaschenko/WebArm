@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react' 
+import React from 'react' 
 import SearchableDiscreteColorLegend from 'react-vis/dist/legends/searchable-discrete-color-legend';
 
 
 
 
-export default function Legend(props) {
-  const tags = props.tags   
+export default function Legend(props) { 
   var [searchText, setSearchText] = React.useState('')
 
   var state = {
-    items: [],
     onClick: props.onClick,
     items: props.tags.map((tag) => {
       return {title: tag.tag_name, color: tag.curve_color, tag_id:tag.tag_id, disabled:tag.disabled}
