@@ -5,10 +5,10 @@ import PropTypes from 'prop-types'
 function TagsCurrentValueRow({tag, index}) {
     return (
         <tr>
-            <td> {index + 1} </td>   
-            <td> {tag.code} </td>
-            <td> {tag.name} </td>
-            <td> {tag.value} </td>
+            <td className='border-secondary text-secondary pl-2'> {index + 1} </td>   
+            <td className='border-secondary'> {tag.code} </td>
+            <td className='border-secondary'> {tag.name} </td>
+            <td className='border-secondary'> {tag.value} </td>
         </tr>
     )
 }

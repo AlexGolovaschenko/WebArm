@@ -11,15 +11,19 @@ export default function Navbar(props) {
             <Link className="navbar-brand" to="/">WebArm</Link>
 
             <ul className="navbar-nav">
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Предприятие</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Обьекты</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Кабинет</a>
-                </li>
+                {authed ? (
+                    <React.Fragment>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/company/overview">Предприятие</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/company/facilities">Обьекты</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/company/profile">Кабинет</Link>
+                        </li>
+                    </React.Fragment>
+                ) : null }
             </ul>  
     
             <ul className="navbar-nav ml-auto">

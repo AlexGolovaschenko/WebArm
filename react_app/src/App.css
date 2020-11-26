@@ -49,6 +49,13 @@
 	background-color: rgb(232,234,246) !important;
 }
 
+.bg-color-gray {
+	background-color:#252526 !important;
+}
+.bg-color-dark-gray {
+	background-color: #1E1E1E !important;
+}
+
 /*------------------------------------ general ------------------------------------*/
 .header-height {
 	height: 50px;
@@ -61,6 +68,13 @@
 
 .graph-container {
   overflow: auto;
+}
+
+.rv-discrete-color-legend-item {
+  color: #f8f9fa !important;
+}
+.rv-discrete-color-legend-item.disabled {
+  color:#6c757d !important;
 }
 
 

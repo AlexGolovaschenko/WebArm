@@ -12,6 +12,7 @@ import {ProtectedRoute} from './utils/protectedRoute'
 
 import Navbar from './components/BaseParts/Navbar'
 import DeviceApp from './pages/device/deviceApp'
+import CompanyApp from './pages/company/companyApp'
 import WelcomePage from './pages/welcome'
 import Login from './pages/users/login'
 import Registration from './pages/users/registration'
@@ -44,6 +45,7 @@ export default function App() {
             <Route exact path='/user/login' component={Login}  />
             <Route exact path='/user/registration' component={Registration} />
             <ProtectedRoute exact path='/user/profile' component={ ()=> <ProfilePage userInfo = {userInfo} /> } />
+            <ProtectedRoute path='/company' component={CompanyApp} />                   
             <ProtectedRoute path='/device' component={DeviceApp} />
             <Route component={Page404} />
           </Switch>

@@ -47,7 +47,7 @@ function Graph(props) {
                             ]
                         }       
                     >
-                        <HorizontalGridLines />
+                        <HorizontalGridLines style={{stroke: '#444A50'}} />
                         <XAxis tickTotal={15} />
                         <YAxis />
                         { tags.map((tag)=>{ 
@@ -82,7 +82,7 @@ function Graph(props) {
                     dontCheckIfEmpty
                     margin={{left: 30, right: 0, top: 0, bottom: 30}}      
                 >
-                    <HorizontalGridLines />
+                    <HorizontalGridLines style={{stroke: '#444A50'}} />
                     <XAxis />
                     <YAxis />
                     <LineSeries data={[{x:0, y:0}]} /> 

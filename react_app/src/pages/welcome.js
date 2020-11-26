@@ -1,6 +1,7 @@
 import React from 'react' 
 import {Link} from 'react-router-dom'
 
+import getColor from '../components/CompanyOverview/CardColors'
 
 export default function WelcomePage() {
   const backgroundStyle = {
@@ -11,7 +12,7 @@ export default function WelcomePage() {
 
   return (
     <React.Fragment>
-      <div style={backgroundStyle}>
+      <div className='bg-color-dark-gray text-secondary content-height'>
         <div className='p-3 w-100 container'>
             <div className='text-center pt-5'>
                 <h3 className='text-muted'>Добро пожаловать на <b>BFCloud</b></h3>
@@ -26,25 +27,25 @@ export default function WelcomePage() {
             </div>
 
             <div className="card-columns py-5">
-              <div className="card bg-primary">
+              <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6>Удаленный мониторинга и управления промышленными и IoT устройствами</h6>
                 </div>
               </div>
 
-              <div className="card bg-info">
+              <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6>Контроль аварийных событий и уведомление о событиях на объекте </h6>
                 </div>
               </div>
 
-              <div className="card bg-success">
+              <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6>Простое подключение и настройка опроса устройств</h6>
                 </div>
               </div>
 
-              <div className="card bg-danger">
+              <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6>Открытый API для интеграции с сторонним ПО и 
                     IoT устройствами 
@@ -52,16 +53,16 @@ export default function WelcomePage() {
                 </div>
               </div>  
 
-              <div className="card bg-secondary">
+              <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6>Единый интерфейс для Персональных компьютеров и Мобильных устройств </h6>
                 </div>
               </div>
 
-              <div className="card bg-warning">
+              <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6> Вы можете воспользоваться демо-версией сервиса 
-                    <Link className="px-2" to="/device">Демо-версия: БУМП-14</Link>
+                    <Link className="px-2" to="/device/overview">Демо-версия: БУМП-14</Link>
                   </h6> 
                 </div>
               </div>

@@ -4,15 +4,16 @@ import TagsCurrentValueRow from './TagsCurrentValueRow'
 
 function TagsCurrentValueList(props) {
     return (
-        <div>     
+        <div className='card shadow-sm p-3 bg-dark text-light'>     
             <div className="table-responsive">
-            <table className="table table-striped table-sm">
+
+            <table className="table table-sm text-light tadle-dark w-100 mb-0">
                 <thead> 
                 <tr>
-                    <td>№</td>
-                    <td>Код параметра</td>
-                    <td>Наименование параметра</td>
-                    <td>Текущее значение</td>
+                    <td className='border-0 text-secondary font-weight-bold pl-2'>№</td>
+                    <td className='border-0 text-secondary font-weight-bold'>Код параметра</td>
+                    <td className='border-0 text-secondary font-weight-bold'>Наименование параметра</td>
+                    <td className='border-0 text-secondary font-weight-bold'>Текущее значение</td>
                 </tr>
                 </thead>
                 <tbody>

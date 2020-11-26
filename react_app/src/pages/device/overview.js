@@ -80,7 +80,7 @@ export default function DeviceOverviewPage() {
   // render the page
   return (
     <React.Fragment>
-        <p>Устройство: <b>{deviceName}</b></p>
+        <h3 className='pb-2'>Устройство: <b>{deviceName}</b></h3>
         {loading ? <Loader /> : <TagsCurrentValueList tags={tags} />}
         {loading ? null : <TagsHistoricalGraph tagsHistory={tagsHistory} toggleCurveDisplay={toggleCurveDisplay}/> }
     </React.Fragment>
