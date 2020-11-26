@@ -51,11 +51,11 @@
 
 /*------------------------------------ general ------------------------------------*/
 .header-height {
-	height: 6vh;
+	height: 50px;
 }
 
 .content-height {
-  height: 94vh;
+  height: calc(100vh - 50px);
   overflow: auto;
 }
 

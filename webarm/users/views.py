@@ -8,6 +8,25 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer
 
 
+class CheckUserAuth(APIView):
+    # default permission class is IsAuthenticated
+    # because of this it return 200 if user authenticated, and automatically return 401 if not
+    def get(self, request):
+        return Response(status=status.HTTP_200_OK)
+
+
+class UserInfo(APIView):
+    def get(self, request):
+        user = request.user
+        data = {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+
 class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()

@@ -10,7 +10,6 @@ class Signup extends Component{
             username: "",
             password: "",
             email:"",
-            setAuthed: props.user.setAuthed,            
             errors:{username:null, email:null, password:null}
         };
 
