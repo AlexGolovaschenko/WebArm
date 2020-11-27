@@ -78,6 +78,20 @@
   color:#6c757d !important;
 }
 
+/*------------------------------------ fix forms ------------------------------------*/
+
+input {
+  caret-color : #f8f9fa;
+  }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  -webkit-box-shadow: 0 0 0 30px #6c757d inset;
+  -webkit-text-fill-color:  #f8f9fa;
+}
+
 /*------------------------------------ device cards ------------------------------------*/
 .card-hover {
   transition: box-shadow .3s, border-color .3s;

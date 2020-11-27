@@ -9,6 +9,7 @@ import CompanyProfilePage from './profile'
 import Page404 from '../pageNotFound'
 
 export default function CompanyApp() { 
+
   return (
     <React.Fragment>
       <div className='bg-color-dark-gray text-secondary h-100'>

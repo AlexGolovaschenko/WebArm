@@ -8,26 +8,28 @@ import getColor from '../../components/TagsGraph/GraphColors'
 import getBaseUrl from '../../utils/localSettings'
 const BASE_URL = getBaseUrl()
 
-export default function DeviceOverviewPage() {
+export default function DeviceOverviewPage(props) {
   const [tags, setTags] = React.useState([])
   const [deviceName, setDeviceName] = React.useState('')
   const [loading, setLoading] = React.useState(true)
   const [tagsHistory, setTagsHistory] = React.useState([])
 
+  const device_id = props.device_id;
+
   function readDeviceParameters() {
-    axiosInstance.get(BASE_URL + "api/v1/device")
+    axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device_id }} )
       .then(responce => responce.data)
       .then(deviceParameters => { setDeviceName(deviceParameters.name) }) 
   }
 
   function readDeviceTags() {
-    axiosInstance.get(BASE_URL + "api/v1/device/current-values")
+    axiosInstance.get(BASE_URL + "/device/tags/value/", { params: { id: device_id }} )
     .then(responce => responce.data)
     .then(tags => setTags(tags) )  
   }
 
   function readTagsHistory() {
-    axiosInstance.get(BASE_URL + "api/v1/device/tags/history")
+    axiosInstance.get(BASE_URL + "/device/tags/history/", { params: { id: device_id }} )
     .then(responce => responce.data)
     .then(tags => {
       const prepared_tags = tags.map( (tag, index) => {

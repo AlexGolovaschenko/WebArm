@@ -20,8 +20,8 @@ axiosInstance.interceptors.response.use(
         const originalRequest = error.config;
 
         // Prevent infinite loops
-        if (error.response.status === 401 && originalRequest.url === 'user/token/refresh/') {
-            // window.location.href = 'user/login/';                     
+        if (error.response.status === 401 && originalRequest.url === '/user/token/refresh/') {
+            // window.location.href = '/user/login/';                  
             return Promise.reject(error);
         }
 
@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
 
                     if (tokenParts.exp > now) {
                         return axiosInstance
-                        .post('user/token/refresh/', {refresh: refreshToken})
+                        .post('/user/token/refresh/', {refresh: refreshToken})
                         .then((response) => {
             
                             localStorage.setItem('access_token', response.data.access);

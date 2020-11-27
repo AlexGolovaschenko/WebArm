@@ -46,7 +46,7 @@ export default function App() {
             <Route exact path='/user/registration' component={Registration} />
             <ProtectedRoute exact path='/user/profile' component={ ()=> <ProfilePage userInfo = {userInfo} /> } />
             <ProtectedRoute path='/company' component={CompanyApp} />                   
-            <ProtectedRoute path='/device' component={DeviceApp} />
+            <ProtectedRoute path='/device/:id' component={DeviceApp} />
             <Route component={Page404} />
           </Switch>
         </Router>

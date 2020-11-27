@@ -20,9 +20,9 @@ export default function WelcomePage() {
             <br/>
             <div className='text-center'>
                 <h5>Для начала работы
-                  <Link className='px-2' to="/user/login">Войдите</Link>
+                  <Link className='px-2' to="/user/login/">Войдите</Link>
                   или
-                  <Link className='px-2' to="/user/registration">Зарегистрируйтесь</Link>
+                  <Link className='px-2' to="/user/registration/">Зарегистрируйтесь</Link>
                 </h5>
             </div>
 
@@ -62,7 +62,7 @@ export default function WelcomePage() {
               <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6> Вы можете воспользоваться демо-версией сервиса 
-                    <Link className="px-2" to="/device/overview">Демо-версия: БУМП-14</Link>
+                    <Link className="px-2" to="/device/1/overview/">Демо-версия: БУМП-14</Link>
                   </h6> 
                 </div>
               </div>

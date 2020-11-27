@@ -40,31 +40,33 @@ class Signup extends Component{
 
     render() {
         return (
-            <div className='container p-3' style={{maxWidth: '500px'}}>
+          <div className='bg-color-dark-gray text-secondary content-height'>  
+            <div className='container card p-3 mt-5 bg-dark' style={{maxWidth: '500px'}}>
                 <h2>Регистрация</h2>              
                 <form onSubmit={this.handleSubmit}>
                   <div className="form-group">
                     <label htmlFor="username">Имя пользователя:</label>
-                    <input name="username" type="text" className="form-control" id="username" value={this.state.username} onChange={this.handleChange}/>
-                    { this.state.errors.username ? this.state.errors.username : null}
+                    <input name="username" type="text" className="form-control bg-secondary border-secondary text-light" id="username" value={this.state.username} onChange={this.handleChange}/>
+                    { this.state.errors.username ? <span className='text-danger'>{this.state.errors.username}</span> : null}
                   </div> 
                   <div className="form-group">
                     <label htmlFor="mail">Электронная почта:</label>
-                    <input name="email" type="email" className="form-control" id="mail" value={this.state.email} onChange={this.handleChange}/>
-                    { this.state.errors.email ? this.state.errors.email : null}
+                    <input name="email" type="email" className="form-control bg-secondary border-secondary text-light" id="mail" value={this.state.email} onChange={this.handleChange}/>
+                    { this.state.errors.email ? <span className='text-danger'>{this.state.errors.email}</span> : null}
                   </div> 
                   <div className="form-group">
                     <label htmlFor="pwd">Пароль:</label> 
-                    <input name="password" type="password" className="form-control" id="pwd" value={this.state.password} onChange={this.handleChange}/>
-                    { this.state.errors.password ? this.state.errors.password : null}
+                    <input name="password" type="password" className="form-control bg-secondary border-secondary text-light" id="pwd" value={this.state.password} onChange={this.handleChange}/>
+                    { this.state.errors.password ? <span className='text-danger'>{this.state.errors.password}</span> : null}
                   </div> 
                   <button type="submit" className="btn btn-outline-primary">Подтвердить</button>
                   <div className="pt-3">
                     <span className="pr-2 text-secondary">Уже зарегестрированы?</span>
-                    <Link className="" to="/user/login">Вход</Link>
+                    <Link className="" to="/user/login/">Вход</Link>
                   </div>
                 </form>
             </div>
+          </div>
         )
     }
 }

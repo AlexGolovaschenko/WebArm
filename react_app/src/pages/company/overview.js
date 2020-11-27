@@ -41,7 +41,7 @@ export default function CompanyOverviewPage() {
 
 
 async function readCompanyInfo(cb) {
-  const request = await axiosInstance.get(BASE_URL + "company/info")
+  const request = await axiosInstance.get(BASE_URL + "/company/info/")
   cb({...request.data});
 }
  

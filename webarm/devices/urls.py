@@ -8,11 +8,12 @@ from .views import (
     ModbusDeviceView,
 )
 
+app_name = 'device'
 urlpatterns = [
-    path('device/', DeviceParametersView.as_view(), name='device-data'),
-    path('device/tags', DeviceTagsParametersView.as_view()),
-    path('device/current-values', DeviceTagsCurrentValueView.as_view()),
-    path('device/tags/history', DeviceTagsHistoricalValueView.as_view()),
+    path('parameters/', DeviceParametersView.as_view(), name='parameters'),
+    path('tags/parameters/', DeviceTagsParametersView.as_view()),
+    path('tags/value/', DeviceTagsCurrentValueView.as_view()),
+    path('tags/history/', DeviceTagsHistoricalValueView.as_view()),
 
     path('modbus-device/', ModbusDeviceView.as_view()),
 
