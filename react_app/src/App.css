@@ -101,7 +101,13 @@ input:-webkit-autofill:active  {
   border-color: rgba(0, 123, 255, .5) !important;
   box-shadow: 0 0 5px rgb(0, 123, 255); 
 }
-
+#myVideo {
+  position: fixed;
+  right: 0;
+  top: -40px;
+  min-width: 100%;
+  min-height: 100%;
+}
 
 /*------------------------------------ borders ------------------------------------*/
 .debug-border {

@@ -38,7 +38,15 @@ export default function App() {
   } else { 
     return (
       <React.Fragment>
-        <Router>
+        <Router>        
+          <Route exact path='/' component={()=>{
+            return (
+            <video autoplay="autoplay" muted loop="loop" id="myVideo">
+              <source src="Earth13426.mp4" type="video/mp4" />
+            </video>
+            )}
+          }/>
+
           <Navbar authed={authed} userInfo = {userInfo} />
           <Switch>
             <Route exact path='/' component={WelcomePage} />
