@@ -1,13 +1,20 @@
 import React from 'react' 
 import {Link} from 'react-router-dom'
 
-import getColor from '../components/CompanyOverview/CardColors'
+import auth from '../utils/auth' 
 
-export default function WelcomePage() {
-  const backgroundStyle = {
-    backgroundImage: 'url("./img/grid.png")',
-    backgroundRepeat: 'repeat-x',
-    backgroundAttachment: 'fixed'
+
+function WelcomePage(props) {
+  // const backgroundStyle = {
+  //   backgroundImage: 'url("./img/grid.png")',
+  //   backgroundRepeat: 'repeat-x',
+  //   backgroundAttachment: 'fixed'
+  // }
+
+
+  function loginDemoUser() {
+    const cb = ()=>{ props.history.push('/company/overview/') }
+    auth.login('admin', 'admin', cb );
   }
 
   return (
@@ -62,7 +69,7 @@ export default function WelcomePage() {
               <div className="card bg-dark">
                 <div className="card-body text-center">
                   <h6> Вы можете воспользоваться демо-версией сервиса 
-                    <Link className="px-2" to="/device/1/overview/">Демо-версия: БУМП-14</Link>
+                    <a className="px-2" href='#' onClick={loginDemoUser}>Демо-версия: БУМП-14</a>
                   </h6> 
                 </div>
               </div>
@@ -73,4 +80,4 @@ export default function WelcomePage() {
   );
 }
 
- 
+export default WelcomePage
