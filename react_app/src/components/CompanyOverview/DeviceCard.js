@@ -7,7 +7,7 @@ function DeviceCard(props) {
 
     return (
         <React.Fragment>
-            <div className='border border-secondary rounded p-2 h-100 bg-dark text-light' >
+            <div className='border border-secondary rounded p-2 h-100 bg-dark text-light card-hover' >
                 <h6 className=''>{device.name}</h6>
                 <div className='p-0 m-0 small w-100'>
                     <table className="table table-sm p-0 m-0 table-dark text-light w-100">

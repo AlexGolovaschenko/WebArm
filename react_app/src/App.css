@@ -70,11 +70,21 @@
   overflow: auto;
 }
 
+/*------------------------------------ fix react-vis ------------------------------------*/
 .rv-discrete-color-legend-item {
   color: #f8f9fa !important;
 }
 .rv-discrete-color-legend-item.disabled {
   color:#6c757d !important;
+}
+
+/*------------------------------------ device cards ------------------------------------*/
+.card-hover {
+  transition: box-shadow .3s, border-color .3s;
+}
+.card-hover:hover {
+  border-color: rgba(0, 123, 255, .5) !important;
+  box-shadow: 0 0 5px rgb(0, 123, 255); 
 }
 
 
