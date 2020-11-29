@@ -12,10 +12,10 @@ class CompanyInfoView(APIView):
         user = request.user
 
         company = get_object_or_404(Company, owner=user)
-        facilities = Facility.objects.filter(company=company)
+        facilities = Facility.objects.filter(company=company).order_by('name')
         devices = {}
         for f in facilities:
-            devices[f.id] = Device.objects.filter(facility=f)
+            devices[f.id] = Device.objects.filter(facility=f).order_by('name')
 
         data = {}
         data['company'] = {
