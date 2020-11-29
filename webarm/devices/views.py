@@ -25,6 +25,7 @@ def get_device_obj(request, modem=False):
         authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
         key, authorization_token = authorization_token.split(' ')
         obj = Device.objects.filter(id=device_id, connector__token=authorization_token)
+        return Device.objects.first() # TODO: delete this row
     else:
         obj = Device.objects.filter(id=device_id)
 
