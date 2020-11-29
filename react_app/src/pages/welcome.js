@@ -20,7 +20,7 @@ function WelcomePage(props) {
   return (
     <React.Fragment>
       <div className='bg-color-dark-gray text-light content-height'>
-        <div className='container card mt-5 p-3 w-100' style={{background:'rgba(0,0,0,0.5)'}}>
+        <div className='container card mt-5 p-3 w-100' style={{background:'rgba(0,0,0,0.8)'}}>
             <div className='text-center pt-4'>
                 <h3>Добро пожаловать на <b>BFCloud</b></h3>
             </div>
