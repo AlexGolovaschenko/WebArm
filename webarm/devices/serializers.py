@@ -16,15 +16,12 @@ class ModbusDeviceParametersSerializer(serializers.ModelSerializer):
 
 
 class DeviceParametersSerializer(serializers.ModelSerializer):
-    modbus_parameters = ModbusDeviceParametersSerializer()
-
     class Meta:
         model = Device
         fields = (
             'id', 
             'name', 
-            'polling_period',
-            'modbus_parameters', 
+            'polling_period', 
         )
 
 # ---------------------------------------------------------------------

@@ -12,10 +12,6 @@ class Device(models.Model):
     polling_period = models.PositiveSmallIntegerField(verbose_name='Период опроса устройства, сек', default=300)
     timeout = models.PositiveSmallIntegerField(verbose_name='Таймайут потери связи с устройством, сек', default=1500)
 
-    @property
-    def modbus_parameters(self):
-        return ModbusDeviceParameters.objects.get(device=self)
-
     def __str__(self):
         return self.name
 

@@ -1,45 +1,26 @@
-from django.conf import settings
-from django.shortcuts import render
-from django.http import JsonResponse
 from django.utils import timezone
+from datetime import timedelta
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
-
-import traceback
-from datetime import timedelta
+from rest_framework import status
 
 from .models import (
-    Device, Tag, 
+    Device, Tag,
     CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue,
     HistoricalIntValue, HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
 )
 from . import serializers
-from . import choices
 
-def get_device_obj(request, modem=False):
+
+# -----------------------------------------------------------------------------------------------
+def get_device_obj(request):
     device_id = request.GET.get('id', None)
-    if modem:
-        # check modem token
-        authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
-        key, authorization_token = authorization_token.split(' ')
-        obj = Device.objects.filter(id=device_id, connector__token=authorization_token)
-        return Device.objects.first() # TODO: delete this row
-    else:
-        obj = Device.objects.filter(id=device_id)
-
-    if obj.exists():
-        return obj.first()
-    else:
-        return Device.objects.first()
-
+    return Device.objects.get(id=device_id)
 
 
 class DeviceParametersView(APIView):
-    ''' 
-    return device configuration parameters 
-    '''
+    ''' return device configuration parameters '''
     def get(self, request, *args, **kwargs):
         obj = get_device_obj(request)
         serializer = serializers.DeviceParametersSerializer(obj)
@@ -47,9 +28,7 @@ class DeviceParametersView(APIView):
 
 
 class DeviceTagsParametersView(APIView):
-    ''' 
-    return tags configuration parameters 
-    '''
+    ''' return tags configuration parameters '''
     def get(self, request, *args, **kwargs):
         device = get_device_obj(request)
         tags = Tag.objects.filter(device=device)
@@ -58,23 +37,20 @@ class DeviceTagsParametersView(APIView):
 
 
 class DeviceTagsCurrentValueView(APIView):
-    ''' 
-    return current values of device tags 
-    '''
+    ''' return current values of device tags '''
     def get(self, request, *args, **kwargs):
         device = get_device_obj(request)
-        tags = Tag.objects.filter(device=device)
+        tags = Tag.objects.filter(device=device).order_by('name')
         data = serializers.TagsValueSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
 
+# -----------------------------------------------------------------------------------------------
 class DeviceTagsHistoricalValueView(APIView):
-    ''' 
-    return list of historycal values of device tags (value and date/time)
-    '''    
+    ''' return list of historycal values of device tags (value and date/time) '''    
     def get(self, request, *args, **kwargs):
         device = get_device_obj(request)
-        tags = Tag.objects.filter(device=device)
+        tags = Tag.objects.filter(device=device).order_by('name')
         tags_data = []
         for t in tags:
             serializer = self.get_historical_values_data(t) 
@@ -110,60 +86,5 @@ class DeviceTagsHistoricalValueView(APIView):
         return sv
         
 
-# view for polling modbus devices
-class ModbusDeviceView(APIView):
-    ''' 
-    through this vie you can get modbus parameters for polling modbus device
-    and post tags value data  
-    '''
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-    
-    def get(self, request, *args, **kwargs):
-        device = get_device_obj(request, modem=True)
-        tags = Tag.objects.filter(device=device)
-        data = {
-            'device_parametes': serializers.DeviceParametersSerializer(device).data
-        }
-        tags_list = serializers.TagsParametersSerializer(tags, many=True).data
-        data['device_parametes']['tags_count'] = len(tags_list)        
-        data['device_parametes']['tags'] = tags_list
-        return Response(data)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            tags = request.data['tags']
-            tags_response = []
-            for t in tags:
-                tag_obj = Tag.objects.get(id=t['id'])
-                tag_value = t['value']
-                tag_staus = choices.TAG_VALUE_QUALITY_GOOD
-                r = self.update_tag_value(tag_obj, tag_value, tag_staus)
-                tags_response.append(r)
-            response = Response({'tags': tags_response}, status=status.HTTP_201_CREATED)
-        except:
-            traceback.print_exc()
-            response = Response({'Internal error':  traceback.format_exc()})
-        return response
-
-
-    def update_tag_value(self, tag_obj, tag_value, tag_quality):
-        ''' write tag value depending on tag data type '''    
-        data = {'tag': tag_obj.id, 'value':tag_value, 'quality':tag_quality}
-
-        serializer = serializers.get_current_tag_value_serializer(tag_obj)
-        try:
-            obj = tag_obj.CurrentValueModel.objects.get(tag=tag_obj)
-            v_serializer = serializer(obj, data=data) # update
-        except:
-            v_serializer = serializer(data=data) # create new
-
-        if v_serializer.is_valid():
-            v_serializer.save()
-            return v_serializer.data
-        else:
-            return v_serializer.errors
- 
- 
 
 
