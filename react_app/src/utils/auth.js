@@ -64,6 +64,7 @@ class Auth{
 
     clearUserInfo(){
         this.userInfo = {}
+        this.onUserInfoReaded( {} )
     }
 
     _onLogin () {
