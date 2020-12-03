@@ -23,6 +23,7 @@ import auth from './utils/auth'
 
 export default function App() {
   const [loading, setLoading] = React.useState(true)
+  const [loading2, setLoading2] = React.useState(true)
   const [authed, setAuthed] = React.useState(false)
   const [userInfo, setUserInfo] = React.useState({})
 
@@ -30,10 +31,13 @@ export default function App() {
     auth.checkAuthentication(() => { setLoading(false) })
     auth.onLogin = () => {setAuthed(true)}    
     auth.onLogout = () => {setAuthed(false)}    
-    auth.onUserInfoReaded = (ui) => {setUserInfo(ui)}   
+    auth.onUserInfoReaded = (ui) => {
+      setUserInfo(ui); 
+      setLoading2(false);
+    }   
   }, [])
 
-  if (loading) { 
+  if (loading || loading2) { 
     return null 
   } else { 
     return (

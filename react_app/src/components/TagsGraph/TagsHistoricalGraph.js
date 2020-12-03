@@ -6,7 +6,7 @@ import Legend from './Legend'
 
 function TagsHistoricalGraph(props) {
     const tags = props.tagsHistory  
- 
+
     return (
         <React.Fragment>
         <div className='card shadow-sm p-3 bg-dark text-light mt-3'>

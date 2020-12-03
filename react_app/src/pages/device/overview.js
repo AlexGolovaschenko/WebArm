@@ -53,7 +53,7 @@ export default function DeviceOverviewPage(props) {
       })
     })  
   }
-
+  
   // read parameters
   useEffect(() => {
     readDeviceParameters();
@@ -69,6 +69,8 @@ export default function DeviceOverviewPage(props) {
       clearInterval(graphUpdateInterval);
     };
   }, [])
+
+  
 
   // toggle curve display
   function toggleCurveDisplay(tag_id){
