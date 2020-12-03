@@ -90,7 +90,7 @@ class DeviceTagsHistoricalValueView(APIView):
     def get_historical_values_data(self, tag):
         ''' return tag value depending on tag data type '''  
         some_time_ago = timezone.now()-timezone.timedelta(hours=12)
-        values = tag.HistoricalValueModel.objects.filter(tag=tag, add_date__gte=some_time_ago)
+        values = tag.HistoricalValueModel.objects.filter(tag=tag, add_date__gte=some_time_ago).order_by('add_date')
         selected_values = self._select_values(values)
         serializer = serializers.get_historical_tag_value_serializer(tag)
         return serializer(selected_values, many=True)
