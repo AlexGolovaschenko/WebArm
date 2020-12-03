@@ -7,6 +7,7 @@ import getBaseUrl from '../../utils/localSettings'
 const BASE_URL = getBaseUrl()
 
 
+
 export default function CompanyOverviewPage() {
   const [companyInfo, setCompanyInfo] = useState({})
   const [loading, setLoading] = React.useState(true)
