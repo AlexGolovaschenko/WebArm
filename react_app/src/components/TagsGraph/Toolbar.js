@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 
 export default function Toolbar(props) { 
   const [showRangeForm, setShowRangeForm] = useState(false)
-  const [activeButton, setActiveButton] = useState([true, false, false, false, false, false, false, false, false])
+  const [activeButton, setActiveButton] = useState([true, false, false, false, false, false, false, false, false, false])
 
   function toggleActiveButton(btn) {
     setActiveButton( (prev) => {
@@ -30,49 +30,56 @@ export default function Toolbar(props) {
     <React.Fragment>
     <div className='d-flex justify-content-left p-0 pt-2 m-0'>
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(0)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(0)} 
           onClick={()=>{toggleActiveButton(0)}}
         >онлайн</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(1)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(1)} 
           onClick={()=>{toggleActiveButton(1)}}
         >1 час</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(2)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(2)} 
           onClick={()=>{toggleActiveButton(2)}}
         >6 часов</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(3)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(3)} 
           onClick={()=>{toggleActiveButton(3)}}
         >12 часов</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(4)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(4)} 
           onClick={()=>{toggleActiveButton(4)}}
-        >день</button>
+        >сутки</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(5)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(5)} 
           onClick={()=>{toggleActiveButton(5)}}
         >неделя</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(6)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(6)} 
           onClick={()=>{toggleActiveButton(6)}}
         >месяц</button>
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ' + getActiveCalss(7)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(7)} 
           onClick={()=>{toggleActiveButton(7)}}
-        >диапазон</button> 
+        >интервал</button> 
 
         <button type="button" 
-          className={'btn btn-sm btn-outline-info mx-1 ml-auto ' + getActiveCalss(8)} 
+          className={'btn btn-sm btn-outline-secondary mx-1 ml-auto fas fa-ruler-vertical ' + getActiveCalss(8)} 
+          style={{minWidth: '34px', fontSize:'1.1em'}}
           onClick={()=>{toggleActiveButton(8)}}
-        >пересечение</button> 
+        ></button> 
+
+        <button type="button" 
+          className={'btn btn-sm btn-outline-secondary mx-1 fas fa-expand-arrows-alt ' + getActiveCalss(9)} 
+          style={{minWidth: '34px', fontSize:'1.1em'}} 
+          onClick={()=>{toggleActiveButton(9)}}
+        ></button> 
     </div>
 
     {showRangeForm ? <RangeForm /> : null }
