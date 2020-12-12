@@ -1,25 +1,54 @@
-import React from 'react';
+import React, { useEffect } from 'react' 
 import {Link} from 'react-router-dom'
 
+import axiosInstance from "../../utils/axiosApi";
+import getBaseUrl from '../../utils/localSettings'
+const BASE_URL = getBaseUrl()
 
 function DeviceCard(props) {
+    const [deviceData, setDeviceData] = React.useState({})
     const device = props.device   
+   
+    function readDeviceParameters() {
+      axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device.id }} )
+        .then(responce => { 
+            if (responce) {
+                const deviceParameters = responce.data
+                setDeviceData({...deviceParameters}) 
+            }
+        }) 
+    }
+    
+    useEffect(() => {
+      readDeviceParameters();
+      const deviceParametersUpdateInterval = setInterval(readDeviceParameters, 5000);
+      return () => {
+        clearInterval(deviceParametersUpdateInterval);
+      };
+    }, [])
+
 
     return (
         <React.Fragment>
         <Link className="nav-link p-0 m-0" to={`/device/${device.id}/overview/`}>
-            <div className='border border-secondary rounded p-2 h-100 bg-dark text-light card-hover' >
-                <h6 className=''>{device.name}</h6>
+            <div className='border border-secondary rounded p-2 h-100 bg-dark text-light card-hover' style={{overflow: 'hidden'}} >
+                <h6 className='text-nowrap'>{device.name}</h6>
                 <div className='p-0 m-0 small w-100'>
                     <table className="table table-sm p-0 m-0 table-dark text-light w-100">
                         <tbody>
                             <tr>
                                 <td> Связь: </td>   
-                                <td className='text-right'> ОК </td>
+                                <td className='text-right'> {deviceData.is_online ? 
+                                    <span className='text-light' >ОК</span> : 
+                                    <span className='badge badge-pill badge-danger text-dark' style={{fontSize: '0.85em'}}>НЕТ</span> }
+                                </td>
                             </tr> 
                             <tr>
                                 <td>  Обновлено: </td>   
-                                <td className='text-right'> 16:08 </td>
+                                <td className='text-right'> {deviceData.last_update ? 
+                                    format_time(deviceData.last_update, (deviceData.is_online ? null : 'text-warning')) :
+                                    <span className='text-secondary'>никогда</span> } 
+                                </td>
                             </tr>
                             <tr>
                                 <td>   Аварии: </td>   
@@ -33,5 +62,22 @@ function DeviceCard(props) {
         </ React.Fragment> 
     )                   
 }
+
+
+
+function format_time (time, className='text-light') {
+    const s = new Date(time)
+    var yesterday = new Date()
+    yesterday = yesterday.setDate(yesterday.getDate() - 1);
+    if (s > yesterday) {
+        let formatter = new Intl.DateTimeFormat([] , {hour: '2-digit', minute: '2-digit'});
+        return <span className={className}>{formatter.format(s)}</span>
+    } else {
+        let formatter = new Intl.DateTimeFormat([] , {month: "short", day: "numeric" });
+        return <span className={className}>{formatter.format(s)}</span>           
+    }
+}
+
+
 
 export default DeviceCard

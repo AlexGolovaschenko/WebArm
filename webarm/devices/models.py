@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 from . import choices
 from connectors.models import Connector
@@ -9,8 +11,45 @@ class Device(models.Model):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, verbose_name='Объект')
 
     name = models.CharField(max_length = 200, verbose_name='Наименование устройства', blank=False)
-    polling_period = models.PositiveSmallIntegerField(verbose_name='Период опроса устройства, сек', default=300)
-    timeout = models.PositiveSmallIntegerField(verbose_name='Таймайут потери связи с устройством, сек', default=1500)
+    polling_period = models.PositiveSmallIntegerField(verbose_name='Период опроса устройства, сек', default=30)
+    timeout = models.PositiveSmallIntegerField(verbose_name='Таймайут потери связи с устройством, сек', default=600)
+    last_update = models.DateTimeField(blank=True, null=True, verbose_name='Время последнего обновления данных')
+
+    @property
+    def is_online(self):
+        if not self.last_update:
+            return False
+
+        online = self.last_update >= (timezone.now()-timezone.timedelta(seconds=self.timeout))
+        return online          
+
+    @property
+    def verbose_last_update(self):
+        ''' возвращает время посленего обновления данных устройства в более удобном для чтения виде
+            например: "только что", "3 минтуы назад", "вчера" ...
+        '''
+        if not self.last_update:
+            return 'никогда'
+
+        if self.last_update > (timezone.now()-timezone.timedelta(minutes=1)):
+            return 'только что'
+        elif self.last_update > (timezone.now()-timezone.timedelta(minutes=2)):
+            return '1 минуту назад'    
+        elif self.last_update > (timezone.now()-timezone.timedelta(minutes=4)):
+            td = timezone.now() - self.last_update
+            return '%s минуты назад' %( (td.seconds//60)%60 )
+        elif self.last_update > (timezone.now()-timezone.timedelta(minutes=59)):
+            td = timezone.now() - self.last_update
+            return '%s минут назад' %( (td.seconds//60)%60 )
+        elif self.last_update > (timezone.now()-timezone.timedelta(hours=2)):
+            return 'больше часа назад' 
+        elif self.last_update > (timezone.now()-timezone.timedelta(hours=24)):
+            td = timezone.now() - self.last_update
+            return 'больше %s часов назад' %( td.seconds//60 ) 
+        elif self.last_update > (timezone.now()-timezone.timedelta(days=1, hours=24)):
+            return 'вчера, в %s' %( self.last_update.strftime("%H:%M") )                                   
+        else:
+            return self.last_update.strftime("%d %b %H:%M")
 
     def __str__(self):
         return self.name

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import Graph from './Graph'
 import Legend from './Legend'
+import Toolbar from './Toolbar'
 import Loader from '../../components/BaseParts/Loader'
 
 
@@ -21,6 +22,13 @@ function TagsHistoricalGraph(props) {
                 { props.legend ? (
                     <div className="col-4 m-0 p-0">
                         <Legend tags={tags} disabledGraphs={props.disabledGraphs} onClick={props.toggleCurveDisplay} />
+                    </div>
+                    ) : null 
+                }
+
+                { props.toolbar ? (
+                    <div className="col-12 m-0 p-0">
+                        <Toolbar />
                     </div>
                     ) : null 
                 }

@@ -9,7 +9,7 @@ function FacilityCard(props) {
   const mapDeviceCards = (ds) => {
     return ds.map((device, index) => {
       return (
-        <div key={device.id} className='col-xl-3 col-lg-4 col-md-6 p-1 m-0'>
+        <div key={device.id} className='col-lg-4 col-md-6 col-sm-12 p-1 m-0 h-100'>
           <DeviceCard device={device} index={index}/>
         </div>
       )

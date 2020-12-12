@@ -68,6 +68,7 @@ export default function WidgetGraph(props) {
             toggleCurveDisplay={toggleCurveDisplay}
             legend={props.legend}
             loading={loading}
+            toolbar={true}
         /> 
     </React.Fragment>
   );

@@ -21,7 +21,10 @@ class DeviceParametersSerializer(serializers.ModelSerializer):
         fields = (
             'id', 
             'name', 
-            'polling_period', 
+            'polling_period',
+            'last_update',
+            'verbose_last_update',
+            'is_online',
         )
 
 # ---------------------------------------------------------------------
