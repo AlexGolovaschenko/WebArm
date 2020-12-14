@@ -93,6 +93,16 @@
   outline: none;
 }
 
+
+.full-screen-card{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 /*------------------------------------ fix react-vis ------------------------------------*/
 .rv-discrete-color-legend-item {
   color: #f8f9fa !important;
@@ -154,7 +164,8 @@ input:-webkit-autofill:active  {
   display: block;
   position: absolute !important;
   top: -10px;
-  left: 830px;
+  left: 40px;
+  z-index: 30;
   opacity: 0.4;
   transition: opacity 300ms;
 }

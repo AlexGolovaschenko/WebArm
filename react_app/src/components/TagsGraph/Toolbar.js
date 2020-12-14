@@ -5,6 +5,8 @@ import React, { useState } from 'react'
 export default function Toolbar(props) { 
   const [showRangeForm, setShowRangeForm] = useState(false)
   const [activeButton, setActiveButton] = useState([true, false, false, false, false, false, false, false, false, false])
+  const toggleModal = props.toggleModal
+  const toggleCroshair = props.toggleCroshair
 
   function toggleActiveButton(btn) {
     setActiveButton( (prev) => {
@@ -26,6 +28,16 @@ export default function Toolbar(props) {
     return activeButton[btn] ? ' active' : ''
   }
   
+  function onClickFullScreenButton() {
+    toggleActiveButton(9)
+    toggleModal()
+  }
+
+  function onClickCroshairButton() {
+    toggleActiveButton(8)
+    toggleCroshair()
+  }
+
   return (
     <React.Fragment>
     <div className='d-flex justify-content-left p-0 pt-2 m-0'>
@@ -72,13 +84,13 @@ export default function Toolbar(props) {
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ml-auto fas fa-ruler-vertical ' + getActiveCalss(8)} 
           style={{minWidth: '34px', fontSize:'1.1em'}}
-          onClick={()=>{toggleActiveButton(8)}}
+          onClick={onClickCroshairButton}
         ></button> 
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 fas fa-expand-arrows-alt ' + getActiveCalss(9)} 
           style={{minWidth: '34px', fontSize:'1.1em'}} 
-          onClick={()=>{toggleActiveButton(9)}}
+          onClick={onClickFullScreenButton}
         ></button> 
     </div>
 
