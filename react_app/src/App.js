@@ -1,7 +1,7 @@
 import './App.css'
 import '../node_modules/react-vis/dist/style.css'
 
-import React, { useEffect } from 'react' 
+import React, { useEffect, useState } from 'react' 
 import {
   BrowserRouter as Router, 
   Switch, 
@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom'
 
 import {ProtectedRoute} from './utils/protectedRoute'
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import Navbar from './components/BaseParts/Navbar'
 import DeviceApp from './pages/device/deviceApp'
@@ -22,10 +23,12 @@ import Page404 from './pages/pageNotFound'
 import auth from './utils/auth'
 
 export default function App() {
-  const [loading, setLoading] = React.useState(true)
-  const [loading2, setLoading2] = React.useState(true)
-  const [authed, setAuthed] = React.useState(false)
-  const [userInfo, setUserInfo] = React.useState({})
+  const [loading, setLoading] = useState(true)
+  const [loading2, setLoading2] = useState(true)
+  const [authed, setAuthed] = useState(false)
+  const [userInfo, setUserInfo] = useState({})
+
+  const handle = useFullScreenHandle();
 
   useEffect(() => {
     auth.checkAuthentication(() => { setLoading(false) })
@@ -42,26 +45,29 @@ export default function App() {
   } else { 
     return (
       <React.Fragment>
-        <Router>        
-          <Route exact path='/' component={()=>{
-            return (
-            <video autoplay="autoplay" muted loop="loop" id="myVideo">
-              <source src="Earth13426.mp4" type="video/mp4" />
-            </video>
-            )}
-          }/>
+        <button className='full-screen-button fas fa-expand ' onClick={handle.enter}></button>
+        <FullScreen handle={handle}>
+          <Router>        
+            <Route exact path='/' component={()=>{
+              return (
+              <video autoplay="autoplay" muted loop="loop" id="myVideo">
+                <source src="Earth13426.mp4" type="video/mp4" />
+              </video>
+              )}
+            }/>
 
-          <Navbar authed={authed} userInfo = {userInfo} />
-          <Switch>
-            <Route exact path='/' component={WelcomePage} />
-            <Route exact path='/user/login' component={Login}  />
-            <Route exact path='/user/registration' component={Registration} />
-            <ProtectedRoute exact path='/user/profile' component={ ()=> <ProfilePage userInfo = {userInfo} /> } />
-            <ProtectedRoute path='/company' component={CompanyApp} />                   
-            <ProtectedRoute path='/device/:id' component={DeviceApp} />
-            <Route component={Page404} />
-          </Switch>
-        </Router>
+            <Navbar authed={authed} userInfo = {userInfo} />
+            <Switch>
+              <Route exact path='/' component={WelcomePage} />
+              <Route exact path='/user/login' component={Login}  />
+              <Route exact path='/user/registration' component={Registration} />
+              <ProtectedRoute exact path='/user/profile' component={ ()=> <ProfilePage userInfo = {userInfo} /> } />
+              <ProtectedRoute path='/company' component={CompanyApp} />                   
+              <ProtectedRoute path='/device/:id' component={DeviceApp} />
+              <Route component={Page404} />
+            </Switch>
+          </Router>
+        </FullScreen>
       </React.Fragment>
     )
   }
