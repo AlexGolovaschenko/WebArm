@@ -28,7 +28,8 @@ function Graph(props) {
 
   const crosshairData = displayedTags.map( (tag) => {
     return tag.values.map((value) => {
-      value.titel = tag.tag_name
+      value.title = tag.tag_name
+      value.color = tag.curve_color
       return value
     })
   });  
@@ -41,21 +42,9 @@ function Graph(props) {
     setCrosshairValues( crosshairData.map(d => d[index]) );
   };
 
-  const _crosshairItemsFormat = (points) => {
-    return points.map((point)=>{
-      return {title: point.titel, value: point.y}
-    })
-  };
-
-  const _crosshairTitleFormat = (points) => {
-    const formatted_time = format_time(points[0].x)
-    return {title: 'Время', value: formatted_time}
-  };  
-  
-
   function format_time(time) {
     const s = new Date(time)
-    let formatter = new Intl.DateTimeFormat([] , {dateStyle: 'medium', timeStyle: 'medium'});
+    let formatter = new Intl.DateTimeFormat([] , {dateStyle: 'long', timeStyle: 'medium'});
     return formatter.format(s)
   }
 
@@ -108,11 +97,34 @@ function Graph(props) {
               }}
             />
 
-            <Crosshair
-              values={crosshairValues}
-              itemsFormat = {_crosshairItemsFormat}
-              titleFormat = {_crosshairTitleFormat} 
-            />              
+            <Crosshair values={crosshairValues} style={{line:{backgroundColor:'red'}}}>  
+              {crosshairValues[0] && 
+                <div className='rounded p-1' style={{background: 'rgba(37, 37, 38, 1)'}}>
+                  <table className="table text-light p-0 m-0">
+                    <thead> 
+                    <tr>
+                        <td colSpan="3" style={{fontSize: '1.2em', color: 'rgb(180, 180, 180)'}} 
+                          className='border-0 font-weight-bold p-1 m-0 text-center text-nowrap'
+                        >
+                          {format_time(crosshairValues[0].x)}
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      { crosshairValues.map((point, index)=>{
+                        return (
+                          <tr style={{fontSize: '1.1em', color: 'rgb(210, 210, 210)'}} key={index}>
+                            <td style={{color: point.color, paddingTop: '4px'}} className='text-nowrap border-0 px-1 pb-0 m-0	fas fa-minus'></td>   
+                            <td className='text-nowrap border-0 pl-1 pr-2 py-0 m-0'> {point.title}: </td>   
+                            <td className='text-nowrap border-0 px-1 py-0 m-0 font-weight-bold  text-right'> {point.y} </td>
+                          </tr> 
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </Crosshair>
           </FlexibleXYPlot>
         </div>
       </ React.Fragment>

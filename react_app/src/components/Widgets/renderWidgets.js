@@ -40,7 +40,7 @@ function WidgetRender(props) {
   if (widget.type === 'graph') {
     return (
       <div className={`col-xl-${widget.size * 3} col-lg-${Math.min(widget.size * 6, 12)} col-md-12 p-1 m-0`}>
-        <WidgetGraph device_id={device_id} legend={widget.legend}/>
+        <WidgetGraph device_id={device_id} legend={widget.legend} toolbar={widget.toolbar}/>
       </div>
     )    
   }   

@@ -28,6 +28,7 @@ const WidgetsTemplate = {
       size: 2,
       tags: ['TEMP1', 'TEMP2', 'TEMP3'],
       legend: true,
+      toolbar: true,
       history: 'last data',
       last: '12h',
       resolution: '10m'
@@ -37,6 +38,7 @@ const WidgetsTemplate = {
       size: 2,
       tags: ['TEMP1', 'TEMP2', 'TEMP3'],
       legend: false,
+      toolbar: true,
       history: 'last data',
       last: '12h',
       resolution: '10m'
@@ -47,18 +49,13 @@ const WidgetsTemplate = {
 
 
 export default function DeviceOverviewPage(props) {
-  const [loading, setLoading] = React.useState(true)
   const device_id = props.device_id;
-  
-  useEffect(() => {
-    setTimeout( () => { setLoading(false) }, 1000);
-  }, [])
   
   // render the page
   return (
     <React.Fragment>
       <DeviceHeader device_id={device_id}/>
-      {loading ? <Loader /> : < RenderWidgets widgets_template={WidgetsTemplate} device_id={device_id}/> }
+      < RenderWidgets widgets_template={WidgetsTemplate} device_id={device_id}/>
     </React.Fragment>
   );
 }

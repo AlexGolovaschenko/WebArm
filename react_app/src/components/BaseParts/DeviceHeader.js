@@ -12,8 +12,9 @@ export default function DeviceHeader(props) {
 
   function readDeviceParameters() {
     axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device_id }} )
-      .then(responce => responce.data)
-      .then(deviceParameters => { setDeviceData({...deviceParameters}) }) 
+      .then(responce => { 
+        responce && setDeviceData({...responce.data}) 
+      }) 
   }
   
   useEffect(() => {

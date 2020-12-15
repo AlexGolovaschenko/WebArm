@@ -1,10 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import TagsCurrentValueRow from './TagsCurrentValueRow'
+import Loader from '../../components/BaseParts/Loader'
+
 
 function TagsCurrentValueList(props) {
     return (
-        <div className='card shadow-sm p-3 bg-dark text-light'>     
+        <div className='card shadow-sm p-3 bg-dark text-light'>
+        { props.loading ? 
+            <Loader /> :     
             <div className="table-responsive">
 
             <table className="table table-sm text-light tadle-dark w-100 mb-0">
@@ -25,6 +29,7 @@ function TagsCurrentValueList(props) {
                 </tbody>
             </table>
             </div>
+        }
         </div>
     )
 }

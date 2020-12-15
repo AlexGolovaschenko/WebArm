@@ -111,6 +111,16 @@
   color:#6c757d !important;
 }
 
+.rv-discrete-color-legend-item.clickable:hover {
+  border-radius: 2px;
+  background: #252526 !important;
+}
+
+.rv-search-wrapper__form__input {
+  background: transparent !important;
+  border-color: #252526 !important;
+}
+
 /*------------------------------------ fix forms ------------------------------------*/
 
 input {

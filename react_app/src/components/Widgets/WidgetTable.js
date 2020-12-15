@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react' 
 
-import Loader from '../../components/BaseParts/Loader'
 import TagsCurrentValueList from '../../components/TagsList/TagsCurrentValueList'
 import axiosInstance from "../../utils/axiosApi";
 import getBaseUrl from '../../utils/localSettings'
@@ -15,8 +14,9 @@ export default function WidgetTable(props) {
 
   function readDeviceTags() {
     axiosInstance.get(BASE_URL + "/device/tags/value/", { params: { id: device_id }} )
-    .then(responce => responce.data)
-    .then(tags => setTags(tags) )  
+    .then((responce) => {
+      responce && setTags(responce.data)
+    })  
   }
   
   // read parameters
@@ -32,7 +32,7 @@ export default function WidgetTable(props) {
   // render the page
   return (
     <React.Fragment>
-        {loading ? <Loader /> : <TagsCurrentValueList tags={tags} />}
+       <TagsCurrentValueList tags={tags} loading={loading} />
     </React.Fragment>
   );
 }
