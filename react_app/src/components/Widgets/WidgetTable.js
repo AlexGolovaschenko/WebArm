@@ -32,7 +32,11 @@ export default function WidgetTable(props) {
   // render the page
   return (
     <React.Fragment>
-       <TagsCurrentValueList tags={tags} loading={loading} />
+        <TagsCurrentValueList
+          tags={tags} 
+          title={props.widget.title} 
+          loading={loading} 
+        />
     </React.Fragment>
   );
 }

@@ -6,7 +6,8 @@ import Loader from '../../components/BaseParts/Loader'
 
 function TagsCurrentValueList(props) {
     return (
-        <div className='card shadow-sm p-3 bg-dark text-light'>
+        <div className='card shadow-sm px-3 py-2 bg-dark text-light'>
+        <h5 className="p-0 m-0">{props.title}</h5>
         { props.loading ? 
             <Loader /> :     
             <div className="table-responsive">

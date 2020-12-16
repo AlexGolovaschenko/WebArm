@@ -45,11 +45,12 @@ function Graph(props) {
                 lastDrawLocation.bottom,
                 lastDrawLocation.top
               ]
-            }       
+            }
+            yPadding={10} 
           >
             <HorizontalGridLines style={{stroke: '#444A50'}} />
-            <XAxis tickTotal={15} />
-            <YAxis />
+            <XAxis style={{line:{stroke: '#6c757d'}}} tickTotal={15} />
+            <YAxis style={{line:{stroke: '#6c757d'}}} />
             { displayedTags.map((tag)=>{ 
               return <LineSeries data={tag.values} color={tag.curve_color} key={tag.tag_id} />
             }) }

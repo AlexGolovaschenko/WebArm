@@ -5,6 +5,7 @@ import {
     XAxis, 
     YAxis, 
     LineSeries,
+    MarkSeries,
     Crosshair,
     // VerticalGridLines, 
     HorizontalGridLines, 
@@ -69,11 +70,12 @@ function Graph(props) {
                 lastDrawLocation.top
               ]
             } 
+            yPadding={10}
             onMouseLeave={_onMouseLeave}        
           >
             <HorizontalGridLines style={{stroke: '#444A50'}} />
-            <XAxis tickTotal={15} />
-            <YAxis />
+            <XAxis style={{line:{stroke: '#6c757d'}}} tickTotal={15} />
+            <YAxis style={{line:{stroke: '#6c757d'}}} />
             { displayedTags.map((tag, index)=>{
               if (index === 0) {
                 return <LineSeries onNearestX={_onNearestX} data={tag.values} color={tag.curve_color} key={tag.tag_id} />
@@ -86,7 +88,7 @@ function Graph(props) {
             <Highlight
               onBrushEnd={area => setLastDrawLocation(area)}
               onDrag={area => {
-                this.setState({
+                setLastDrawLocation({
                   lastDrawLocation: {
                     bottom: lastDrawLocation.bottom + (area.top - area.bottom),
                     left: lastDrawLocation.left - (area.right - area.left),
@@ -97,9 +99,17 @@ function Graph(props) {
               }}
             />
 
+            {crosshairValues[0] && 
+              crosshairValues.map((point, index)=>{
+                return <MarkSeries
+                          color = {point.color}
+                          size = '5'
+                          data={[point]}/>
+            })}
+
             <Crosshair values={crosshairValues} style={{line:{backgroundColor:'red'}}}>  
               {crosshairValues[0] && 
-                <div className='rounded p-1' style={{background: 'rgba(37, 37, 38, 1)'}}>
+                <div className='rounded p-1 mx-2' style={{background: 'rgba(37, 37, 38, 1)'}}>
                   <table className="table text-light p-0 m-0">
                     <thead> 
                     <tr>

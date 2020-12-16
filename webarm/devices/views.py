@@ -49,11 +49,21 @@ class DeviceTagsCurrentValueView(APIView):
 class DeviceTagsHistoricalValueView(APIView):
     ''' return list of historycal values of device tags (value and date/time) '''    
     def get(self, request, *args, **kwargs):
+        rq_tags = request.GET.getlist('tags[]', None)
+        rq_interval = request.GET.get('interval', None)
+        rq_resolution = request.GET.get('resolution', None)
+
         device = get_device_obj(request)
-        tags = Tag.objects.filter(device=device).order_by('name')
+        if rq_tags:
+            # return just selected tags
+            tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
+        else:
+            # return all tags, if tags[] param does not passed
+             tags = Tag.objects.filter(device=device).order_by('name')
+           
         tags_data = []
         for t in tags:
-            serializer = self.get_historical_values_data(t) 
+            serializer = self.get_historical_values_data(t, rq_interval, rq_resolution) 
             tags_data.append({
                 'tag_id': t.id, 
                 'tag_code': t.code, 
@@ -62,15 +72,15 @@ class DeviceTagsHistoricalValueView(APIView):
             })       
         return Response(tags_data, status=status.HTTP_200_OK)
 
-    def get_historical_values_data(self, tag):
+    def get_historical_values_data(self, tag, interval, resolution):
         ''' return tag value depending on tag data type '''  
         some_time_ago = timezone.now()-timezone.timedelta(hours=12)
         values = tag.HistoricalValueModel.objects.filter(tag=tag, add_date__gte=some_time_ago).order_by('add_date')
-        selected_values = self._select_values(values)
+        selected_values = self._select_values(values, resolution)
         serializer = serializers.get_historical_tag_value_serializer(tag)
         return serializer(selected_values, many=True)
 
-    def _select_values(self, values):
+    def _select_values(self, values, resolution):
         sv = []
         first = True
         for v in values:

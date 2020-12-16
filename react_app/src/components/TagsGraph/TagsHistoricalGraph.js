@@ -38,7 +38,8 @@ function TagsHistoricalGraph(props) {
 
   return (   
     <React.Fragment>
-    <div ref={graphCard} className='card shadow-sm p-3 bg-dark text-light'>
+    <div ref={graphCard} className='card shadow-sm px-3 py-2 bg-dark text-light'>
+      <h5 className="p-0 m-0 pb-2">{props.title}</h5>
       { props.loading ? 
           <Loader /> :
           <div className="row m-0 p-0  h-100 w-100">
