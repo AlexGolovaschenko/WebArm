@@ -29,13 +29,13 @@ function Graph(props) {
 
   useEffect(() => {
     if (lastDrawLocation) {
-      resetZoomButton.current.className = resetZoomButton.current.className.replace(' d-none', '')
+      resetZoomButton.current.className = resetZoomButton.current.className.replace('d-none', 'd-block')
     } else {
-      resetZoomButton.current.className += ' d-none'
+      resetZoomButton.current.className = resetZoomButton.current.className.replace('d-block', 'd-none')
     }
   }, [lastDrawLocation])
 
-  
+
   const crosshairData = displayedTags.map( (tag) => {
     return tag.values.map((value) => {
       value.title = tag.tag_name

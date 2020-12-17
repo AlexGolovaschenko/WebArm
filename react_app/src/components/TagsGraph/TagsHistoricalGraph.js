@@ -8,7 +8,7 @@ import Loader from '../../components/BaseParts/Loader'
 
 
 function TagsHistoricalGraph(props) {
-  const [modal, setModal] = React.useState(false) // use this just for force update graph component
+  const [modal, setModal] = React.useState(false) // use it just for force update this component
   const [crosshair, setCrosshair] = React.useState(false)
   const graphCard = React.useRef(null)
   const graphContainer = React.useRef(null)
@@ -80,7 +80,7 @@ function TagsHistoricalGraph(props) {
       </div>
 
       { props.loading ? 
-          <Loader /> :
+          <div className='d-flex justify-content-center'><Loader /></div> :
           <div className="row m-0 px-3 py-0 h-100 w-100">
             <div ref={graphContainer} className={`${ props.legend ? 'col-8' : 'col-12'} m-0 p-0`} style={{height: GRAPH_HEIGH}}>
               { crosshair ? 

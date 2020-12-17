@@ -25,9 +25,9 @@ function Graph(props) {
 
   useEffect(() => {
     if (lastDrawLocation) {
-      resetZoomButton.current.className = resetZoomButton.current.className.replace(' d-none', '')
+      resetZoomButton.current.className = resetZoomButton.current.className.replace('d-none', 'd-block')
     } else {
-      resetZoomButton.current.className += ' d-none'
+      resetZoomButton.current.className = resetZoomButton.current.className.replace('d-block', 'd-none')
     }
   }, [lastDrawLocation])
 
