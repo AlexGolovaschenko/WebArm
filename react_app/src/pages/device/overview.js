@@ -1,23 +1,49 @@
 import React, { useEffect } from 'react' 
 
-import Loader from '../../components/BaseParts/Loader'
 import DeviceHeader from '../../components/BaseParts/DeviceHeader'
 import RenderWidgets from '../../components/Widgets/renderWidgets'
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
-const BASE_URL = getBaseUrl()
 
 
 
 const WidgetsTemplate = {
   widgets:[
     {
+      type: 'indicator',
+      size: 1,
+      title: 'Температура зоны 1',
+      addTextLeft: '',
+      addTextRight: '°C',      
+      tags: ['PT1'],                
+    },
+    {
+      type: 'indicator',
+      size: 1,
+      title: 'Температура зоны 2',
+      addTextLeft: '',      
+      addTextRight: '°C',
+      tags: ['PT2'],               
+    },
+    {
+      type: 'indicator',
+      size: 1,
+      title: 'Влажность в помещении',
+      addTextRight: '%',      
+      tags: ['RH1'],   
+    },
+    {
+      type: 'indicator',
+      size: 1,
+      title: 'Влажность наружного воздуха',
+      addTextRight: '%',  
+      tags: ['RH2'],   
+    },
+    {
       type: 'table',
       size: 2,
-      title: 'Таблица параметров 1',
+      title: 'Таблица параметров 2',
       tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
       fields: ['#No', 'code', 'name', 'value']              
-    },
+    },    
     {
       type: 'table',
       size: 2,

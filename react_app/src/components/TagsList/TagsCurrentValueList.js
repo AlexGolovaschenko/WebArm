@@ -25,7 +25,7 @@ function TagsCurrentValueList(props) {
   }
 
   return (
-    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light'>
+    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light h-100'>
       <div className='d-flex mb-1'>
         <h5 className="px-3 pt-1 pb-0 m-0">{props.title}</h5>
         <span className='ml-auto'></span>

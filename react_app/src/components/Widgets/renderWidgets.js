@@ -2,7 +2,7 @@ import React from 'react'
 
 import WidgetGraph from './WidgetGraph'
 import WidgetTable from './WidgetTable'
-
+import WidgetIndicator from './WidgetIndicator' 
 
 
 
@@ -13,7 +13,7 @@ export default function RenderWidgets(props) {
 
   return (
     <React.Fragment>
-      <div className='container-fluid row p-0 m-0'>
+      <div className='container-fluid row equal p-0 m-0'>
       {
         widgets_template.widgets.map((widget, index)=>{
           return <WidgetRender widget={widget} device_id={device_id} key={index} />
@@ -44,5 +44,12 @@ function WidgetRender(props) {
       </div>
     )    
   }   
-   
+
+  if (widget.type === 'indicator') {
+    return (
+      <div className={`col-xl-${widget.size * 3} col-lg-${Math.min(widget.size * 6, 12)} col-md-12 p-1 m-0`}>
+        <WidgetIndicator device_id={device_id} widget={widget}/>
+      </div>
+    )    
+  }    
 }

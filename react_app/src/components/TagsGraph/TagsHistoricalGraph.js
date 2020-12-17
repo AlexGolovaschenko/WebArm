@@ -52,7 +52,7 @@ function TagsHistoricalGraph(props) {
 
   return (   
     <React.Fragment>
-    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light'>
+    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light h-100'>
       <div className='d-flex mb-1'>
         <h5 className="px-3 pt-1 pb-2 m-0">{props.title}</h5>
         <span className='ml-auto'></span>
@@ -80,7 +80,7 @@ function TagsHistoricalGraph(props) {
       </div>
 
       { props.loading ? 
-          <div className='d-flex justify-content-center'><Loader /></div> :
+        <div className='d-flex justify-content-center'><Loader /></div> :
           <div className="row m-0 px-3 py-0 h-100 w-100">
             <div ref={graphContainer} className={`${ props.legend ? 'col-8' : 'col-12'} m-0 p-0`} style={{height: GRAPH_HEIGH}}>
               { crosshair ? 
@@ -96,7 +96,7 @@ function TagsHistoricalGraph(props) {
             )}
 
             { props.toolbar && (
-              <div className="col-12 m-0 p-0">
+              <div className="col-12 h-100 m-0 p-0">
                 <Toolbar toggleModal={toggleModal} toggleCroshair={toggleCroshair} changeGraphInterval={props.changeGraphInterval}/>
               </div>
             )}

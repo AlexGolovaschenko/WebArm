@@ -135,7 +135,6 @@ input:-webkit-autofill:active  {
   -webkit-text-fill-color:  #f8f9fa;
 }
 
-
 /*------------------------------------ device cards ------------------------------------*/
 .card-hover {
   transition: box-shadow .3s, border-color .3s;

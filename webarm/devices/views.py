@@ -41,8 +41,17 @@ class DeviceTagsParametersView(APIView):
 class DeviceTagsCurrentValueView(APIView):
     ''' return current values of device tags '''
     def get(self, request, *args, **kwargs):
+        rq_tags = request.GET.getlist('tags[]', None)
+
         device = get_device_obj(request)
-        tags = Tag.objects.filter(device=device).order_by('name')
+        if rq_tags:
+            # return just selected tags
+            tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
+        else:
+            # return all tags, if tags[] param does not passed
+             tags = Tag.objects.filter(device=device).order_by('name')
+
+        # tags = Tag.objects.filter(device=device).order_by('name')
         data = serializers.TagsValueSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
