@@ -8,38 +8,39 @@ const BASE_URL = getBaseUrl()
 
 
 
-
 export default function WidgetGraph(props) {
   const [loading, setLoading] = React.useState(true)
-  const [graphInterval, setGraphInterval] = React.useState({interval:'5m', resolution:'full', tags: props.widget.tags})
+  const [graphInterval, setGraphInterval] = React.useState({interval:'1h', resolution:'1m', tags: props.widget.tags})
   const [tagsHistory, setTagsHistory] = React.useState([])
   const device_id = props.device_id;
 
+  function updateTagsHistory(tags) {
+    const prepared_tags = tags.map( (tag, index) => {
+      return ({
+        tag_id: tag.tag_id,
+        tag_code: tag.tag_code,
+        tag_name: tag.tag_name,
+        disabled: false,
+        curve_color : getColor(index),
+        values: tag.values.map( (value) => {
+          return {x: new Date(value.add_date), y: value.value}
+        })
+      })
+    })  
+    setTagsHistory( (prev) => {
+      return prepared_tags.map( (tag)=> {
+        const fltr = prev.filter( entry=>entry.tag_id === tag.tag_id )
+        var disabled = (fltr.length > 0) ? fltr[0].disabled : tag.disabled
+        return {...tag, disabled: disabled}
+      })
+    }) 
+  }
+
+  // read tags historical data
   function readTagsHistory() {
     axiosInstance.get(BASE_URL + "/device/tags/history/", { params: { id: device_id, ...graphInterval}} )
     .then(responce => {
-      if (responce) {
-        const tags = responce.data
-        const prepared_tags = tags.map( (tag, index) => {
-          return ({
-            tag_id: tag.tag_id,
-            tag_code: tag.tag_code,
-            tag_name: tag.tag_name,
-            disabled: false,
-            curve_color : getColor(index),
-            values: tag.values.map( (value) => {
-              return {x: new Date(value.add_date), y: value.value}
-            })
-          })
-        })  
-        setTagsHistory( (prev) => {
-          return prepared_tags.map( (tag)=> {
-            const fltr = prev.filter( entry=>entry.tag_id === tag.tag_id )
-            var disabled = (fltr.length > 0) ? fltr[0].disabled : tag.disabled
-            return {...tag, disabled: disabled}
-          })
-        })
-      }
+      responce && updateTagsHistory(responce.data)
     })  
   }
   
@@ -47,15 +48,37 @@ export default function WidgetGraph(props) {
   useEffect(() => {
     readTagsHistory();
     setTimeout( () => { setLoading(false) }, 1000);
-    const graphUpdateInterval = setInterval( readTagsHistory, 60000)
+    const graphUpdateInterval = setInterval( readTagsHistory, getGraphUpdateTimeout(graphInterval.interval))
     return () => {
       clearInterval(graphUpdateInterval);
     };
-  }, [])
+  }, [graphInterval])
 
   
-  function changeGraphinterval(interval, resolution){
-    return null
+  function changeGraphInterval(interval, resolution){
+    setGraphInterval( (prev) => {
+      return {...prev, interval: interval, resolution: resolution}
+    })
+  }
+
+  function getGraphUpdateTimeout(interval){
+    if (interval === '5m') {
+      return 2000                       // 2s
+    } else if (interval === '1h') {
+      return 30000                      // 30s
+    } else if (interval === '6h') {
+      return 60000 * 2                  // 2m
+    } else if (interval === '12h') {
+      return 60000 * 5                  // 5m
+    } else if (interval === '1d') {
+      return 60000 * 15                 // 15m
+    } else if (interval === '7d') {
+      return 60000 * 60                 // 1h
+    } else if (interval === '30d') {
+      return 60000 * 60 * 6             // 6h
+    } else {
+      return 60000 * 5                  // 5m
+    }
   }
 
   // toggle curve display
@@ -77,7 +100,7 @@ export default function WidgetGraph(props) {
             legend={props.widget.legend}
             loading={loading}
             toolbar={props.widget.toolbar}
-            changeGraphinterval={changeGraphinterval}
+            changeGraphInterval={changeGraphInterval}
         /> 
     </React.Fragment>
   );

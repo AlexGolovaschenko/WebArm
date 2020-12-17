@@ -1,5 +1,7 @@
-from django.utils import timezone
+import re
+
 from datetime import timedelta
+from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -74,7 +76,7 @@ class DeviceTagsHistoricalValueView(APIView):
 
     def get_historical_values_data(self, tag, interval, resolution):
         ''' return tag value depending on tag data type '''  
-        some_time_ago = timezone.now()-timezone.timedelta(hours=12)
+        some_time_ago = timezone.now() - self._parse_time_interval(interval)
         values = tag.HistoricalValueModel.objects.filter(tag=tag, add_date__gte=some_time_ago).order_by('add_date')
         selected_values = self._select_values(values, resolution)
         serializer = serializers.get_historical_tag_value_serializer(tag)
@@ -89,11 +91,45 @@ class DeviceTagsHistoricalValueView(APIView):
                 sv.append(v)
                 prev = v
             else:
-                if v.add_date > (prev.add_date + timezone.timedelta(minutes=1)):
+                if v.add_date > (prev.add_date + self._parse_time_resolution(resolution)):
                     sv.append(v)
                     prev = v
         return sv
-        
 
+    def _parse_time_interval(self, interval):
+        return self._parse_time_delta(interval)
+
+    def _parse_time_resolution(self, resolution):
+        if resolution == 'all':
+            return timezone.timedelta(seconds=0)
+        else:
+            return self._parse_time_delta(resolution)
+
+    def _parse_time_delta(self, interval):
+        try: 
+            r = re.findall(r'\d+d', interval)[0]
+            d = int( r.replace('d', '') ) 
+        except IndexError: 
+            d = 0
+
+        try: 
+            r = re.findall(r'\d+h', interval)[0] 
+            h = int( r.replace('h', '') ) 
+        except IndexError: 
+            h = 0
+
+        try: 
+            r = re.findall(r'\d+m', interval)[0] 
+            m = int( r.replace('m', '') ) 
+        except IndexError: 
+            m = 0
+
+        try: 
+            r = re.findall(r'\d+s', interval)[0] 
+            s = int( r.replace('s', '') ) 
+        except IndexError: 
+            s = 0
+
+        return timezone.timedelta(days=d , hours=h, minutes=m, seconds=s)
 
 

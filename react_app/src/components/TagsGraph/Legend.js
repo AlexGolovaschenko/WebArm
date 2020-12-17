@@ -25,7 +25,7 @@ export default function Legend(props) {
   return (
     <div className='d-block text-dark pl-3'>
       <SearchableDiscreteColorLegend
-        height={400}
+        height={ parseInt(props.height.replace('px', '')) }
         // width={300}
         onSearchChange={_searchChangeHandler}
         searchPlaceholder={'Поиск...'}

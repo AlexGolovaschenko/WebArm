@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types'
 import {
     FlexibleXYPlot, 
@@ -9,26 +9,32 @@ import {
     HorizontalGridLines, 
     Highlight} from 'react-vis';
 
+import useTargetClick from '../../utils/useTargetClick'
 
 
 function Graph(props) {
   const tags = props.tags 
   const displayedTags = tags.filter( tag => tag.disabled === false )
+  const resetZoomButton = props.resetZoomButton
   const [lastDrawLocation, setLastDrawLocation] = React.useState(null)
 
-  const resetZoomBtn = (
-    <button
-      className="btn btn-secondary m-3 btn-graph"
-      onClick={() => setLastDrawLocation(null)}
-      >
-      Вернуть масштаб
-    </button>)
+  useTargetClick(resetZoomButton, ()=>{
+    console.log('seted onclick')
+    setLastDrawLocation(null)
+  })
+
+  useEffect(() => {
+    if (lastDrawLocation) {
+      resetZoomButton.current.className = resetZoomButton.current.className.replace(' d-none', '')
+    } else {
+      resetZoomButton.current.className += ' d-none'
+    }
+  }, [lastDrawLocation])
 
 
   if (displayedTags.length > 0) {
     return (
       <React.Fragment>
-        {lastDrawLocation ? resetZoomBtn : null}
         <div className='graph-container h-100' style={{overflow: 'hidden'}}>
           <FlexibleXYPlot 
             margin={{left: 40, right: 0, top: 0, bottom: 30}} 

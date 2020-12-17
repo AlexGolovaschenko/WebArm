@@ -4,38 +4,21 @@ import React, { useState } from 'react'
 
 export default function Toolbar(props) { 
   const [showRangeForm, setShowRangeForm] = useState(false)
-  const [activeButton, setActiveButton] = useState([true, false, false, false, false, false, false, false, false, false])
-  const toggleModal = props.toggleModal
-  const toggleCroshair = props.toggleCroshair
+  const [activeButton, setActiveButton] = useState([false, true, false, false, false, false, false, false])
+  const changeGraphInterval = props.changeGraphInterval
 
   function toggleActiveButton(btn) {
-    setActiveButton( (prev) => {
-      return prev.map( (item, index) => {
-        if (btn > 7) {
-          return index === btn ? !item : item
-        } else {
-          var r = item
-          r = (index === btn) ? true : 
-            (index < 8) ? false : item
-          if (index === 7) {setShowRangeForm(r)}
-          return r
-        }
-      } )
-    } ) 
+    // enable selected button and off all other
+    const b = activeButton.map( (item, index) => {
+      return (index === btn) ? true : false
+    })
+    setActiveButton(b)
+    // display form for range input 
+    setShowRangeForm( (btn === 7) ? true : false ) 
   }
 
   function getActiveCalss(btn) {
     return activeButton[btn] ? ' active' : ''
-  }
-  
-  function onClickFullScreenButton() {
-    toggleActiveButton(9)
-    toggleModal()
-  }
-
-  function onClickCroshairButton() {
-    toggleActiveButton(8)
-    toggleCroshair()
   }
 
   return (
@@ -43,55 +26,67 @@ export default function Toolbar(props) {
     <div className='d-flex justify-content-left p-0 pt-2 m-0'>
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(0)} 
-          onClick={()=>{toggleActiveButton(0)}}
+          onClick={()=>{
+            toggleActiveButton(0)
+            changeGraphInterval('5m', 'all')
+          }}
         >онлайн</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(1)} 
-          onClick={()=>{toggleActiveButton(1)}}
+          onClick={()=>{
+            toggleActiveButton(1)
+            changeGraphInterval('1h', '1m')
+          }}
         >1 час</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(2)} 
-          onClick={()=>{toggleActiveButton(2)}}
+          onClick={()=>{
+            toggleActiveButton(2)
+            changeGraphInterval('6h', '5m')
+          }}
         >6 часов</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(3)} 
-          onClick={()=>{toggleActiveButton(3)}}
+          onClick={()=>{
+            toggleActiveButton(3)
+            changeGraphInterval('12h', '10m')
+          }}
         >12 часов</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(4)} 
-          onClick={()=>{toggleActiveButton(4)}}
+          onClick={()=>{
+            toggleActiveButton(4)
+            changeGraphInterval('1d', '30m')
+          }}
         >сутки</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(5)} 
-          onClick={()=>{toggleActiveButton(5)}}
+          onClick={()=>{
+            toggleActiveButton(5)
+            changeGraphInterval('7d', '2h')
+          }}
         >неделя</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(6)} 
-          onClick={()=>{toggleActiveButton(6)}}
+          onClick={()=>{
+            toggleActiveButton(6)
+            changeGraphInterval('30d', '12h')
+          }}
         >месяц</button>
 
         <button type="button" 
           className={'btn btn-sm btn-outline-secondary mx-1 ' + getActiveCalss(7)} 
-          onClick={()=>{toggleActiveButton(7)}}
+          onClick={()=>{
+            toggleActiveButton(7)
+            changeGraphInterval('30d', '12h') // todo
+          }}
         >интервал</button> 
-
-        <button type="button" 
-          className={'btn btn-sm btn-outline-secondary mx-1 ml-auto fas fa-ruler-vertical ' + getActiveCalss(8)} 
-          style={{minWidth: '34px', fontSize:'1.1em'}}
-          onClick={onClickCroshairButton}
-        ></button> 
-
-        <button type="button" 
-          className={'btn btn-sm btn-outline-secondary mx-1 fas fa-expand-arrows-alt ' + getActiveCalss(9)} 
-          style={{minWidth: '34px', fontSize:'1.1em'}} 
-          onClick={onClickFullScreenButton}
-        ></button> 
     </div>
 
     {showRangeForm ? <RangeForm /> : null }
