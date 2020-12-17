@@ -31,7 +31,7 @@ function TagsHistoricalGraph(props) {
       setModal(false)
     } else {
       graphCard.current.className += cl
-      graphContainer.current.style.height = '90%'
+      graphContainer.current.style.height = 'calc(100vh - 150px)'
       graphContainer.current.className = graphContainer.current.className.replace('col-8', 'col-10')
       if (props.legend) {legendContainer.current.className = legendContainer.current.className.replace('col-4', 'col-2')}
       modalButton.current.className = modalButton.current.className.replace('fa-expand', 'fa-compress') 
@@ -81,7 +81,7 @@ function TagsHistoricalGraph(props) {
 
       { props.loading ? 
         <div className='d-flex justify-content-center'><Loader /></div> :
-          <div className="row m-0 px-3 py-0 h-100 w-100">
+          <div className="row m-0 px-3 py-0">
             <div ref={graphContainer} className={`${ props.legend ? 'col-8' : 'col-12'} m-0 p-0`} style={{height: GRAPH_HEIGH}}>
               { crosshair ? 
                 <GraphWithCrosshair tags={tags} resetZoomButton={resetZoomButton} /> : 
@@ -96,7 +96,7 @@ function TagsHistoricalGraph(props) {
             )}
 
             { props.toolbar && (
-              <div className="col-12 h-100 m-0 p-0">
+              <div className="col-12 align-self-start m-0 p-0">
                 <Toolbar toggleModal={toggleModal} toggleCroshair={toggleCroshair} changeGraphInterval={props.changeGraphInterval}/>
               </div>
             )}
