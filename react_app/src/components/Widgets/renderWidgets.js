@@ -7,15 +7,15 @@ import WidgetIndicator from './WidgetIndicator'
 
 
 export default function RenderWidgets(props) {
-  const widgets_template = props.widgets_template
+  const widgetsTemplate = props.widgetsTemplate
   const device_id = props.device_id
-  if (!props.widgets_template) {return null}
+  if (!props.widgetsTemplate) {return null}
 
   return (
     <React.Fragment>
       <div className='container-fluid row equal p-0 m-0'>
       {
-        widgets_template.widgets.map((widget, index)=>{
+        widgetsTemplate.widgets.map((widget, index)=>{
           return <WidgetRender widget={widget} device_id={device_id} key={index} />
         })
       }
@@ -31,7 +31,7 @@ function WidgetRender(props) {
 
   if (widget.type === 'table') {
     return (
-      <div className={`col-xl-${widget.size * 3} col-lg-${Math.min(widget.size * 6, 12)} col-md-12 p-1 m-0`}>
+      <div className={`col-xl-${widget.width * 3} col-lg-${Math.min(widget.width * 6, 12)} col-md-12 p-1 m-0`}>
         <WidgetTable device_id={device_id} widget={widget}/>
       </div>
     )
@@ -39,7 +39,7 @@ function WidgetRender(props) {
 
   if (widget.type === 'graph') {
     return (
-      <div className={`col-xl-${widget.size * 3} col-lg-${Math.min(widget.size * 6, 12)} col-md-12 p-1 m-0`}>
+      <div className={`col-xl-${widget.width * 3} col-lg-${Math.min(widget.width * 6, 12)} col-md-12 p-1 m-0`}>
         <WidgetGraph device_id={device_id} widget={widget}/>
       </div>
     )    
@@ -47,7 +47,7 @@ function WidgetRender(props) {
 
   if (widget.type === 'indicator') {
     return (
-      <div className={`col-xl-${widget.size * 3} col-lg-${Math.min(widget.size * 6, 12)} col-md-12 p-1 m-0`}>
+      <div className={`col-xl-${widget.width * 3} col-lg-${Math.min(widget.width * 6, 12)} col-md-12 p-1 m-0`}>
         <WidgetIndicator device_id={device_id} widget={widget}/>
       </div>
     )    

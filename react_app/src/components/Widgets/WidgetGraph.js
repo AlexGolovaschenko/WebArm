@@ -100,6 +100,7 @@ export default function WidgetGraph(props) {
             legend={props.widget.legend}
             loading={loading}
             toolbar={props.widget.toolbar}
+            height={props.widget.height}
             changeGraphInterval={changeGraphInterval}
         /> 
     </React.Fragment>

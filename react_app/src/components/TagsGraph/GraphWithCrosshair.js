@@ -109,11 +109,13 @@ function Graph(props) {
 
             {crosshairValues[0] && 
               crosshairValues.map((point, index)=>{
-                return <MarkSeries
-                          key = {index}
-                          color = {point.color}
-                          size = '5'
-                          data={[point]}/>
+                return point ? (
+                          <MarkSeries
+                            key = {index}
+                            color = {point.color}
+                            size = '5'
+                            data={[point]}/>
+                        ) : null 
             })}
 
             <Crosshair values={crosshairValues} style={{line:{backgroundColor:'red'}}}>  
@@ -131,13 +133,13 @@ function Graph(props) {
                     </thead>
                     <tbody>
                       { crosshairValues.map((point, index)=>{
-                        return (
+                        return point ? (
                           <tr style={{fontSize: '1.1em', color: 'rgb(210, 210, 210)'}} key={index}>
                             <td style={{color: point.color, paddingTop: '4px'}} className='text-nowrap border-0 px-1 pb-0 m-0	fas fa-minus'></td>   
                             <td className='text-nowrap border-0 pl-1 pr-2 py-0 m-0'> {point.title}: </td>   
                             <td className='text-nowrap border-0 px-1 py-0 m-0 font-weight-bold  text-right'> {point.y} </td>
                           </tr> 
-                        )
+                        ) : null
                       })}
                     </tbody>
                   </table>

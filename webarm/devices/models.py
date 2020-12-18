@@ -45,7 +45,7 @@ class Device(models.Model):
             return 'больше часа назад' 
         elif self.last_update > (timezone.now()-timezone.timedelta(hours=24)):
             td = timezone.now() - self.last_update
-            return 'больше %s часов назад' %( td.seconds//60 ) 
+            return 'больше %s часов назад' %( td.seconds//3600 ) 
         elif self.last_update > (timezone.now()-timezone.timedelta(days=1, hours=24)):
             return 'вчера, в %s' %( self.last_update.strftime("%H:%M") )                                   
         else:

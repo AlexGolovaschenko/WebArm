@@ -17,7 +17,7 @@ function TagsHistoricalGraph(props) {
   const legendContainer = React.useRef(null)
   const resetZoomButton = React.useRef(null)
   const tags = props.tagsHistory  
-  const GRAPH_HEIGH = '300px'
+  const GRAPH_HEIGH = props.height ? props.height : '300px'
 
   const toggleModal = () => {
     const cl = ' full-screen-card'
