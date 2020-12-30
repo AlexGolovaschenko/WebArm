@@ -49,6 +49,19 @@ class TagsInline(NestedTabularInline):
 # admin models
 class DeviceAdmin(NestedModelAdmin):
     inlines = [ModbusDeviceParametersInline, TagsInline]
+    list_display  = ('name', 'company_owner', 'company_name', 'facility_name', 'connector')
+
+    def company_owner(self, obj):
+        return str(obj.facility.company.owner)
+    company_owner.short_description = 'Владелец'
+
+    def company_name(self, obj):
+        return str(obj.facility.company.name)
+    company_name.short_description = 'Компания'
+
+    def facility_name(self, obj):
+        return str(obj.facility.name)
+    facility_name.short_description = 'Объект'
 
 
 class TagAdmin(admin.ModelAdmin):

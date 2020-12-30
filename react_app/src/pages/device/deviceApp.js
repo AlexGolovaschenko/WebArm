@@ -51,23 +51,65 @@ export default function DeviceApp() {
 
 const defaultWidgetsTemplate = {
   widgets:[
-
+    {
+      type: 'indicator',
+      width: 1,
+      title: 'Температура зоны 1',
+      addTextLeft: '',
+      addTextRight: '°C',      
+      tags: ['PT1'],                
+    },
+    {
+      type: 'indicator',
+      width: 1,
+      title: 'Температура зоны 2',
+      addTextLeft: '',      
+      addTextRight: '°C',
+      tags: ['PT2'],               
+    },
+    {
+      type: 'indicator',
+      width: 1,
+      title: 'Влажность в помещении',
+      addTextRight: '%',      
+      tags: ['RH1'],   
+    },
+    {
+      type: 'indicator',
+      width: 1,
+      title: 'Влажность наружного воздуха',
+      addTextRight: '%',  
+      tags: ['RH2'],   
+    },
     {
       type: 'table',
-      width: 4,
+      width: 2,
       title: 'Таблица параметров 2',
       tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
       fields: ['#No', 'code', 'name', 'value']              
     },    
-   
+    {
+      type: 'table',
+      width: 2,
+      title: 'Таблица параметров 2',
+      tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
+      fields: ['#No', 'code', 'name', 'value']              
+    },    
     {
       type: 'graph',
-      width: 4,
+      width: 2,
       title: 'Температура в теплице',
-      tags: [],
+      tags: ['RT', 'PT1', 'PT2', 'PT3', 'PT4'],
       legend: true,
       toolbar: true,
     },    
-    
+    {
+      type: 'graph',
+      width: 2,
+      title: 'Влажность',
+      tags: ['RH1', 'RH2'],
+      legend: true,
+      toolbar: true,
+    }      
   ]
 }
