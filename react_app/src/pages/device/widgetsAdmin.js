@@ -8,15 +8,49 @@ import {
   CheckboxField,
 } from '../../components/Forms/Forms'
 
+
+
 export default function WidgetsAdminPage(props) {
   const updateWidgetsTemplate = props.updateWidgetsTemplate
   const [widgetsTemplate, setWidgetsTemplate] = React.useState(props.widgetsTemplate)
   const [selectedWidget, setSelectedWidget] = React.useState(0)
 
+  // I use it for fix bug: witout this, when I change the same type forms, 
+  // form fields data does not changing 
+  // if i hide and show the form, fields data update correctly
+  const [displayWidget, setDisplayWidget] = React.useState(false) 
+  const rerenderWidgetForm = () => {
+    setDisplayWidget(false)
+    setTimeout( () => { setDisplayWidget(true) }, 0);
+  }
+  useEffect(() => {
+    rerenderWidgetForm()
+  }, [selectedWidget])  
+
+
+  // control buttons
   const changeSelectedWidget = (widgetNumber) => {
     setSelectedWidget(widgetNumber)
   }
 
+  const saveWidgetsTemplate = () => {
+    updateWidgetsTemplate(widgetsTemplate)
+  }
+
+  const cancelTemplateChanges = () => {
+    setWidgetsTemplate(props.widgetsTemplate)
+    setSelectedWidget(0)
+    rerenderWidgetForm()
+  }
+
+  const deleteWidget = (index) => {
+    const wt = widgetsTemplate.widgets.map((w)=>{return w})
+    wt.splice(index, 1)
+    setWidgetsTemplate({widgets: wt})
+    setSelectedWidget(0)
+  }
+
+  // update widget config
   const updateWidget = (WidgetData) => {
     const wt = widgetsTemplate.widgets.map((w, index)=>{
       if (index === selectedWidget) {
@@ -25,55 +59,23 @@ export default function WidgetsAdminPage(props) {
         return w
       }
     })
-    updateWidgetsTemplate({widgets: wt})
+    setWidgetsTemplate({widgets: wt})
   }
 
+  // add new widget
   const addWidgetToTemplate = (widget) => {
     var a = widgetsTemplate.widgets.map((item)=>{return item})
     a.push(widget)
-    setWidgetsTemplate({widgets: a})
-    updateWidgetsTemplate({widgets: a})    
+    setWidgetsTemplate({widgets: a})   
   }
 
   const addWidgetHendler = (type) => {
-    if (type === 'table') { 
-      addWidgetToTemplate({
-        type: 'table',
-        width: 4,
-        title: 'Новая таблица',
-        tags: [],   
-        fields: []               
-      })
-
-    } else if (type === 'graph') {
-      addWidgetToTemplate({
-        type: 'graph',
-        width: 4,
-        title: 'Новый график',
-        tags: [],
-        legend: false,
-        toolbar: true,              
-      })
-
-    } else if (type === 'indicator') {
-      addWidgetToTemplate({
-        type: 'indicator',
-        width: 1,
-        title: 'Новый индикатор',
-        tags: [],               
-      })
-    }
+    if (type === 'table') { addWidgetToTemplate(DefaultTable) } 
+    else if (type === 'graph') { addWidgetToTemplate(DefaultGraph) }
+    else if (type === 'indicator') { addWidgetToTemplate(DefaultIndicator) }
   }
 
-  // I use it for fix bug: witout this, when I change the same type forms, 
-  // form fields data does not changing 
-  // if i hide and show the form, fields data update correctly
-  const [displayWidget, setDisplayWidget] = React.useState(false) 
-  useEffect(() => {
-    setDisplayWidget(false)
-    setTimeout( () => { setDisplayWidget(true) }, 0);
-  }, [selectedWidget])  
-
+  // render page
   return (
     <React.Fragment>
       <h3 className='mb-3'>Настройка виджетов</h3>
@@ -85,9 +87,9 @@ export default function WidgetsAdminPage(props) {
         </div>
         <div className='col-md-6 col-lg-5 col-xl-4 px-1' style={{minHeight: '80vh'}}>
           <div className='p-0 m-0 bg-dark rounded h-100'>
-            <WidgetsControlPanel addWidget={addWidgetHendler}/>
+            <WidgetsControlPanel addWidget={addWidgetHendler} saveWidgetsTemplate={saveWidgetsTemplate} cancelChanges={cancelTemplateChanges}/>
             { displayWidget ? 
-              <WidgetForm widget={widgetsTemplate.widgets[selectedWidget]} updateWidget={updateWidget} /> 
+              <WidgetForm widget={widgetsTemplate.widgets[selectedWidget]} updateWidget={updateWidget} deleteWidget={()=>deleteWidget(selectedWidget)}/> 
               : null }
           </div>
         </div>
@@ -97,37 +99,13 @@ export default function WidgetsAdminPage(props) {
 }
 
 
+
+
 // -------------------------------------------------------------------------------------------------
 function WidgetsGrid(props){
   const widgetsTemplate = props.widgetsTemplate
   const selectedWidget = props.selectedWidget
   const changeSelectedWidget = props.changeSelectedWidget
-
-  const WidgetPreview = (props) => {
-    const widget = props.widget
-
-    if (widget.type === 'table') {
-      return (
-        <div className='d-flex justify-content-center'>
-          <span className='fas fa-table text-secondary m-2' style={{fontSize:'4em'}}></span>
-        </div>
-      )
-    } else if (widget.type === 'graph') {
-      return (
-        <div className='d-flex justify-content-center'>
-          <span className='fas fa-chart-area text-secondary m-2' style={{fontSize:'4em'}}></span>
-        </div>
-        )
-    } else if (widget.type === 'indicator') {
-      return (
-        <div className='d-flex justify-content-center'>
-          <span className='border rounded-sm text-secondary border-secondary text-nowrap m-2 px-2' style={{fontSize:'1.5em'}}>{widget.addTextLeft} XX.X {widget.addTextRight}</span>
-        </div>
-        )
-    } else {
-      return null
-    }   
-  }
 
   const content = widgetsTemplate.widgets.map((widget, index)=>{
     const btnAddClass= (index===selectedWidget) ?  'border-primary' : ''
@@ -145,7 +123,7 @@ function WidgetsGrid(props){
 
   return (
     <div className='d-flex justify-content-center m-0 p-4' style={{}}>
-      <div className='row equal rounded border border-secondary m-0 p-2' style={{backgroundColor: '#1E1E1E', maxWidth:'700px'}}>
+      <div className='row equal rounded m-0 p-3' style={{backgroundColor: '#1E1E1E', maxWidth:'800px'}}>
         {content}
       </div>
     </div>
@@ -153,55 +131,36 @@ function WidgetsGrid(props){
 } 
 
 
-// function WidgetsList(props){
-//   const widgetsTemplate = props.widgetsTemplate
-//   const selectedWidget = props.selectedWidget
-//   const changeSelectedWidget = props.changeSelectedWidget
-
-//   const WidgetIcon = (props) => {
-//     if (props.type === 'table') { return <i className='fas fa-table pr-3' style={{fontSize:'1.3em'}}></i> }
-//     if (props.type === 'graph') { return <i className='fas fa-chart-area pr-3' style={{fontSize:'1.3em'}}></i> }
-//     if (props.type === 'indicator') { return <i className='	fas fa-ticket-alt pr-3' style={{fontSize:'1.2em'}}></i> }     
-//   }
-
-//   const content = widgetsTemplate.widgets.map((widget, index)=>{
-//     const btnAddClass = (index===selectedWidget) ? 'btn-primary' : 'btn-outline-primary'
-//     return (
-//       <button className={'btn border-0 w-100 my-1 text-left text-light ' + btnAddClass} style={{boxShadow: 'none'}} key={index} onClick={()=>{changeSelectedWidget(index)}}>
-//         <WidgetIcon type={widget.type} />
-//         <span className=''>{widget.title}</span>
-//       </button>
-//     )
-//   })
-
-//   return (
-//     <div className='bg-dark ml-1 mr-0 py-2 px-3 border-top border-secondary mt-3'>
-//       {content}
-//     </div>
-//   )
-// } 
-
-// -------------------------------------------------------------------------------------------------
-function WidgetForm(props){
+const WidgetPreview = (props) => {
   const widget = props.widget
-  const updateWidget = props.updateWidget
-  let w = {}
 
-  if (widget.type === 'table') { w = <WTableForm widget={widget} updateWidget={updateWidget}/> }
-  if (widget.type === 'graph') { w = <WGraphForm widget={widget} updateWidget={updateWidget}/> }
-  if (widget.type === 'indicator') { w = <WIndicatorForm widget={widget} updateWidget={updateWidget}/> } 
-  
-  return (
-    <div className='p-0 m-0 my-1'> 
-      <FormContainer2> {w} </FormContainer2>
-    </div>
-  )
+  if (widget.type === 'table') {
+    return (
+      <div className='d-flex justify-content-center'>
+        <span className='fas fa-table text-secondary m-2' style={{fontSize:'4em'}}></span>
+      </div>
+    )
+  } else if (widget.type === 'graph') {
+    return (
+      <div className='d-flex justify-content-center'>
+        <span className='fas fa-chart-area text-secondary m-2' style={{fontSize:'4em'}}></span>
+      </div>
+      )
+  } else if (widget.type === 'indicator') {
+    return (
+      <div className='d-flex justify-content-center'>
+        <span className='border rounded-sm text-secondary border-secondary text-nowrap m-2 px-2' style={{fontSize:'1.5em'}}>{widget.addTextLeft} XX.X {widget.addTextRight}</span>
+      </div>
+      )
+  } else {
+    return null
+  }   
 }
 
 
+// -------------------------------------------------------------------------------------------------
 function WidgetsControlPanel(props){
   const [show, setShow] = React.useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -214,7 +173,11 @@ function WidgetsControlPanel(props){
     <>
       <div className='p-2'> 
         <div className='m-1 pt-2 pb-3 border-bottom border-secondary'>
-          <button className='btn btn-outline-primary' type='button' onClick={handleShow}>Добавить виджет</button>
+          <div className='d-flex justify-content-left'>
+            <button className='btn btn-outline-info btn-sm mr-3' type='button' onClick={handleShow}> Добавить виджет</button>
+            <button className='btn btn-outline-success btn-sm mr-3' type='button' onClick={props.saveWidgetsTemplate}>Сохранить</button>
+            <button className='btn btn-outline-danger btn-sm' type='button' onClick={props.cancelChanges}>Отмена</button>
+          </div>
         </div>
       </div>
       <ModalSelectWidgetType show={show} handleClose={handleClose} handleAddWidget={handleAddWidget}/>
@@ -223,6 +186,34 @@ function WidgetsControlPanel(props){
 }
 
 
+function WidgetForm(props){
+  const widget = props.widget
+  const updateWidget = props.updateWidget
+  const deleteWidget = props.deleteWidget
+  let w = {}
+
+  if (widget.type === 'table') { w = <WTableForm widget={widget} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
+  if (widget.type === 'graph') { w = <WGraphForm widget={widget} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
+  if (widget.type === 'indicator') { w = <WIndicatorForm widget={widget} updateWidget={updateWidget} deleteWidget={deleteWidget}/> } 
+  
+  return (
+    <div className='p-0 m-0 my-1'> 
+      <FormContainer> {w} </FormContainer>
+    </div>
+  )
+}
+
+
+function FormContainer(props){
+  return (
+    <div className='text-light p-2 m-0 mx-1 h-100'>
+      {props.children}
+    </div>
+  )
+}
+
+
+// -------------------------------------------------------------------------------------------------
 function ModalSelectWidgetType(props){
   if (props.show) {
     return(
@@ -260,68 +251,48 @@ function ModalSelectWidgetType(props){
 
 
 // -------------------------------------------------------------------------------------------------
-// function FormContainer(props){
-//   return (
-//     <div className='card shadow-sm bg-dark text-light p-2 m-0 mx-1 h-100'>
-//       {props.children}
-//     </div>
-//   )
-// }
-
-function FormContainer2(props){
-  return (
-    <div className='text-light p-2 m-0 mx-1 h-100'>
-      {props.children}
-    </div>
-  )
-}
-
-
-// ----------------------------------------------------------------------------------
 function WTableForm(props){
-  const [widget, setWidget] = React.useState({...props.widget})
+  const widget = props.widget
   const updateWidget = props.updateWidget
 
-  const updateButton = (e) => {
-    e.preventDefault()
-    updateWidget({...widget})
-  }
-
-  const handlTitleChange = (e) => { setWidget({...widget, title: e.target.value}) }
-  const handlWidthChange = (e) => { setWidget({...widget, width: e.target.value}) }
-  const handlSelectedTagsChange = (e) => { setWidget({...widget, tags: getSelectedOptions(e)}) }
-  const handlSelectedFieldsChange = (e) => { setWidget({...widget, fields: getSelectedOptions(e)}) }
+  const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
+  const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
+  const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }
+  const handlSelectedFieldsChange = (e) => { updateWidget({...widget, fields: getSelectedOptions(e)}) }
 
   return (
     <React.Fragment>
+      <div className='d-flex'>
         <h6>Таблица</h6>
-        <form>
-          <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
-          <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
-          <MultipleSelectField 
-            titel={'Теги'} 
-            id={'tags'} 
-            placeholder={'...'} 
-            value={widget.tags} 
-            options={['TEMP1', 'TEMP2', 'TEMP3']} 
-            comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
-            onChange={handlSelectedTagsChange}
-          />
-          <MultipleSelectField 
-            titel={'Колонки'} 
-            id={'fields'} 
-            placeholder={'...'} 
-            value={widget.fields} 
-            options={['#No', 'code', 'name', 'value']} 
-            comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
-            onChange={handlSelectedFieldsChange}
-          />          
-          <button type="submit" className="btn btn-sm btn-info" onClick={updateButton}>Применить</button>
-        </form>
+        <button type="button" className="btn btn-sm btn-outline-danger ml-auto" onClick={props.deleteWidget}>Удалить</button>
+      </div>
+      <form>
+        <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
+        <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
+        <MultipleSelectField 
+          titel={'Теги'} 
+          id={'tags'} 
+          placeholder={'...'} 
+          value={widget.tags} 
+          options={['TEMP1', 'TEMP2', 'TEMP3']} 
+          comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
+          onChange={handlSelectedTagsChange}
+        />
+        <MultipleSelectField 
+          titel={'Колонки'} 
+          id={'fields'} 
+          placeholder={'...'} 
+          value={widget.fields} 
+          options={['#No', 'code', 'name', 'value']} 
+          comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
+          onChange={handlSelectedFieldsChange}
+        />          
+      </form>
     </React.Fragment>
   )
 }
 
+// table config example
 // {
 //   type: 'table',
 //   width: 2,
@@ -333,23 +304,21 @@ function WTableForm(props){
 
 // ----------------------------------------------------------------------------------
 function WGraphForm(props){
-  const [widget, setWidget] = React.useState({...props.widget})
+  const widget = props.widget
   const updateWidget = props.updateWidget
 
-  const updateButton = (e) => {
-    e.preventDefault()
-    updateWidget({...widget})
-  }
-
-  const handlTitleChange = (e) => { setWidget({...widget, title: e.target.value}) }
-  const handlWidthChange = (e) => { setWidget({...widget, width: e.target.value}) }
-  const handlSelectedTagsChange = (e) => { setWidget({...widget, tags: getSelectedOptions(e)}) }
-  const handlLegendChange = (e) => { setWidget({...widget, legend: e.target.checked}) }
-  const handlToolbarChange = (e) => { setWidget({...widget, toolbar: e.target.checked}) }
+  const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
+  const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
+  const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }
+  const handlLegendChange = (e) => { updateWidget({...widget, legend: e.target.checked}) }
+  const handlToolbarChange = (e) => { updateWidget({...widget, toolbar: e.target.checked}) }
 
   return (
     <React.Fragment>
-      <h6>График</h6>
+      <div className='d-flex'>
+        <h6>График</h6>
+        <button type="button" className="btn btn-sm btn-outline-danger ml-auto" onClick={props.deleteWidget}>Удалить</button>
+      </div>
       <form>
         <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
         <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
@@ -364,12 +333,12 @@ function WGraphForm(props){
         />
         <CheckboxField titel={'Легенда'} id={'legend'} checked={widget.legend} onChange={handlLegendChange}/>  
         <CheckboxField titel={'Панель инструментов'} id={'toolbar'} checked={widget.toolbar} onChange={handlToolbarChange}/>  
-        <button type="submit" className="btn btn-sm btn-info" onClick={updateButton}>Применить</button>
       </form>
     </React.Fragment>
   )
 }
 
+// graph config example
 // {
 //   type: 'graph',
 //   width: 2,
@@ -382,40 +351,38 @@ function WGraphForm(props){
 
 // ----------------------------------------------------------------------------------
 function WIndicatorForm(props){
-  const [widget, setWidget] = React.useState({...props.widget})
+  const widget = props.widget
   const updateWidget = props.updateWidget
 
-  const updateButton = (e) => {
-    e.preventDefault()
-    updateWidget({...widget})
-  }
-
-  const handlTitleChange = (e) => { setWidget({...widget, title: e.target.value}) }
-  const handlWidthChange = (e) => { setWidget({...widget, width: e.target.value}) }
-  const handlTextLeftChange = (e) => { setWidget({...widget, addTextLeft: e.target.value}) }
-  const handlTextRightChange = (e) => { setWidget({...widget, addTextRight: e.target.value}) }
+  const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
+  const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
+  const handlTextLeftChange = (e) => { updateWidget({...widget, addTextLeft: e.target.value}) }
+  const handlTextRightChange = (e) => { updateWidget({...widget, addTextRight: e.target.value}) }
 
   return (
     <React.Fragment>
+      <div className='d-flex'>
         <h6>Индикатор</h6>
-        <form>
-          <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
-          <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
-          <SelectField 
-            titel={'Тег'} 
-            id={'tags'} 
-            placeholder={'...'} 
-            value={widget.tags[0]} 
-            options={['TEMP1', 'TEMP2', 'TEMP3']} 
-          />
-          <TextField titel={'Добавить текст слева'} id={'addTextLeft'} placeholder={'...'} value={widget.addTextLeft} onChange={handlTextLeftChange}/>
-          <TextField titel={'Добавить текст справа'} id={'addTextRight'} placeholder={'...'} value={widget.addTextRight} onChange={handlTextRightChange}/>
-          <button type="submit" className="btn btn-sm btn-info" onClick={updateButton}>Применить</button>
-        </form>        
+        <button type="button" className="btn btn-sm btn-outline-danger ml-auto" onClick={props.deleteWidget}>Удалить</button>
+      </div>
+      <form>
+        <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
+        <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
+        <SelectField 
+          titel={'Тег'} 
+          id={'tags'} 
+          placeholder={'...'} 
+          value={widget.tags[0]} 
+          options={['TEMP1', 'TEMP2', 'TEMP3']} 
+        />
+        <TextField titel={'Добавить текст слева'} id={'addTextLeft'} placeholder={'...'} value={widget.addTextLeft} onChange={handlTextLeftChange}/>
+        <TextField titel={'Добавить текст справа'} id={'addTextRight'} placeholder={'...'} value={widget.addTextRight} onChange={handlTextRightChange}/>
+      </form>        
     </React.Fragment>
   )
 }
 
+// indicator config example
 // {
 //   type: 'indicator',
 //   width: 1,
@@ -426,6 +393,11 @@ function WIndicatorForm(props){
 // }
 
 
+
+
+// ----------------------------------------------------------------------------------
+// utils
+
 function getSelectedOptions(e) {
   var options = e.target.options;
   var value = [];
@@ -435,4 +407,29 @@ function getSelectedOptions(e) {
     }
   }  
   return value
+}
+
+
+const DefaultTable = {
+  type: 'table',
+  width: 4,
+  title: 'Новая таблица',
+  tags: [],   
+  fields: []               
+}
+
+const DefaultGraph = {
+  type: 'graph',
+  width: 4,
+  title: 'Новый график',
+  tags: [],
+  legend: false,
+  toolbar: true,              
+}
+
+const DefaultIndicator = {
+  type: 'indicator',
+  width: 1,
+  title: 'Новый индикатор',
+  tags: [],               
 }
