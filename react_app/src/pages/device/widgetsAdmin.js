@@ -133,23 +133,24 @@ function WidgetsGrid(props){
 
 const WidgetPreview = (props) => {
   const widget = props.widget
+  const color = props.color ? props.color : 'secondary'
 
   if (widget.type === 'table') {
     return (
       <div className='d-flex justify-content-center'>
-        <span className='fas fa-table text-secondary m-2' style={{fontSize:'4em'}}></span>
+        <span className={`fas fa-table text-${color} m-2`} style={{fontSize:'4em'}}></span>
       </div>
     )
   } else if (widget.type === 'graph') {
     return (
       <div className='d-flex justify-content-center'>
-        <span className='fas fa-chart-area text-secondary m-2' style={{fontSize:'4em'}}></span>
+        <span className={`fas fa-chart-area text-${color} m-2`} style={{fontSize:'4em'}}></span>
       </div>
       )
   } else if (widget.type === 'indicator') {
     return (
       <div className='d-flex justify-content-center'>
-        <span className='border rounded-sm text-secondary border-secondary text-nowrap m-2 px-2' style={{fontSize:'1.5em'}}>{widget.addTextLeft} XX.X {widget.addTextRight}</span>
+        <span className={`border rounded-sm text-${color} border-${color} text-nowrap m-2 px-2`} style={{fontSize:'1.5em'}}>{widget.addTextLeft} XX.X {widget.addTextRight}</span>
       </div>
       )
   } else {
@@ -215,31 +216,51 @@ function FormContainer(props){
 
 // -------------------------------------------------------------------------------------------------
 function ModalSelectWidgetType(props){
+  const WidgetTypeButton = (props) => {
+    return (
+      <div className='col-4 p-1 w-100'>
+        <button type="button" className="btn btn-primary w-100 h-100" onClick={props.onClick}>
+          <div className='h-100 p-0 px-2'>
+            {props.children}
+          </div>
+        </button>
+      </div>
+    )
+  }
+
   if (props.show) {
     return(
       <div className="modal modal-bg d-block">
         <div className="modal-dialog">
           <div className="modal-content">
+
             <div className="modal-header">
               <h4 className="modal-title">Добавить новый виджет</h4>
               <button type="button" className="close" onClick={props.handleClose}>&times;</button>
             </div>
+
             <div className="modal-body">
-              <div className='row px-1'>
-                <div className='col-4 px-1 w-100'>
-                  <button type="button" className="btn btn-outline-primary w-100" onClick={()=> props.handleAddWidget('indicator')}>Индикатор</button>
-                </div>
-                <div className='col-4 px-1 w-100'>
-                  <button type="button" className="btn btn-outline-primary w-100" onClick={()=> props.handleAddWidget('table')}>Таблица</button>
-                </div>
-                <div className='col-4 px-1 w-100'>
-                  <button type="button" className="btn btn-outline-primary w-100" onClick={()=> props.handleAddWidget('graph')}>График</button>
-                </div>  
+              <div className='row equal px-1'>
+                <WidgetTypeButton onClick={()=> props.handleAddWidget('indicator')}>
+                  <span className='text-nowrap'>Индикатор</span>
+                  <div className='pt-2'></div>
+                  <WidgetPreview widget={{type:'indicator'}} color={'light'} />
+                </WidgetTypeButton>
+                <WidgetTypeButton onClick={()=> props.handleAddWidget('table')}>
+                  <span className='text-nowrap'>Таблица</span>
+                  <WidgetPreview widget={{type:'table'}} color={'light'} />
+                </WidgetTypeButton>
+                <WidgetTypeButton onClick={()=> props.handleAddWidget('graph')}>
+                  <span className='text-nowrap'>График</span>
+                  <WidgetPreview widget={{type:'graph'}} color={'light'} />
+                </WidgetTypeButton>  
               </div>
             </div>
+
             <div className="modal-footer">
               <button type="button" className="btn btn-danger" onClick={props.handleClose}>Отмена</button>
             </div>
+
           </div>
         </div>
       </div>
