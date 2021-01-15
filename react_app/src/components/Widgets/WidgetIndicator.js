@@ -23,9 +23,10 @@ export default function WidgetIndicator(props) {
 
   useEffect(() => {
     readDeviceTags();
-    setTimeout( () => { setLoading(false) }, 1000);
+    const loadingTimeout = setTimeout( () => { setLoading(false) }, 1000);
     const tagsUpdateInterval = setInterval(readDeviceTags, 2000);
     return () => {
+      clearTimeout(loadingTimeout);      
       clearInterval(tagsUpdateInterval);
     };
   }, [])

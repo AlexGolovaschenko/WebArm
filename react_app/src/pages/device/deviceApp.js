@@ -1,5 +1,8 @@
-import React from 'react' 
+import React, {useEffect} from 'react' 
 import {Switch, Route, useParams} from 'react-router-dom'
+
+import axiosInstance from "../../utils/axiosApi";
+import getBaseUrl from '../../utils/localSettings'
 
 import Sidebar from '../../components/BaseParts/DeviceSidebar'
 import DeviceOverviewPage from './overview'
@@ -10,12 +13,23 @@ import DeviceAdminPage from './deviceAdmin'
 import WidgetsAdminPage from './widgetsAdmin'
 import Page404 from '../pageNotFound'
 
+const BASE_URL = getBaseUrl()
+
+
+
 export default function DeviceApp() { 
   let { id } = useParams();
-  const [widgetsTemplate, setWidgetsTemplate] = React.useState(defaultWidgetsTemplate)
+  const [widgetsTemplate, setWidgetsTemplate] = React.useState({})
+
+  useEffect(() => {
+    getWidgetsTemplate( id, (data)=> {
+      setWidgetsTemplate(data.template);
+    });   
+  }, []) 
 
   function updateWidgetsTemplate(newTemplate){
     setWidgetsTemplate(newTemplate)
+    postWidgetsTemplate(id, newTemplate)
   }
 
   return (
@@ -47,69 +61,79 @@ export default function DeviceApp() {
 }
 
 
-
-
-const defaultWidgetsTemplate = {
-  widgets:[
-    {
-      type: 'indicator',
-      width: 1,
-      title: 'Температура зоны 1',
-      addTextLeft: '',
-      addTextRight: '°C',      
-      tags: ['PT1'],                
-    },
-    {
-      type: 'indicator',
-      width: 1,
-      title: 'Температура зоны 2',
-      addTextLeft: '',      
-      addTextRight: '°C',
-      tags: ['PT2'],               
-    },
-    {
-      type: 'indicator',
-      width: 1,
-      title: 'Влажность в помещении',
-      addTextRight: '%',      
-      tags: ['RH1'],   
-    },
-    {
-      type: 'indicator',
-      width: 1,
-      title: 'Влажность наружного воздуха',
-      addTextRight: '%',  
-      tags: ['RH2'],   
-    },
-    {
-      type: 'table',
-      width: 2,
-      title: 'Таблица параметров 2',
-      tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
-      fields: ['#No', 'code', 'name', 'value']              
-    },    
-    {
-      type: 'table',
-      width: 2,
-      title: 'Таблица параметров 2',
-      tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
-      fields: ['#No', 'code', 'name', 'value']              
-    },    
-    {
-      type: 'graph',
-      width: 2,
-      title: 'Температура в теплице',
-      tags: ['RT', 'PT1', 'PT2', 'PT3', 'PT4'],
-      legend: true,
-      toolbar: true,
-    },    
-    {
-      type: 'graph',
-      width: 2,
-      title: 'Влажность',
-      tags: ['RH1', 'RH2'],
-      legend: true,
-      toolbar: true,
-    }      
-  ]
+async function getWidgetsTemplate(device_id, cb) {
+  const request = await axiosInstance.get(BASE_URL + "/widgets/template/", { params: { id: device_id }})
+  cb({...request.data});
 }
+
+async function postWidgetsTemplate(device_id, template_data, cb) {
+  const body = {'template': template_data}
+  const request = await axiosInstance.post(BASE_URL + "/widgets/template/", body, { params: { id: device_id }})
+  cb && cb({...request.data});
+}
+
+
+// const defaultWidgetsTemplate = {
+//   widgets:[
+//     {
+//       type: 'indicator',
+//       width: 1,
+//       title: 'Температура зоны 1',
+//       addTextLeft: '',
+//       addTextRight: '°C',      
+//       tags: ['PT1'],                
+//     },
+//     {
+//       type: 'indicator',
+//       width: 1,
+//       title: 'Температура зоны 2',
+//       addTextLeft: '',      
+//       addTextRight: '°C',
+//       tags: ['PT2'],               
+//     },
+//     {
+//       type: 'indicator',
+//       width: 1,
+//       title: 'Влажность в помещении',
+//       addTextRight: '%',      
+//       tags: ['RH1'],   
+//     },
+//     {
+//       type: 'indicator',
+//       width: 1,
+//       title: 'Влажность наружного воздуха',
+//       addTextRight: '%',  
+//       tags: ['RH2'],   
+//     },
+//     {
+//       type: 'table',
+//       width: 2,
+//       title: 'Таблица параметров 2',
+//       tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
+//       fields: ['#No', 'code', 'name', 'value']              
+//     },    
+//     {
+//       type: 'table',
+//       width: 2,
+//       title: 'Таблица параметров 2',
+//       tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
+//       fields: ['#No', 'code', 'name', 'value']              
+//     },    
+//     {
+//       type: 'graph',
+//       width: 2,
+//       title: 'Температура в теплице',
+//       tags: ['RT', 'PT1', 'PT2', 'PT3', 'PT4'],
+//       legend: true,
+//       toolbar: true,
+//     },    
+//     {
+//       type: 'graph',
+//       width: 2,
+//       title: 'Влажность',
+//       tags: ['RH1', 'RH2'],
+//       legend: true,
+//       toolbar: true,
+//     }      
+//   ]
+// }

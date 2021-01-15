@@ -58,7 +58,12 @@ function Graph(props) {
     return formatter.format(s)
   }
 
-  if (displayedTags.length > 0) {
+  let has_displayed_tags = false
+  displayedTags.map( (tag) => {
+    if (tag.values.length > 0) {has_displayed_tags = true}
+  })
+
+  if (has_displayed_tags) {
     return (
       <React.Fragment>
         <div className='graph-container  h-100' style={{overflow: 'hidden'}}>

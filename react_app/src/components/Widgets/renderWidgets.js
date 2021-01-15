@@ -10,6 +10,7 @@ export default function RenderWidgets(props) {
   const widgetsTemplate = props.widgetsTemplate
   const device_id = props.device_id
   if (!props.widgetsTemplate) {return null}
+  if (!props.widgetsTemplate.widgets) {return null}
 
   return (
     <React.Fragment>

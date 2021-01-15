@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'facilities.apps.FacilitiesConfig',
     'devices.apps.DevicesConfig',
     'connectors.apps.ConnectorsConfig',
+    'widgets.apps.WidgetsConfig',
 ]
 
 MIDDLEWARE = [

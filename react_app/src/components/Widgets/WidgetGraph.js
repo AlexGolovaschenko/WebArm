@@ -47,9 +47,10 @@ export default function WidgetGraph(props) {
   // read parameters
   useEffect(() => {
     readTagsHistory();
-    setTimeout( () => { setLoading(false) }, 1000);
+    const loadingTimeout = setTimeout( () => { setLoading(false) }, 1000);
     const graphUpdateInterval = setInterval( readTagsHistory, getGraphUpdateTimeout(graphInterval.interval))
     return () => {
+      clearTimeout(loadingTimeout);
       clearInterval(graphUpdateInterval);
     };
   }, [graphInterval])
