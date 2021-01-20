@@ -433,7 +433,7 @@ function WIndicatorForm(props){
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
   const handlOrderChange = (e) => { updateWidget({...widget, order: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
-  const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: [getSelectedOptions(e)]}) }  
+  const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }  
   const handlTextLeftChange = (e) => { updateWidget({...widget, addTextLeft: e.target.value}) }
   const handlTextRightChange = (e) => { updateWidget({...widget, addTextRight: e.target.value}) }
 

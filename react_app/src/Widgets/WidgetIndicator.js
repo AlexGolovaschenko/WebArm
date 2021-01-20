@@ -11,15 +11,17 @@ export default function WidgetIndicator(props) {
   const [tags, setTags] = React.useState([])
   const [loading, setLoading] = React.useState(true)
   const device_id = props.device_id
-  const requestParams = {id: device_id, tags: props.widget.tags}
+  const displayedTags =  props.widget.tags  
   const tag = tags[0] // TODO: widget display just 1 tag now
 
   function readDeviceTags() {
-    axiosInstance.get(BASE_URL + "/device/tags/value/", { params: requestParams} )
+    axiosInstance.get(BASE_URL + "/device/tags/value/",  { params: { id: device_id, tags: displayedTags }} )
     .then((responce) => {
       responce && setTags(responce.data)
     })  
   }
+
+
 
   useEffect(() => {
     readDeviceTags();

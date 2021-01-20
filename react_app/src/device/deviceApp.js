@@ -3,6 +3,7 @@ import {Switch, Route, useParams} from 'react-router-dom'
 
 import axiosInstance from "../utils/axiosApi"
 import getBaseUrl from '../utils/localSettings'
+import sortWidgetsByOrder from './utils/sortWidgetsByOrder'
 
 import Sidebar from './components/DeviceSidebar'
 import DeviceOverviewPage from './pages/overview'
@@ -23,7 +24,7 @@ export default function DeviceApp() {
 
   useEffect(() => {
     getWidgetsTemplate( id, (data)=> {
-      setWidgetsTemplate(data.template);
+      setWidgetsTemplate( sortWidgetsByOrder(data.template) );
     });   
   }, []) 
 

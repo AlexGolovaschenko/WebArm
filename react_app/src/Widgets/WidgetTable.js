@@ -16,7 +16,7 @@ export default function WidgetTable(props) {
   function readDeviceTags() {
     axiosInstance.get(BASE_URL + "/device/tags/value/", { params: { id: device_id, tags: displayedTags }} )
     .then((responce) => {
-      responce && setTags(responce.data)
+      responce && setTags(responce.data)     
     })  
   }
   
