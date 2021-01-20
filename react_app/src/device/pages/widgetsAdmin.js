@@ -57,7 +57,7 @@ export default function WidgetsAdminPage(props) {
   }
 
   const cancelTemplateChanges = () => {
-    setWidgetsTemplate(props.widgetsTemplate)
+    setWidgetsTemplate( sortWidgetsByOrder(props.widgetsTemplate) )
     setSelectedWidget(0)
     rerenderWidgetForm()
   }
@@ -80,6 +80,11 @@ export default function WidgetsAdminPage(props) {
     })
     setWidgetsTemplate({widgets: wt})
   }
+
+  // const onChangeWidgetOrder = (w_index, new_order) => {
+  //   // TODO
+  //   ;
+  // }
 
   // add new widget
   const addWidgetToTemplate = (widget) => {
