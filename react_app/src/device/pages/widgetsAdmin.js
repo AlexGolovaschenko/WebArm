@@ -8,6 +8,8 @@ import {
   CheckboxField,
 } from '../../base/forms/forms'
 
+import sortWidgetsByOrder from '../utils/sortWidgetsByOrder'
+
 import Loader from '../../base/components/Loader'
 import axiosInstance from "../../utils/axiosApi";
 import getBaseUrl from '../../utils/localSettings'
@@ -16,7 +18,7 @@ const BASE_URL = getBaseUrl()
 export default function WidgetsAdminPage(props) {
   const device_id = props.device_id;
   const updateWidgetsTemplate = props.updateWidgetsTemplate
-  const [widgetsTemplate, setWidgetsTemplate] = React.useState(props.widgetsTemplate)
+  const [widgetsTemplate, setWidgetsTemplate] = React.useState( sortWidgetsByOrder(props.widgetsTemplate) )
   const [selectedWidget, setSelectedWidget] = React.useState(0)
   const [tags, setTags] = React.useState([])
 
@@ -27,7 +29,6 @@ export default function WidgetsAdminPage(props) {
       responce && setTags(responce.data)
     })  
   }
-
   useEffect(() => {
     readDeviceTags();
   }, [])
@@ -216,6 +217,8 @@ function WidgetForm(props){
   const deleteWidget = props.deleteWidget
   let w = {}
 
+  if (! widget) {return null}
+
   if (widget.type === 'table') { w = <WTableForm widget={widget} tags={tags} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
   if (widget.type === 'graph') { w = <WGraphForm widget={widget} tags={tags} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
   if (widget.type === 'indicator') { w = <WIndicatorForm widget={widget} tags={tags} updateWidget={updateWidget} deleteWidget={deleteWidget}/> } 
@@ -309,6 +312,7 @@ function WTableForm(props){
   }
 
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
+  const handlOrderChange = (e) => { updateWidget({...widget, order: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
   const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }
   const handlSelectedFieldsChange = (e) => { updateWidget({...widget, fields: getSelectedOptions(e)}) }
@@ -321,6 +325,7 @@ function WTableForm(props){
       </div>
       <form>
         <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
+        <NumberField titel={'Порядок отображения'} id={'order'} placeholder={'...'} value={widget.order} onChange={handlOrderChange}/>
         <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
         <MultipleSelectField 
           titel={'Теги'} 
@@ -369,6 +374,7 @@ function WGraphForm(props){
   }
 
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
+  const handlOrderChange = (e) => { updateWidget({...widget, order: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
   const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }
   const handlLegendChange = (e) => { updateWidget({...widget, legend: e.target.checked}) }
@@ -382,6 +388,7 @@ function WGraphForm(props){
       </div>
       <form>
         <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
+        <NumberField titel={'Порядок отображения'} id={'order'} placeholder={'...'} value={widget.order} onChange={handlOrderChange}/>
         <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
         <MultipleSelectField 
           titel={'Теги'} 
@@ -424,6 +431,7 @@ function WIndicatorForm(props){
   }
 
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
+  const handlOrderChange = (e) => { updateWidget({...widget, order: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
   const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: [getSelectedOptions(e)]}) }  
   const handlTextLeftChange = (e) => { updateWidget({...widget, addTextLeft: e.target.value}) }
@@ -437,6 +445,7 @@ function WIndicatorForm(props){
       </div>
       <form>
         <TextField titel={'Название'} id={'title'} placeholder={'...'} value={widget.title} onChange={handlTitleChange}/>
+        <NumberField titel={'Порядок отображения'} id={'order'} placeholder={'...'} value={widget.order} onChange={handlOrderChange}/>
         <NumberField titel={'Ширина'} id={'width'} placeholder={'...'} value={widget.width} min={1} max={4} onChange={handlWidthChange}/>
         <SelectField 
           titel={'Тег'} 

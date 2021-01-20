@@ -2,6 +2,7 @@ DEFAULT_WIDGETS_TEMPLATE = {
     "widgets":[
       {
         "type": "table",
+        "order": 0,
         "width": 4,
         "title": "Таблица параметров устройства",
         "tags": [],   
@@ -9,6 +10,7 @@ DEFAULT_WIDGETS_TEMPLATE = {
       },    
       {
         "type": "graph",
+        "order": 1,
         "width": 4,
         "title": "Графики параметров устройства",
         "tags": [],
