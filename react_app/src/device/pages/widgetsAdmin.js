@@ -6,14 +6,32 @@ import {
   SelectField,
   MultipleSelectField,
   CheckboxField,
-} from '../../components/Forms/Forms'
+} from '../../base/forms/forms'
 
-
+import Loader from '../../base/components/Loader'
+import axiosInstance from "../../utils/axiosApi";
+import getBaseUrl from '../../utils/localSettings'
+const BASE_URL = getBaseUrl()
 
 export default function WidgetsAdminPage(props) {
+  const device_id = props.device_id;
   const updateWidgetsTemplate = props.updateWidgetsTemplate
   const [widgetsTemplate, setWidgetsTemplate] = React.useState(props.widgetsTemplate)
   const [selectedWidget, setSelectedWidget] = React.useState(0)
+  const [tags, setTags] = React.useState([])
+
+  // read tags list
+  const readDeviceTags = () => {
+    axiosInstance.get(BASE_URL + "/device/tags/value/", { params: { id: device_id }} )
+    .then((responce) => {
+      responce && setTags(responce.data)
+    })  
+  }
+
+  useEffect(() => {
+    readDeviceTags();
+  }, [])
+
 
   // I use it for fix bug: witout this, when I change the same type forms, 
   // form fields data does not changing 
@@ -25,7 +43,7 @@ export default function WidgetsAdminPage(props) {
   }
   useEffect(() => {
     rerenderWidgetForm()
-  }, [selectedWidget])  
+  }, [selectedWidget, tags])  
 
 
   // control buttons
@@ -75,6 +93,8 @@ export default function WidgetsAdminPage(props) {
     else if (type === 'indicator') { addWidgetToTemplate(DefaultIndicator) }
   }
 
+  if (!widgetsTemplate.widgets) {return <Loader />}
+
   // render page
   return (
     <React.Fragment>
@@ -89,7 +109,7 @@ export default function WidgetsAdminPage(props) {
           <div className='p-0 m-0 bg-dark rounded h-100'>
             <WidgetsControlPanel addWidget={addWidgetHendler} saveWidgetsTemplate={saveWidgetsTemplate} cancelChanges={cancelTemplateChanges}/>
             { displayWidget ? 
-              <WidgetForm widget={widgetsTemplate.widgets[selectedWidget]} updateWidget={updateWidget} deleteWidget={()=>deleteWidget(selectedWidget)}/> 
+              <WidgetForm widget={widgetsTemplate.widgets[selectedWidget]} tags={tags} updateWidget={updateWidget} deleteWidget={()=>deleteWidget(selectedWidget)}/> 
               : null }
           </div>
         </div>
@@ -106,6 +126,8 @@ function WidgetsGrid(props){
   const widgetsTemplate = props.widgetsTemplate
   const selectedWidget = props.selectedWidget
   const changeSelectedWidget = props.changeSelectedWidget
+
+  if (!widgetsTemplate.widgets) {return <Loader />}
 
   const content = widgetsTemplate.widgets.map((widget, index)=>{
     const btnAddClass= (index===selectedWidget) ?  'border-primary' : ''
@@ -189,13 +211,14 @@ function WidgetsControlPanel(props){
 
 function WidgetForm(props){
   const widget = props.widget
+  const tags = props.tags
   const updateWidget = props.updateWidget
   const deleteWidget = props.deleteWidget
   let w = {}
 
-  if (widget.type === 'table') { w = <WTableForm widget={widget} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
-  if (widget.type === 'graph') { w = <WGraphForm widget={widget} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
-  if (widget.type === 'indicator') { w = <WIndicatorForm widget={widget} updateWidget={updateWidget} deleteWidget={deleteWidget}/> } 
+  if (widget.type === 'table') { w = <WTableForm widget={widget} tags={tags} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
+  if (widget.type === 'graph') { w = <WGraphForm widget={widget} tags={tags} updateWidget={updateWidget} deleteWidget={deleteWidget}/> }
+  if (widget.type === 'indicator') { w = <WIndicatorForm widget={widget} tags={tags} updateWidget={updateWidget} deleteWidget={deleteWidget}/> } 
   
   return (
     <div className='p-0 m-0 my-1'> 
@@ -274,7 +297,16 @@ function ModalSelectWidgetType(props){
 // -------------------------------------------------------------------------------------------------
 function WTableForm(props){
   const widget = props.widget
+  const tags = props.tags
   const updateWidget = props.updateWidget
+  const columnOptions = ['#No', 'code', 'name', 'value']
+  let tagsOptions = []
+
+  if (tags) {
+    tagsOptions = tags.map((tag)=>{
+      return tag.code
+    })
+  }
 
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
@@ -295,7 +327,7 @@ function WTableForm(props){
           id={'tags'} 
           placeholder={'...'} 
           value={widget.tags} 
-          options={['TEMP1', 'TEMP2', 'TEMP3']} 
+          options={tagsOptions} 
           comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
           onChange={handlSelectedTagsChange}
         />
@@ -304,7 +336,7 @@ function WTableForm(props){
           id={'fields'} 
           placeholder={'...'} 
           value={widget.fields} 
-          options={['#No', 'code', 'name', 'value']} 
+          options={columnOptions} 
           comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
           onChange={handlSelectedFieldsChange}
         />          
@@ -326,7 +358,15 @@ function WTableForm(props){
 // ----------------------------------------------------------------------------------
 function WGraphForm(props){
   const widget = props.widget
+  const tags = props.tags
   const updateWidget = props.updateWidget
+  let tagsOptions = []
+
+  if (tags) {
+    tagsOptions = tags.map((tag)=>{
+      return tag.code
+    })
+  }
 
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
@@ -348,7 +388,7 @@ function WGraphForm(props){
           id={'tags'} 
           placeholder={'...'} 
           value={widget.tags} 
-          options={['TEMP1', 'TEMP2', 'TEMP3']} 
+          options={tagsOptions} 
           comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
           onChange={handlSelectedTagsChange}
         />
@@ -373,10 +413,19 @@ function WGraphForm(props){
 // ----------------------------------------------------------------------------------
 function WIndicatorForm(props){
   const widget = props.widget
+  const tags = props.tags
   const updateWidget = props.updateWidget
+  let tagsOptions = []
+
+  if (tags) {
+    tagsOptions = tags.map((tag)=>{
+      return tag.code
+    })
+  }
 
   const handlTitleChange = (e) => { updateWidget({...widget, title: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
+  const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: [getSelectedOptions(e)]}) }  
   const handlTextLeftChange = (e) => { updateWidget({...widget, addTextLeft: e.target.value}) }
   const handlTextRightChange = (e) => { updateWidget({...widget, addTextRight: e.target.value}) }
 
@@ -394,7 +443,8 @@ function WIndicatorForm(props){
           id={'tags'} 
           placeholder={'...'} 
           value={widget.tags[0]} 
-          options={['TEMP1', 'TEMP2', 'TEMP3']} 
+          options={tagsOptions} 
+          onChange={handlSelectedTagsChange}          
         />
         <TextField titel={'Добавить текст слева'} id={'addTextLeft'} placeholder={'...'} value={widget.addTextLeft} onChange={handlTextLeftChange}/>
         <TextField titel={'Добавить текст справа'} id={'addTextRight'} placeholder={'...'} value={widget.addTextRight} onChange={handlTextRightChange}/>

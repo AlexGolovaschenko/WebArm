@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react' 
 
-import TagsHistoricalGraph from '../TagsGraph/TagsHistoricalGraph'
-import getColor from '../TagsGraph/GraphColors'
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import TagsHistoricalGraph from './components/TagsGraph/TagsHistoricalGraph'
+import getColor from './components/TagsGraph/GraphColors'
+import axiosInstance from "../utils/axiosApi";
+import getBaseUrl from '../utils/localSettings'
 const BASE_URL = getBaseUrl()
 
 

@@ -4,7 +4,7 @@ import Graph from './Graph'
 import GraphWithCrosshair from './GraphWithCrosshair'
 import Legend from './Legend'
 import Toolbar from './Toolbar'
-import Loader from '../../components/BaseParts/Loader'
+import Loader from '../../../base/components/Loader'
 
 
 function TagsHistoricalGraph(props) {

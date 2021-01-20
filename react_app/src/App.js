@@ -11,14 +11,14 @@ import {
 import {ProtectedRoute} from './utils/protectedRoute'
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
-import Navbar from './components/BaseParts/Navbar'
-import DeviceApp from './pages/device/deviceApp'
-import CompanyApp from './pages/company/companyApp'
-import WelcomePage from './pages/welcome'
-import Login from './pages/users/login'
-import Registration from './pages/users/registration'
-import ProfilePage from './pages/users/profile'
-import Page404 from './pages/pageNotFound'
+import DeviceApp from './device/deviceApp'
+import CompanyApp from './company/companyApp'
+import Login from './users/pages/login'
+import Registration from './users/pages/registration'
+import ProfilePage from './users/pages/profile'
+import Navbar from './base/components/Navbar'
+import WelcomePage from './base/pages/welcome'
+import Page404 from './base/pages/pageNotFound'
 
 import auth from './utils/auth'
 

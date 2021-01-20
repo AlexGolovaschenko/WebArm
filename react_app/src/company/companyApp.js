@@ -1,12 +1,12 @@
 import React from 'react' 
 import {Switch, Route} from 'react-router-dom'
 
-import Sidebar from '../../components/BaseParts/CompanySidebar'
-import CompanyOverviewPage from './overview'
-import EmployersPage from './employers'
-import FacilitiesPage from './facilities'
-import CompanyProfilePage from './profile'
-import Page404 from '../pageNotFound'
+import Sidebar from './components/CompanySidebar'
+import CompanyOverviewPage from './pages/overview'
+import EmployersPage from './pages/employers'
+import FacilitiesPage from './pages/facilities'
+import CompanyProfilePage from './pages/profile'
+import Page404 from '../base/pages/pageNotFound'
 
 export default function CompanyApp() { 
 

@@ -73,6 +73,7 @@ export function SelectField(props){
             defaultValue={props.value}
             onChange={props.onChange}            
           >
+            <option value="" disabled selected hidden>---</option>
             {props.options && props.options.map((option, index)=>{
               return <option key={index}>{option}</option>
             })}

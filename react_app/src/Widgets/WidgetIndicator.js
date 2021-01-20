@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react' 
 
-import TagIndicator from '../../components/TagsIndicator/TagIndicator'
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import TagIndicator from './components/TagsIndicator/TagIndicator'
+import axiosInstance from "../utils/axiosApi";
+import getBaseUrl from '../utils/localSettings'
 const BASE_URL = getBaseUrl()
 
 

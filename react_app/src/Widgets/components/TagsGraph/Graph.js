@@ -9,7 +9,7 @@ import {
     HorizontalGridLines, 
     Highlight} from 'react-vis';
 
-import useTargetClick from '../../utils/useTargetClick'
+import useTargetClick from '../../../utils/useTargetClick'
 
 
 function Graph(props) {

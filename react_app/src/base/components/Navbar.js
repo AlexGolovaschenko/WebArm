@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
-import LogoutBtn from './LogoutBtn'
+import LogoutBtn from '../../users/components/LogoutBtn'
 
 export default function Navbar(props) {
     const authed = props.authed

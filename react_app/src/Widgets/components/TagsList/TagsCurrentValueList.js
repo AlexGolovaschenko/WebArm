@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import TagsCurrentValueRow from './TagsCurrentValueRow'
-import Loader from '../../components/BaseParts/Loader'
+import Loader from '../../../base/components/Loader'
 
 
 function TagsCurrentValueList(props) {

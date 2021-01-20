@@ -1,7 +1,7 @@
 import React from 'react' 
 
-import DeviceHeader from '../../components/BaseParts/DeviceHeader'
-import RenderWidgets from '../../components/Widgets/renderWidgets'
+import DeviceHeader from '../components/DeviceHeader'
+import RenderWidgets from '../../Widgets/renderWidgets'
 
 
 

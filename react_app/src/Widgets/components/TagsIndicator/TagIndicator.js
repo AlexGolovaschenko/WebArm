@@ -1,5 +1,5 @@
 import React from 'react'
-import Loader from '../BaseParts/Loader'
+import Loader from '../../../base/components/Loader'
 
 
 export default function TagIndicator(props) {

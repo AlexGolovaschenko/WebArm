@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react' 
 
-import Loader from '../../components/BaseParts/Loader'
-import FacilityCard from '../../components/CompanyOverview/FacilityCard'
+import Loader from '../../base/components/Loader'
+import FacilityCard from '../components/FacilityCard'
 import axiosInstance from "../../utils/axiosApi";
 import getBaseUrl from '../../utils/localSettings'
 const BASE_URL = getBaseUrl()
