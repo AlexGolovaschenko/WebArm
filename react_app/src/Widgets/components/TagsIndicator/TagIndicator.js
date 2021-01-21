@@ -7,6 +7,11 @@ export default function TagIndicator(props) {
   const addTextRight = props.addTextRight
   const addTextLeft = props.addTextLeft
 
+  var value = 'none'
+  if (tag) {
+    value = props.precision ? tag.value.toFixed(props.precision) : tag.value
+  }
+
   return (
     <div className='card shadow-sm py-2 bg-dark text-light h-100'>
       <div className='d-flex mb-1'>
@@ -20,7 +25,7 @@ export default function TagIndicator(props) {
           {tag ? 
             <p className='display-4 m-0 p-0'>
               <span>{addTextLeft} </span> 
-              {tag.value} 
+              {value} 
               <span> {addTextRight}</span>
             </p> :
             <p className='display-4 text-secondary m-0 p-0'>Нет данных</p> 

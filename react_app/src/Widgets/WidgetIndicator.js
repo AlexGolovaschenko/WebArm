@@ -39,6 +39,7 @@ export default function WidgetIndicator(props) {
         <TagIndicator
           tag={tag} 
           title={props.widget.title}
+          precision={props.widget.precision}
           addTextRight={props.widget.addTextRight}
           addTextLeft={props.widget.addTextLeft}
           loading={loading} 

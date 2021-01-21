@@ -439,6 +439,7 @@ function WIndicatorForm(props){
   const handlOrderChange = (e) => { updateWidget({...widget, order: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
   const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }  
+  const handlPrecisionChange = (e) => { updateWidget({...widget, precision: e.target.value}) }  
   const handlTextLeftChange = (e) => { updateWidget({...widget, addTextLeft: e.target.value}) }
   const handlTextRightChange = (e) => { updateWidget({...widget, addTextRight: e.target.value}) }
 
@@ -460,6 +461,7 @@ function WIndicatorForm(props){
           options={tagsOptions} 
           onChange={handlSelectedTagsChange}          
         />
+        <NumberField titel={'Количество знаков после запятой'} id={'precision'} placeholder={'...'} value={widget.precision} min={0} max={5} onChange={handlPrecisionChange}/>
         <TextField titel={'Добавить текст слева'} id={'addTextLeft'} placeholder={'...'} value={widget.addTextLeft} onChange={handlTextLeftChange}/>
         <TextField titel={'Добавить текст справа'} id={'addTextRight'} placeholder={'...'} value={widget.addTextRight} onChange={handlTextRightChange}/>
       </form>        
