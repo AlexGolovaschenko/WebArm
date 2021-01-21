@@ -214,7 +214,10 @@ class HistoricalIntValue(models.Model):
     class Meta():
         verbose_name = 'Архивное INTEGER-значение тега'
         verbose_name_plural = 'Архивные INTEGER-значения тега'
-
+        indexes = [
+                    models.Index(fields=['tag', 'add_date']),
+                    models.Index(fields=['add_date']),
+                ]
 
 class HistoricalFloatValue(models.Model):
     tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
@@ -228,7 +231,10 @@ class HistoricalFloatValue(models.Model):
     class Meta():
         verbose_name = 'Архивное FLOAT-значение тега'
         verbose_name_plural = 'Архивные FLOAT-значения тега'
-
+        indexes = [
+                    models.Index(fields=['tag', 'add_date']),
+                    models.Index(fields=['add_date']),
+                ]
 
 class HistoricalStringValue(models.Model):
     tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
@@ -242,7 +248,10 @@ class HistoricalStringValue(models.Model):
     class Meta():
         verbose_name = 'Архивное STRING-значение тега'
         verbose_name_plural = 'Архивные STRING-значения тега'
-
+        indexes = [
+                    models.Index(fields=['tag', 'add_date']),
+                    models.Index(fields=['add_date']),
+                ]
 
 class HistoricalBooleanValue(models.Model):
     tag = models.ForeignKey(Tag, on_delete = models.CASCADE)
@@ -256,3 +265,7 @@ class HistoricalBooleanValue(models.Model):
     class Meta():
         verbose_name = 'Архивное BOOLEAN-значение тега'
         verbose_name_plural = 'Архивные BOOLEAN-значения тега'
+        indexes = [
+                    models.Index(fields=['tag', 'add_date']),
+                    models.Index(fields=['add_date']),
+                ]        
