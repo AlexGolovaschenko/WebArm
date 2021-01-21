@@ -518,5 +518,6 @@ const DefaultIndicator = {
   type: 'indicator',
   width: 1,
   title: 'Новый индикатор',
-  tags: [],               
+  tags: [],          
+  precision: 1,     
 }
