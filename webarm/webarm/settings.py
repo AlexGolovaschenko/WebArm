@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'devices.apps.DevicesConfig',
     'connectors.apps.ConnectorsConfig',
     'widgets.apps.WidgetsConfig',
+    'eventslogs.apps.EventslogsConfig',
 ]
 
 MIDDLEWARE = [
