@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
+import re
+from .handle_user_expressions import parse_used_tags, eval_expression
+
 from devices.models import Device
 
 
@@ -15,7 +18,8 @@ class Event(models.Model):
 
     is_alarm = models.BooleanField(verbose_name='Событие аварийное', default=False)
     is_active = models.BooleanField(verbose_name='Событие активно', default=False)
-    raise_time = models.DateTimeField(blank=True, verbose_name='Время возникновения')
+    raise_time = models.DateTimeField(blank=True, null=True, verbose_name='Время возникновения')
+    used_tags = ArrayField(models.CharField(max_length=200), blank=True, default=list, verbose_name='Используемые теги')
 
     class Meta():
         verbose_name = 'Событие'
@@ -24,6 +28,24 @@ class Event(models.Model):
     def __str__(self):
         return 'Событие: %s' % ( str(self.raise_message)[:50] + ('...' if len(str(self.raise_message)) > 50 else ''))
     
+    def save(self):
+        self.used_tags = parse_used_tags(self.expression)
+        super().save()
+
+    def check_event(self):
+        res = eval_expression(self.expression)
+        if res:
+            if not self.is_active: self._add_record_to_log(self.raise_message)
+            self.is_active = True
+        else:
+            if self.is_active: self._add_record_to_log(self.fall_message)
+            self.is_active = False
+        self.save()
+
+    def _add_record_to_log(self, message):
+        log = Log.objects.get(device = self.device)
+        Record.objects.create(log = log, message = message)
+
 
 
 class Log(models.Model):
@@ -47,4 +69,7 @@ class Record(models.Model):
         verbose_name_plural = 'Записи журналов'
 
     def __str__(self):
-        return 'Запись (%s)' % self.id
+        return 'Запись (%s): %s' %(self.id, self.message)
+
+
+

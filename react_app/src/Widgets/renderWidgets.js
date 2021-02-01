@@ -3,6 +3,7 @@ import React from 'react'
 import WidgetGraph from './WidgetGraph'
 import WidgetTable from './WidgetTable'
 import WidgetIndicator from './WidgetIndicator' 
+import WidgetEventsLog from './WidgetEventsLog' 
 
 
 
@@ -50,6 +51,14 @@ function WidgetRender(props) {
     return (
       <div className={`col-xl-${widget.width * 3} col-lg-${Math.min(widget.width * 6, 12)} col-md-12 p-1 m-0`}>
         <WidgetIndicator device_id={device_id} widget={widget}/>
+      </div>
+    )    
+  }    
+
+  if (widget.type === 'eventslog') {
+    return (
+      <div className={`col-xl-${widget.width * 3} col-lg-${Math.min(widget.width * 6, 12)} col-md-12 p-1 m-0`}>
+        <WidgetEventsLog device_id={device_id} widget={widget}/>
       </div>
     )    
   }    

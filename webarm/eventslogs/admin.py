@@ -29,9 +29,13 @@ class LogAdmin(admin.ModelAdmin):
         css = { "all" : ("css/hide_admin_original.css",) }
 
 class RecordAdmin(admin.ModelAdmin):
-    list_display  = ('__str__', 'date', 'log')
+    list_display  = ('__str__', 'date', 'log__device', 'log')
     readonly_fields = ['date']
     fields = ['log', 'date', 'message']
+
+    def log__device(self, instance):
+        return str(instance.log.device)
+    log__device.short_description = 'Устройство'
 
 class EventAdmin(admin.ModelAdmin):
     list_display  = ('__str__', 'device', 'enable', 'categories')

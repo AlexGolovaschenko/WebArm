@@ -15,6 +15,10 @@ from .models import (
 
     )
 
+from eventslogs.utils import check_events
+
+
+
 @receiver(post_save, sender=CurrentIntValue)
 def current_int_value_changed(sender, instance, **kwargs):
     obj = HistoricalIntValue.objects.create(
@@ -26,6 +30,8 @@ def current_int_value_changed(sender, instance, **kwargs):
 
     instance.tag.device.last_update = timezone.now()
     instance.tag.device.save()
+
+    check_events(instance.tag)
 
 
 @receiver(post_save, sender=CurrentFloatValue)
@@ -40,6 +46,8 @@ def current_float_value_changed(sender, instance, **kwargs):
     instance.tag.device.last_update = timezone.now()
     instance.tag.device.save()
 
+    check_events(instance.tag)
+
 
 @receiver(post_save, sender=CurrentStringValue)
 def current_string_value_changed(sender, instance, **kwargs):
@@ -53,6 +61,8 @@ def current_string_value_changed(sender, instance, **kwargs):
     instance.tag.device.last_update = timezone.now()
     instance.tag.device.save()
 
+    check_events(instance.tag)
+
 
 @receiver(post_save, sender=CurrentBooleanValue)
 def current_boolean_value_changed(sender, instance, **kwargs):
@@ -65,4 +75,7 @@ def current_boolean_value_changed(sender, instance, **kwargs):
 
     instance.tag.device.last_update = timezone.now()
     instance.tag.device.save()
+
+    check_events(instance.tag)
+
 

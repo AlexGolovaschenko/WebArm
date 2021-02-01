@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TagsCurrentValueRow from './TagsCurrentValueRow'
+import RecordsRow from './RecordsRow'
 import Loader from '../../../base/components/Loader'
 
 
-function TagsCurrentValueList(props) {
+export default function TagsCurrentValueList(props) {
   const [modal, setModal] = React.useState(false) // use it just for force update this component
   const modalButton = React.useRef(null)
   const graphCard = React.useRef(null)
@@ -44,16 +44,16 @@ function TagsCurrentValueList(props) {
           <table className="table table-hover table-dark table-sm text-light w-100 mb-0">
             <thead> 
               <tr>
-                <th className='border-0 text-secondary font-weight-bold pl-2'>№</th>
-                <th className='border-0 text-secondary font-weight-bold'>Код параметра</th>
-                <th className='border-0 text-secondary font-weight-bold'>Наименование параметра</th>
-                <th className='border-0 text-secondary font-weight-bold'>Текущее значение</th>
+                <th className='border-0 text-secondary font-weight-bold pl-2 d-none d-lg-table-cell' style={{width:'5%'}}>№</th>
+                <th className='border-0 text-secondary font-weight-bold' style={{width:'15%'}}>Дата</th>
+                <th className='border-0 text-secondary font-weight-bold' style={{width:'10%'}}>Время</th>
+                <th className='border-0 text-secondary font-weight-bold'>Событие</th>
               </tr>
             </thead>
             <tbody>
-                { props.tags.map((tag, index) => {
+                { props.records.map((record, index) => {
                   return (
-                    <TagsCurrentValueRow tag={tag} key={tag.code} index={index} />
+                    <RecordsRow record={record} key={index} index={index} />
                   )
                 }) }
             </tbody>
@@ -63,10 +63,3 @@ function TagsCurrentValueList(props) {
     </div>
   )
 }
-
-
-TagsCurrentValueList.propTypes = {
-    tags: PropTypes.arrayOf(PropTypes.object).isRequired
-}
-
-export default TagsCurrentValueList

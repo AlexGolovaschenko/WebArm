@@ -50,7 +50,8 @@ class ModbusDeviceView(APIView):
                 tag_obj = Tag.objects.get(id=t['id'], device__connector=connector)
                 r = self._update_tag_value(tag_obj, t['value'], choices.TAG_VALUE_QUALITY_GOOD)
                 tags_response.append(r)
-            except:
+            except Exception as e:
+                print(e)
                 tags_response.append({"tag":t['id'],"error":'object does not exist'})
         response = Response({'tags': tags_response}, status=status.HTTP_201_CREATED)
         return response

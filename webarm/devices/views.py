@@ -66,8 +66,6 @@ class DeviceTagsHistoricalValueView(APIView):
         if rq_tags:
             # return just selected tags
             tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
-            print(tags)
-            print(rq_tags)
         else:
             # return all tags, if tags[] param does not passed
              tags = Tag.objects.filter(device=device).order_by('name')
