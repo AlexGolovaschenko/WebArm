@@ -22,7 +22,7 @@ function format_time(time, style='medium') {
     return formatter.format(s)
   }
 
-  function format_date(time, style='long') {
+function format_date(time, style='long') {
     const s = new Date(time)
     let formatter = new Intl.DateTimeFormat([] , {dateStyle: style});
     return formatter.format(s)

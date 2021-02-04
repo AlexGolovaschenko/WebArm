@@ -28,10 +28,10 @@ class EventsConfigView(APIView):
         events_id = request.GET.getlist('events_id[]', None)
         if events_id:
             # return selected objects
-            events = Event.objects.filter(id__in=events_id, device=device)
+            events = Event.objects.filter(id__in=events_id, device=device).order_by('id')
         else:
             # return all
-            events = Event.objects.filter(device=device)
+            events = Event.objects.filter(device=device).order_by('id')
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -63,4 +63,16 @@ class EventsConfigView(APIView):
                     response_data.append(serializer.errors)
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, *args, **kwargs):
+        device = get_device_obj(request)
+        events_id = request.GET.getlist('events_id[]', None)
+        if events_id:
+            # delete all passed events
+            events = Event.objects.filter(id__in=events_id, device=device)
+            for e in events:
+                e.delete()
+        else:
+            pass
+        return Response({}, status=status.HTTP_200_OK)
 

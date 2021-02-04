@@ -89,7 +89,7 @@ export function MultipleSelectField(props){
     // props.placeholder : str
     // props.options : []
     // props.id : str
-    // props.value : int
+    // props.value : []
     // props.comment : str or jsx
     // props.onChange : function
     return (
@@ -159,3 +159,19 @@ export function InlineCheckboxField(props){
       </React.Fragment>
     ) 
   }
+
+
+
+  // ----------------------------------------------------------------------------------
+// utils
+
+export function getSelectedOptions(e) {
+  var options = e.target.options;
+  var value = [];
+  for (var i = 0, l = options.length; i < l; i++) {
+    if (options[i].selected) {
+      value.push(options[i].value);
+    }
+  }  
+  return value
+}

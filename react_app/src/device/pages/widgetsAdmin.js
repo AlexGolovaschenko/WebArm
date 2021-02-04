@@ -6,6 +6,7 @@ import {
   SelectField,
   MultipleSelectField,
   CheckboxField,
+  getSelectedOptions
 } from '../../base/forms/forms'
 
 import sortWidgetsByOrder from '../utils/sortWidgetsByOrder'
@@ -484,18 +485,6 @@ function WIndicatorForm(props){
 
 // ----------------------------------------------------------------------------------
 // utils
-
-function getSelectedOptions(e) {
-  var options = e.target.options;
-  var value = [];
-  for (var i = 0, l = options.length; i < l; i++) {
-    if (options[i].selected) {
-      value.push(options[i].value);
-    }
-  }  
-  return value
-}
-
 
 const DefaultTable = {
   type: 'table',

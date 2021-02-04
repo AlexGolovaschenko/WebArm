@@ -6,12 +6,13 @@ import re
 from .handle_user_expressions import parse_used_tags, eval_expression
 
 from devices.models import Device
+from . import choices
 
 
 class Event(models.Model):
     # configuration fields
     device = models.ForeignKey(Device, on_delete=models.CASCADE, verbose_name='Устройство')
-    categories = ArrayField(models.CharField(max_length=200), blank=True, default=list, verbose_name='Категории')
+    categories = ArrayField(models.CharField(max_length=20, choices=choices.EVENT_CATEGORIES), blank=True, default=list, verbose_name='Категории')
     enable = models.BooleanField(verbose_name='Активировать', default=False)
     expression = models.TextField(verbose_name='Формула', blank=True)     
     raise_message = models.TextField(verbose_name='Сообщение срабатывания', blank=True) 

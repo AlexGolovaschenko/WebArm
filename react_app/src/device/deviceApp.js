@@ -13,7 +13,7 @@ import DeviceGraphsPage from './pages/graphs'
 import DeviceAdminPage from './pages/deviceAdmin'
 import WidgetsAdminPage from './pages/widgetsAdmin'
 import EventsAdminPage from './pages/eventsAdmin'
-import EventDetailPage from './pages/eventDetail'
+import EventDetailPage, {EventCreatePage} from './pages/eventDetail'
 import Page404 from '../base/pages/pageNotFound'
 
 const BASE_URL = getBaseUrl()
@@ -55,6 +55,7 @@ export default function DeviceApp() {
               />
               <Route exact path={`/device/${id}/admin/events/`} component={()=><EventsAdminPage device_id={id}/>} />
               <Route exact path={`/device/${id}/admin/events/:event_id/detail/`} component={()=><EventDetailPage device_id={id}/>} />
+              <Route exact path={`/device/${id}/admin/events/create/`} component={()=><EventCreatePage device_id={id}/>} />
               <Route component={Page404} />
             </Switch>
           </div>
