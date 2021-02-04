@@ -4,7 +4,7 @@ import {Switch, Route} from 'react-router-dom'
 import Sidebar from './components/CompanySidebar'
 import CompanyOverviewPage from './pages/overview'
 import EmployersPage from './pages/employers'
-import FacilitiesPage from './pages/facilities'
+import FacilitiesOnMapPage from './pages/facilitiesOnMap'
 import CompanyProfilePage from './pages/profile'
 import Page404 from '../base/pages/pageNotFound'
 
@@ -20,7 +20,7 @@ export default function CompanyApp() {
             <Switch>
               <Route exact path='/company' component={CompanyOverviewPage} />
               <Route exact path='/company/overview' component={CompanyOverviewPage} />
-              <Route exact path='/company/facilities' component={FacilitiesPage} />
+              <Route exact path='/company/map' component={FacilitiesOnMapPage} />
               <Route exact path='/company/employers' component={EmployersPage} />
               <Route exact path='/company/profile' component={CompanyProfilePage} />
               <Route component={Page404} />

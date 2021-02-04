@@ -64,6 +64,13 @@ export default function Sidebar(props) {
                     <span className='pl-3 d-none d-lg-inline text-left'>Виджеты</span>
                   </div>
                 </NavLink>
+
+                <NavLink className="nav-link text-light btn" style={styleBtnRemoveOutline} activeClassName="bg-dark" to={`/device/${deviceId}/admin/events/`}> 
+                  <div className="d-inline-flex w-100 justify-content-center justify-content-lg-start">
+                    <i className='fas fa-circle px-1 pt-2' style={{fontSize:'0.6em'}}></i>
+                    <span className='pl-3 d-none d-lg-inline text-left'>События</span>
+                  </div>
+                </NavLink>
               </React.Fragment> }
           </div>
           

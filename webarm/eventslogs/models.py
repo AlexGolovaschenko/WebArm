@@ -9,13 +9,15 @@ from devices.models import Device
 
 
 class Event(models.Model):
+    # configuration fields
     device = models.ForeignKey(Device, on_delete=models.CASCADE, verbose_name='Устройство')
-    categories = ArrayField(models.CharField(max_length=200), blank=True, verbose_name='Категории')
+    categories = ArrayField(models.CharField(max_length=200), blank=True, default=list, verbose_name='Категории')
     enable = models.BooleanField(verbose_name='Активировать', default=False)
     expression = models.TextField(verbose_name='Формула', blank=True)     
     raise_message = models.TextField(verbose_name='Сообщение срабатывания', blank=True) 
     fall_message = models.TextField(verbose_name='Сообщение отключения', blank=True) 
 
+    # read only fields
     is_alarm = models.BooleanField(verbose_name='Событие аварийное', default=False)
     is_active = models.BooleanField(verbose_name='Событие активно', default=False)
     raise_time = models.DateTimeField(blank=True, null=True, verbose_name='Время возникновения')
@@ -28,9 +30,9 @@ class Event(models.Model):
     def __str__(self):
         return 'Событие: %s' % ( str(self.raise_message)[:50] + ('...' if len(str(self.raise_message)) > 50 else ''))
     
-    def save(self):
+    def save(self, *args, **kwargs):
         self.used_tags = parse_used_tags(self.expression)
-        super().save()
+        super(Event, self).save(*args, **kwargs)
 
     def check_event(self):
         res = eval_expression(self.expression)

@@ -15,10 +15,10 @@ export default function Sidebar() {
                   </div>
                 </NavLink>
                 
-                <NavLink className="nav-link text-light btn" style={{outline: 'none', boxShadow: 'none'}} activeClassName="bg-dark" to="/company/facilities/">
+                <NavLink className="nav-link text-light btn" style={{outline: 'none', boxShadow: 'none'}} activeClassName="bg-dark" to="/company/map/">
                   <div className="d-inline-flex w-100 justify-content-center justify-content-lg-start">
-                    <i className='fas fa-city' style={{fontSize:'1.3em'}}></i>
-                    <span className='pl-3 d-none d-lg-inline'>Объекты</span>
+                    <i className='fas fa-map-marked-alt' style={{fontSize:'1.3em'}}></i>
+                    <span className='pl-3 d-none d-lg-inline'>Карта</span>
                   </div> 
                 </NavLink>
                 

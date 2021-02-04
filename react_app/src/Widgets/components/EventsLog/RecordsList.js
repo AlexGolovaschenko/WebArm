@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import RecordsRow from './RecordsRow'
 import Loader from '../../../base/components/Loader'
 
