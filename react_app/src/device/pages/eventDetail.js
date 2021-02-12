@@ -118,8 +118,8 @@ function EventForm(props) {
                                  <span className='text-light'> НЕ АКТИВНО </span>
               } 
           </p>
-          <p className='col-md-6'> Время последнего срабтывания: 
-              {event.raise_time ? format_time(event.raise_time) : 
+          <p className='col-md-6'> Время последнего срабтывания:  
+              {event.raise_time ? <span> {format_time(event.raise_time)} </span>: 
                                   <span className='text-secondary'> Никогда </span>
               } 
           </p>

@@ -125,11 +125,13 @@ function EventsListEntry(props) {
           <React.Fragment key={index}> 
             <tr> 
               <td className='text-secondary py-2'>{index+1}</td>
+
               <td className='py-0'>
                   <NavLink to={`/device/${device_id}/admin/events/${event.id}/detail/`} className='btn btn-link w-100 text-left pl-0 py-2 text-light'>
                     {event.raise_message ? event.raise_message : <i className='text-secondary'>Сообщение не задано ...</i>}
                   </NavLink>
               </td>
+
               <td>{event.enable ? <button className='btn btn-outline-dark fas fa-check text-success' 
                                           onClick={() => toggleEventEnable(event)}
                                   ></button> : 
@@ -138,7 +140,9 @@ function EventsListEntry(props) {
                                           onClick={() => toggleEventEnable(event)}
                                   ></button>}
               </td>
-              <td>{event.is_active ? <i className='fas fa-exclamation-triangle text-warning ml-3 py-2'></i> : ''}</td>
+
+              <td>{event.is_active ? <i className='fas fa-exclamation-triangle text-warning ml-3 py-2' style={{fontSize:'1.1rem'}}></i> : ''}</td>
+
               <td>  <button className='btn btn-outline-dark fas fa-times text-danger' 
                             style={{fontSize:'1.2rem'}}
                             onClick={() => handlEventDelete(event.id)}
