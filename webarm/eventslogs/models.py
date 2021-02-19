@@ -45,7 +45,10 @@ class Event(models.Model):
         self.save()
 
     def _add_record_to_log(self, message):
-        log = Log.objects.get(device = self.device)
+        try:
+            log = Log.objects.get(device = self.device)
+        except Log.DoesNotExist:
+            log = Log.objects.create(device = self.device)
         Record.objects.create(log = log, message = message)
 
 

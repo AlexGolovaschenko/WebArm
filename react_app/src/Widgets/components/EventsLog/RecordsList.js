@@ -38,27 +38,42 @@ export default function TagsCurrentValueList(props) {
       </div>
   
       { props.loading ? 
-        <div className='d-flex justify-content-center'><Loader /></div> :     
-        <div className="table-responsive px-3">
-          <table className="table table-hover table-dark table-sm text-light w-100 mb-0">
-            <thead> 
-              <tr>
-                <th className='border-0 text-secondary font-weight-bold pl-2 d-none d-lg-table-cell' style={{width:'5%'}}>№</th>
-                <th className='border-0 text-secondary font-weight-bold' style={{width:'15%'}}>Дата</th>
-                <th className='border-0 text-secondary font-weight-bold' style={{width:'10%'}}>Время</th>
-                <th className='border-0 text-secondary font-weight-bold'>Событие</th>
-              </tr>
-            </thead>
-            <tbody>
-                { props.records.map((record, index) => {
-                  return (
-                    <RecordsRow record={record} key={index} index={index} />
-                  )
-                }) }
-            </tbody>
-          </table>
-        </div>
+        <div className='d-flex justify-content-center'><Loader /></div> 
+        :
+        <>
+          { props.records.length > 0 ? <RecordsTable records={props.records}/> : <NoRecords /> }
+        </>
       }
     </div>
   )
+}
+
+
+function RecordsTable(props) {
+  return (
+    <div className="table-responsive px-3">
+      <table className="table table-hover table-dark table-sm text-light w-100 mb-0">
+        <thead> 
+          <tr>
+            <th className='border-0 text-secondary font-weight-bold pl-2 d-none d-lg-table-cell' style={{width:'5%'}}>№</th>
+            <th className='border-0 text-secondary font-weight-bold' style={{width:'15%'}}>Дата</th>
+            <th className='border-0 text-secondary font-weight-bold' style={{width:'10%'}}>Время</th>
+            <th className='border-0 text-secondary font-weight-bold'>Событие</th>
+          </tr>
+        </thead>
+        <tbody>
+            { props.records.map((record, index) => {
+              return (
+                <RecordsRow record={record} key={index} index={index} />
+              )
+            }) }
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+
+function NoRecords() {
+  return <i className='text-secondary ml-3'>Записи отсутствуют ...</i>
 }

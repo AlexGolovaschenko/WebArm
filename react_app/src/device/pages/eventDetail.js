@@ -52,7 +52,6 @@ export default function EventDetailPage(props) {
 
 
 
-
 export function EventCreatePage(props) {
   const device_id = props.device_id;
   const defaultEventSettings = { device: device_id, enable: false, categories: [] }
@@ -186,16 +185,3 @@ function format_time(time, date_style='long', time_style='medium') {
 }
 
 
-
-
-// <p> id: {event.id} </p>
-// <p> device: {event.device} </p>
-// <p> categories: {event.categories} </p>
-// <p> enable: {event.enable} </p>
-// <p> expression: {event.expression} </p>
-// <p> raise_message: {event.raise_message} </p>
-// <p> fall_message: {event.fall_message} </p>
-// <p> is_alarm: {event.is_alarm} </p>
-// <p> is_active: {event.is_active} </p>
-// <p> raise_time: {event.raise_time} </p>
-// <p> used_tags: {event.used_tags} </p>

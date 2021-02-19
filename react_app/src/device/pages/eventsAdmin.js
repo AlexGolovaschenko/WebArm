@@ -73,7 +73,11 @@ export default function EventsAdminPage(props) {
                   </NavLink>
                 </div>
 
-                <EventsList events={events} device_id={device_id} handlEventDelete={deleteEvent} toggleEventEnable={toggleEventEnable}/>
+                { events.length > 0 ?
+                  <EventsList events={events} device_id={device_id} handlEventDelete={deleteEvent} toggleEventEnable={toggleEventEnable}/>
+                  :
+                  <NoEvents />
+                }
               </React.Fragment>
             }
 
@@ -155,4 +159,10 @@ function EventsListEntry(props) {
       }
     </React.Fragment>
   )
+}
+
+
+
+function NoEvents() {
+  return <i className='text-secondary '>События отсутствуют ...</i>
 }

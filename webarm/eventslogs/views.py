@@ -17,10 +17,14 @@ def get_device_obj(request):
 class EventsLogView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj(request)
-        log = Log.objects.get(device=device)
-        records = Record.objects.filter(log=log).order_by('-date')
-        serializer = LogRecordSerializer(records, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            log = Log.objects.get(device=device)
+            records = Record.objects.filter(log=log).order_by('-date')
+            serializer = LogRecordSerializer(records, many=True)
+            data = serializer.data
+        except Log.DoesNotExist:
+            data = []
+        return Response(data, status=status.HTTP_200_OK)
 
 class EventsConfigView(APIView):
     def get(self, request, *args, **kwargs):
