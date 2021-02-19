@@ -3,18 +3,13 @@ from django.utils.html import mark_safe
 from django.urls import reverse
 from django.forms.models import ModelForm
 
-from nested_inline.admin import NestedStackedInline, NestedModelAdmin, NestedTabularInline
-
 
 from . import choices
 from .models import (
         Device, 
         Tag, 
         ModbusTagParameters, 
-        ModbusDeviceParameters, 
-        # CurrentFloatValue,
-        # HistoricalIntValue, 
-        # HistoricalFloatValue 
+        ModbusDeviceParameters,
     )
 
 
@@ -29,25 +24,35 @@ class AlwaysChangedModelForm(ModelForm):
 
 # -------------------------------------------------------------------
 # inline form sets
-class ModbusTagParametersInline(NestedStackedInline):
+class ModbusTagParametersInline(admin.StackedInline):
     model = ModbusTagParameters
     form = AlwaysChangedModelForm
 
-class ModbusDeviceParametersInline(NestedStackedInline):
+
+class ModbusDeviceParametersInline(admin.StackedInline):
     model = ModbusDeviceParameters
     form = AlwaysChangedModelForm
 
-class TagsInline(NestedTabularInline):
+
+class TagsInline(admin.TabularInline):
     model = Tag
     show_change_link = True
-    fields = ['code', 'name', 'data_type']
+    fields = ['code', 'name', 'data_type', 'edit_link']
+    readonly_fields = ['edit_link', ]
     extra = 0
-    inlines = [ModbusTagParametersInline] 
     
+    def edit_link(self, instance):
+        if instance.id:
+            url = reverse('admin:devices_tag_change', args=(instance.id,))
+        else:
+            url = reverse('admin:devices_tag_add')        
+        return mark_safe("<a href='%s'>%s</a>" % (url, 'Параметры ModBus'))
+    edit_link.short_description = 'Редактировать'
+
 
 # -------------------------------------------------------------------
 # admin models
-class DeviceAdmin(NestedModelAdmin):
+class DeviceAdmin(admin.ModelAdmin):
     inlines = [ModbusDeviceParametersInline, TagsInline]
     list_display  = ('name', 'company_owner', 'company_name', 'facility_name', 'connector')
 
@@ -62,6 +67,9 @@ class DeviceAdmin(NestedModelAdmin):
     def facility_name(self, obj):
         return str(obj.facility.name)
     facility_name.short_description = 'Объект'
+
+    class Media:
+        css = { "all" : ("devices/css/hide_admin_original.css",) }
 
 
 class TagAdmin(admin.ModelAdmin):

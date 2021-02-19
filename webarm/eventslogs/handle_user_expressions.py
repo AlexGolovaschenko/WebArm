@@ -1,7 +1,10 @@
 from devices.models import Tag
 
 import re
-# expression example: {{tag1}} > 10 or ( {{tag2}} < 5 and {{tag3}} = 2 )
+
+
+# expression example: 
+# {{tag1}} > 10 or ( {{tag2}} < 5 and {{tag3}} = 2 )
 
 
 
@@ -20,3 +23,21 @@ def eval_expression(expression):
         tag_value = Tag.objects.get(code=tc).value
         eval_expression = eval_expression.replace(r'{{' + tc + r'}}', str(tag_value))
     return eval(eval_expression) 
+
+
+
+# check expration for being safe
+def is_expression_safe(expression):
+    result = expression
+    # remove tag codes
+    result = re.sub(r'\{\{\w*\}\}', '', result)
+    # remove digits
+    result = re.sub(r'[\d.]+', '', result)
+    # remove spaces
+    result = re.sub(r'\s+', '', result)
+    # remove allowed simbols
+    result = re.sub(r'[-/%><=!&\|\(\)\+\*]+', '', result)
+
+    # if the result is not empty, then the expression contains forbidden characters
+    safe = (result == '')
+    return safe

@@ -83,9 +83,9 @@ class ModbusDeviceParameters(models.Model):
 
 #--------------------------------------------------------------------------------------------------------
 class Tag(models.Model):
-    code = models.CharField(max_length=40, verbose_name='Код', unique=True)
+    code = models.CharField(max_length=40, verbose_name='Код')
     name = models.CharField(max_length=100, verbose_name='Наименование')
-    device = models.ForeignKey(Device, on_delete = models.CASCADE)
+    device = models.ForeignKey(Device, on_delete = models.CASCADE, verbose_name='Устройство')
     data_type = models.CharField(max_length=20, verbose_name='Тип данных', choices=choices.WEBARM_SUPPORTED_DATA_TYPES)
 
     @property
@@ -132,6 +132,8 @@ class Tag(models.Model):
     class Meta():
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+        unique_together = ['code', 'device']
+
 
 class ModbusTagParameters(models.Model):
     tag = models.OneToOneField(Tag, on_delete = models.CASCADE)

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
-import re
 from .handle_user_expressions import parse_used_tags, eval_expression
 
 from devices.models import Device

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from .models import (
     Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
@@ -45,6 +46,14 @@ class TagsParametersSerializer(serializers.ModelSerializer):
             'code',  
             'modbus_parameters',
         )
+
+        # https://www.django-rest-framework.org/api-guide/validators/
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Tag.objects.all(),
+                fields=['code', 'device']
+            )
+        ]
 
 
 class TagsValueSerializer(serializers.ModelSerializer):
