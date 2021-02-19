@@ -33,10 +33,13 @@ def is_expression_safe(expression):
     result = re.sub(r'\{\{\w*\}\}', '', result)
     # remove digits
     result = re.sub(r'[\d.]+', '', result)
+    # remove allowed simbols
+    result = re.sub(r'[-/%><=!&~\^\|\(\)\+\*]+', '', result)
+    # remove allowed words
+    exclusions = '|'.join([r'\bor\b', r'\band\b', r'\bnot\b'])
+    result = re.sub(exclusions, '', result)
     # remove spaces
     result = re.sub(r'\s+', '', result)
-    # remove allowed simbols
-    result = re.sub(r'[-/%><=!&\|\(\)\+\*]+', '', result)
 
     # if the result is not empty, then the expression contains forbidden characters
     safe = (result == '')

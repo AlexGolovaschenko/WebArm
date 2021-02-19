@@ -19,7 +19,7 @@ export function TextField(props){
             defaultValue={props.value}
             onChange={props.onChange}
           ></input>
-          <p className='text-small text-info p-0 m-0'>{props.comment}</p>
+          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
         </div>
       </React.Fragment>
     ) 
@@ -48,7 +48,7 @@ export function NumberField(props){
             max={props.max}
             onChange={props.onChange}            
           ></input>
-          <p className='text-small text-info p-0 pt-1 m-0'>{props.comment}</p>        
+          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
         </div>
       </React.Fragment>
     ) 
@@ -78,7 +78,7 @@ export function SelectField(props){
               return <option key={index}>{option}</option>
             })}
           </select>
-          <p className='text-small text-info p-0 m-0'>{props.comment}</p>
+          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
         </div>
       </React.Fragment>
     ) 
@@ -108,7 +108,7 @@ export function MultipleSelectField(props){
               return <option key={index}>{option}</option>
             })}
           </select>
-          <p className='text-small text-info p-0 m-0'>{props.comment}</p>
+          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
         </div>
       </React.Fragment>
     ) 
@@ -131,7 +131,7 @@ export function CheckboxField(props){
             onChange={props.onChange}
         ></input>
           <span>{props.titel}</span>
-          <p className='text-small text-info p-0 m-0'>{props.comment}</p>
+          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
         </div>
       </React.Fragment>
     ) 
@@ -154,7 +154,7 @@ export function InlineCheckboxField(props){
             onChange={props.onChange}
           ></input>
           <span>{props.titel}</span>
-          <p className='text-small text-info p-0 m-0'>{props.comment}</p>
+          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
         </div>
       </React.Fragment>
     ) 

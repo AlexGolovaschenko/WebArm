@@ -99,7 +99,53 @@ function EventForm(props) {
     <React.Fragment>
       <form onSubmit={handlSubmit}>
         <CheckboxField titel={'Активировать контроль события'} id={'enable'} checked={event.enable} onChange={handlEnableChange}/>  
-        <TextField titel={'Формула'} id={'expression'} placeholder={'...'} value={event.expression} onChange={handlExpressionChange}/>
+        <TextField titel={'Формула'} id={'expression'} placeholder={'...'} value={event.expression} onChange={handlExpressionChange}
+          comment={
+            <div>
+            <button type='button' className='mt-3 btn btn-sm btn-outline-info' data-toggle="collapse" data-target="#expressions_help">
+              Справка <i className='far fa-question-circle'></i>
+            </button>
+            <p id="expressions_help" className="collapse mt-3 border-top border-bottom border-info py-3">
+            В формуле допустимо применение следующих конструкций: <br/>
+            - получить текущее значение тега <kbd className='ml-2'>{'{{tag_code}}'}</kbd>  <br/>
+            - операторы сравнения
+            <kbd className='ml-2' title="Равно">{'=='}</kbd>
+            <kbd className='ml-2' title="Неравно">{'!='}</kbd>
+            <kbd className='ml-2' title="Больше">{'>'}</kbd>
+            <kbd className='ml-2' title="Меньше">{'<'}</kbd>
+            <kbd className='ml-2' title="Больше или равно">{'>='}</kbd>
+            <kbd className='ml-2' title="Меньше или равно">{'<='}</kbd>
+            <br/>
+            - арифметические операторы
+            <kbd className='ml-2' title="Суммирование">{'+'}</kbd>
+            <kbd className='ml-2' title="Вычитание">{'-'}</kbd>
+            <kbd className='ml-2' title="Деление">{'/'}</kbd>
+            <kbd className='ml-2' title="Деление без остатка">{'//'}</kbd>
+            <kbd className='ml-2' title="Остаток от деления">{'%'}</kbd>
+            <kbd className='ml-2' title="Умножение">{'*'}</kbd>
+            <kbd className='ml-2' title="Возведение в степень">{'**'}</kbd>
+            <br/>
+            - логические операторы
+            <kbd className='ml-2' title="Логическое И">{'and'}</kbd>
+            <kbd className='ml-2' title="Логическое ИЛИ">{'or'}</kbd>
+            <kbd className='ml-2' title="Логическая инверсия">{'not'}</kbd>
+            <br/>
+            - битовые операторы
+            <kbd className='ml-2' title="Битовое И">{'&'}</kbd>
+            <kbd className='ml-2' title="Битовое ИЛИ">{'|'}</kbd>
+            <kbd className='ml-2' title="Битовое исключающее ИЛИ">{'^'}</kbd>
+            <kbd className='ml-2' title="Побитовая инверсия">{'~'}</kbd>
+            <kbd className='ml-2' title="Побитовый сдвиг в лево">{'<<'}</kbd>
+            <kbd className='ml-2' title="Побитовый сдвиг в право">{'>>'}</kbd>
+            <br/>
+            Примеры формул:  <br/>
+            - является ли значение тега tag1 больше или равно 12 <kbd className='ml-2'>{'{{tag2}} >= 12'}</kbd> <br/>
+            - получение значения бита №5 тега tag2 <kbd className='ml-2'>{'{{tag2}} >> 5 & 1'}</kbd>  <br/>
+            - значение бита №0 тега tag2 или значение бита №14 тега tag3 <kbd className='ml-2'>{'({{tag2}} & 1) or ({{tag3}} >> 14 & 1)'}</kbd> 
+          </p>
+          </div>
+          }
+        />
         <TextField titel={'Сообщение срабатывания'} id={'raise_message'} placeholder={'...'} value={event.raise_message} onChange={handlRaiseMessageChange}/>
         <TextField titel={'Сообщение отключения'} id={'fall_message'} placeholder={'...'} value={event.fall_message} onChange={handlFallMessageChange}/>
         <SelectField 
