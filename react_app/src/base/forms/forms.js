@@ -70,10 +70,10 @@ export function SelectField(props){
             className="form-control form-control-sm bg-secondary border-secondary text-light" 
             id={props.id} 
             placeholder={props.placeholder} 
-            defaultValue={props.value}
+            value={ props.value ? props.value : '' }
             onChange={props.onChange}            
           >
-            <option value="" disabled selected hidden>---</option>
+            <option value="" disabled hidden>---</option>
             {props.options && props.options.map((option, index)=>{
               return <option key={index}>{option}</option>
             })}
@@ -100,8 +100,8 @@ export function MultipleSelectField(props){
             multiple 
             className="form-control form-control-sm bg-secondary border-secondary text-light" 
             id={props.id} 
-            placeholder={props.placeholder} 
-            defaultValue={props.value}
+            placeholder={props.placeholder}
+            value={ props.value ? props.value : [] } 
             onChange={props.onChange}            
           >
             {props.options && props.options.map((option, index)=>{

@@ -139,7 +139,7 @@ function EventForm(props) {
             <kbd className='ml-2' title="Побитовый сдвиг в право">{'>>'}</kbd>
             <br/>
             Примеры формул:  <br/>
-            - является ли значение тега tag1 больше или равно 12 <kbd className='ml-2'>{'{{tag2}} >= 12'}</kbd> <br/>
+            - является ли значение тега tag1 больше или равно 12.5 <kbd className='ml-2'>{'{{tag2}} >= 12.5'}</kbd> <br/>
             - получение значения бита №5 тега tag2 <kbd className='ml-2'>{'{{tag2}} >> 5 & 1'}</kbd>  <br/>
             - значение бита №0 тега tag2 или значение бита №14 тега tag3 <kbd className='ml-2'>{'({{tag2}} & 1) or ({{tag3}} >> 14 & 1)'}</kbd> 
           </p>

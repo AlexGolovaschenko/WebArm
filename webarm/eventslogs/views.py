@@ -62,7 +62,6 @@ class EventsConfigView(APIView):
                 else:
                     response_data.append(serializer.errors)
 
-        print(response_data)
         return Response(response_data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs):
