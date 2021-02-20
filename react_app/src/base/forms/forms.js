@@ -57,7 +57,7 @@ export function NumberField(props){
 export function SelectField(props){
     // props.titel : str
     // props.placeholder : str
-    // props.options : []
+    // props.options : [{value, name}, {value, name}, ]
     // props.id : str
     // props.value : int
     // props.comment : str or jsx
@@ -75,7 +75,7 @@ export function SelectField(props){
           >
             <option value="" disabled hidden>---</option>
             {props.options && props.options.map((option, index)=>{
-              return <option key={index}>{option}</option>
+              return <option key={index} value={option.value}>{option.name}</option>
             })}
           </select>
           <div className='text-small text-info p-0 m-0'>{props.comment}</div>
@@ -87,7 +87,7 @@ export function SelectField(props){
 export function MultipleSelectField(props){
     // props.titel : str
     // props.placeholder : str
-    // props.options : []
+    // props.options : [{value, name}, {value, name}, ]
     // props.id : str
     // props.value : []
     // props.comment : str or jsx
@@ -105,7 +105,7 @@ export function MultipleSelectField(props){
             onChange={props.onChange}            
           >
             {props.options && props.options.map((option, index)=>{
-              return <option key={index}>{option}</option>
+              return <option key={index} value={option.value}>{option.name}</option>
             })}
           </select>
           <div className='text-small text-info p-0 m-0'>{props.comment}</div>

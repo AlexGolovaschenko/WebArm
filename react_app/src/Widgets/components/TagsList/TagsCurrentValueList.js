@@ -39,26 +39,33 @@ function TagsCurrentValueList(props) {
       </div>
   
       { props.loading ? 
-        <div className='d-flex justify-content-center'><Loader /></div> :     
+        <div className='d-flex justify-content-center'><Loader /></div> 
+        :
+        <>
+        { props.columns ?    
         <div className="table-responsive px-3">
           <table className="table table-hover table-dark table-sm text-light w-100 mb-0">
             <thead> 
               <tr>
-                <th className='border-0 text-secondary font-weight-bold pl-2'>№</th>
-                <th className='border-0 text-secondary font-weight-bold'>Код параметра</th>
-                <th className='border-0 text-secondary font-weight-bold'>Наименование параметра</th>
-                <th className='border-0 text-secondary font-weight-bold'>Текущее значение</th>
+                { (props.columns.indexOf('#No') >= 0) ? <th className='border-0 text-secondary font-weight-bold pl-2'>№</th> : null }
+                { (props.columns.indexOf('code') >= 0) ? <th className='border-0 text-secondary font-weight-bold'>Код параметра</th> : null }
+                { (props.columns.indexOf('name') >= 0) ? <th className='border-0 text-secondary font-weight-bold'>Наименование параметра</th> : null }
+                { (props.columns.indexOf('value') >= 0) ? <th className='border-0 text-secondary font-weight-bold'>Текущее значение</th> : null }
               </tr>
             </thead>
             <tbody>
                 { props.tags.map((tag, index) => {
                   return (
-                    <TagsCurrentValueRow tag={tag} key={tag.code} index={index} />
+                    <TagsCurrentValueRow tag={tag} columns={props.columns} key={tag.code} index={index} />
                   )
                 }) }
             </tbody>
           </table>
         </div>
+        :
+          <i className='text-secondary ml-3'>Данные для отображения не заданы ... </i>
+        } 
+        </>
       }
     </div>
   )

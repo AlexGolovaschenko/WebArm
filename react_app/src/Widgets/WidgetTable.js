@@ -37,6 +37,7 @@ export default function WidgetTable(props) {
         <TagsCurrentValueList
           tags={tags} 
           title={props.widget.title} 
+          columns={props.widget.columns} 
           loading={loading} 
         />
     </React.Fragment>

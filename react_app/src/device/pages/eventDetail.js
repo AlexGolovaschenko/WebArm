@@ -82,7 +82,12 @@ export function EventCreatePage(props) {
 function EventForm(props) {
   const [event, setEvent] = useState(props.event)
   const onSubmit = props.onSubmit
-  let categoriesOptions = ['Аварйное', 'Предупреждение', 'Информационное', 'Отладочное']
+  let categoriesOptions = [
+    {value: 'Alarm',    name:'Аварйное'}, 
+    {value: 'Warning',  name:'Предупреждение'}, 
+    {value: 'Info',     name:'Информационное'}, 
+    {value: 'Debug',    name:'Отладочное'}
+  ]
 
   const handlSubmit = (e) => { 
     e.preventDefault();

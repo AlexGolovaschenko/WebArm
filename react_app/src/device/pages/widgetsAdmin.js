@@ -308,12 +308,17 @@ function WTableForm(props){
   const widget = props.widget
   const tags = props.tags
   const updateWidget = props.updateWidget
-  const columnOptions = ['#No', 'code', 'name', 'value']
+  const columnOptions = [
+    {value: '#No', name: '№'},
+    {value: 'code', name: 'Код тега'},
+    {value: 'name', name: 'Наименование тега'},
+    {value: 'value', name: 'Значение тега'}
+  ]
   let tagsOptions = []
 
   if (tags) {
     tagsOptions = tags.map((tag)=>{
-      return tag.code
+      return {value: tag.code, name: (tag.code + ' - ' + tag.name) }
     })
   }
 
@@ -321,7 +326,7 @@ function WTableForm(props){
   const handlOrderChange = (e) => { updateWidget({...widget, order: e.target.value}) }
   const handlWidthChange = (e) => { updateWidget({...widget, width: e.target.value}) }
   const handlSelectedTagsChange = (e) => { updateWidget({...widget, tags: getSelectedOptions(e)}) }
-  const handlSelectedFieldsChange = (e) => { updateWidget({...widget, fields: getSelectedOptions(e)}) }
+  const handlSelectedColumnsChange = (e) => { updateWidget({...widget, columns: getSelectedOptions(e)}) }
 
   return (
     <React.Fragment>
@@ -344,12 +349,12 @@ function WTableForm(props){
         />
         <MultipleSelectField 
           titel={'Колонки'} 
-          id={'fields'} 
+          id={'columns'} 
           placeholder={'...'} 
-          value={widget.fields} 
+          value={widget.columns} 
           options={columnOptions} 
           comment={<span className='m-0 p-0 d-block mt-1'>Удерживайте <kbd className='text-info'>Ctrl</kbd> для выбора нескольких элементов</span>}
-          onChange={handlSelectedFieldsChange}
+          onChange={handlSelectedColumnsChange}
         />          
       </form>
     </React.Fragment>
@@ -362,7 +367,7 @@ function WTableForm(props){
 //   width: 2,
 //   title: 'Таблица параметров 2',
 //   tags: ['TEMP1', 'TEMP2', 'TEMP3'],   
-//   fields: ['#No', 'code', 'name', 'value']              
+//   columns: ['#No', 'code', 'name', 'value']              
 // }
 
 
@@ -375,7 +380,7 @@ function WGraphForm(props){
 
   if (tags) {
     tagsOptions = tags.map((tag)=>{
-      return tag.code
+      return  {value: tag.code, name: (tag.code + ' - ' + tag.name) }
     })
   }
 
@@ -432,7 +437,7 @@ function WIndicatorForm(props){
 
   if (tags) {
     tagsOptions = tags.map((tag)=>{
-      return tag.code
+      return {value: tag.code, name: (tag.code + ' - ' + tag.name) }
     })
   }
 
@@ -491,7 +496,7 @@ const DefaultTable = {
   width: 4,
   title: 'Новая таблица',
   tags: [],   
-  fields: []               
+  columns: ['#No', 'code', 'name', 'value']               
 }
 
 const DefaultGraph = {
