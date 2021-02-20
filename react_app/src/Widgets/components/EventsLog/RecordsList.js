@@ -46,6 +46,7 @@ export default function TagsCurrentValueList(props) {
         :
         <>
           { props.records.length > 0 ? <RecordsTable records={props.records}/> : <NoRecords /> }
+          <PaginationBar readNextPage={props.readNextPage} readPreviousPage={props.readPreviousPage} readLogPage={props.readLogPage} pagination={props.pagination} />
         </>
       }
     </div>
@@ -109,5 +110,35 @@ function CategorySecetionButton(props) {
       { props.selected ? <i className='fas fa-check-square text-success mr-2'></i> : <i className='far fa-square text-info mr-2'></i> }
       { props.children }
     </button>    
+  )
+}
+
+
+
+function PaginationBar(props) {
+  const list = Array.apply(null, Array(props.pagination.num_pages))
+
+  if (props.pagination.num_pages <= 1) {
+    return null
+  }
+
+  return (
+    <div className='d-flex justify-content-center p-3'>
+      <button type='button' className='btn btn-sm btn-outline-info m-1' onClick={props.readPreviousPage} > {'<<'} </button>
+      { list.map((item, index)=>{
+          const active = (index+1 === props.pagination.page_number) ? ' active' : ''
+          return(
+            <button type='button' key={index}
+              className={'btn btn-sm btn-outline-info m-1' + active} 
+              style={{minWidth:'35px'}}
+              onClick={()=>{props.readLogPage(index+1)}}
+            >
+              {index+1}
+            </button>
+          )
+        })
+      }
+      <button type='button' className='btn btn-sm btn-outline-info m-1' onClick={props.readNextPage} > {'>>'} </button>
+    </div>
   )
 }

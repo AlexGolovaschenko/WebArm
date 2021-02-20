@@ -3,6 +3,8 @@ import traceback
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 
 from devices.models import Device
 from .models import Log, Record, Event
@@ -14,22 +16,68 @@ def get_device_obj(request):
     return Device.objects.get(id=device_id)
 
 
-class EventsLogView(APIView):
-    def get(self, request, *args, **kwargs):
+# class EventsLogView(APIView):
+#     def get(self, request, *args, **kwargs):
+#         device = get_device_obj(request)
+#         categories = request.GET.getlist('categories[]', None)
+
+#         try:
+#             log = Log.objects.get(device=device)
+#             if categories :
+#                 records = Record.objects.filter(log=log, category__in=categories).order_by('-date')
+#             else:
+#                 records = Record.objects.filter(log=log).order_by('-date')
+#             serializer = LogRecordSerializer(records, many=True)
+#             data = serializer.data
+#         except Log.DoesNotExist:
+#             data = []
+#         return Response(data, status=status.HTTP_200_OK)
+
+
+class EventsSetPagination(PageNumberPagination):
+    page_size = 25
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+    def get_paginated_response(self, data):
+        return Response({
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'count': self.page.paginator.count,
+            'num_pages': self.page.paginator.num_pages,
+            'page_number': self.page.number,
+            'results': data
+        })
+
+class EventsLogView(generics.ListAPIView):
+    queryset = Record.objects.all()
+    serializer_class = LogRecordSerializer
+    pagination_class = EventsSetPagination
+
+    def get_queryset(self):
+        request = self.request
         device = get_device_obj(request)
         categories = request.GET.getlist('categories[]', None)
 
         try:
             log = Log.objects.get(device=device)
             if categories :
-                records = Record.objects.filter(log=log, category__in=categories).order_by('-date')
+                queryset = Record.objects.filter(log=log, category__in=categories).order_by('-date')
             else:
-                records = Record.objects.filter(log=log).order_by('-date')
-            serializer = LogRecordSerializer(records, many=True)
-            data = serializer.data
+                queryset = Record.objects.filter(log=log).order_by('-date')
         except Log.DoesNotExist:
-            data = []
-        return Response(data, status=status.HTTP_200_OK)
+            queryset = Record.objects.none()
+
+        return queryset
+
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
 
 class EventsConfigView(APIView):
     def get(self, request, *args, **kwargs):

@@ -17,6 +17,8 @@ export default function WidgetEventsLog(props) {
     {name: 'Отладочные',      code: 'Debug',    selected: false}
   ])
   const device_id = props.device_id;
+  const [pagination, setPagination] = React.useState({next: null, previous: null})
+  const [page, setPage] = React.useState(1)
 
   const toggleCategorySelection = (toggle_index) => {
     setCategories( categories.map( (category, index)=> {
@@ -26,25 +28,46 @@ export default function WidgetEventsLog(props) {
     }))
   }
 
-  function readLogRecords() {
+  function readLogRecords(url, props={}){
+    axiosInstance.get(url, props)
+    .then((responce) => {
+      responce && setRecords(responce.data.results)
+      responce && setPagination({
+        next: responce.data.next, 
+        previous: responce.data.previous, 
+        num_pages: responce.data.num_pages, 
+        page_number: responce.data.page_number, 
+      })
+    }) 
+  }
+
+  function readLogPage(page) {
     const selected_categories = categories.filter( category => category.selected )
     const selected_category_codes = selected_categories.map( category => category.code )
-    axiosInstance.get(BASE_URL + "/events/log/", { params: { id: device_id, categories: selected_category_codes }} )
-    .then((responce) => {
-      responce && setRecords(responce.data)     
-    })  
+    readLogRecords(BASE_URL + "/events/log/", { params: { id: device_id, categories: selected_category_codes, page:page }} ) 
   }
+  function readNextPage() {
+    pagination.next && setPage(page+1)
+  }
+  function readPreviousPage() {
+    pagination.previous && setPage(page-1)
+  }
+  function updateFirstPage(page) {
+    if (page===1) {readLogPage(1)}
+  }
+
 
   // read parameters
   useEffect(() => {
-    readLogRecords();
+    readLogPage(page)
     const loadingTimeout = setTimeout( () => { setLoading(false) }, 500);
-    const tagsUpdateInterval = setInterval(readLogRecords, 10000);
+    const tagsUpdateInterval = setInterval(()=>updateFirstPage(page), 10000)
     return () => {
       clearTimeout(loadingTimeout);      
       clearInterval(tagsUpdateInterval);
     };
-  }, [categories, ])
+  }, [categories, page, ])
+
 
   // render the page
   return (
@@ -55,6 +78,10 @@ export default function WidgetEventsLog(props) {
           categories={categories}
           category_selection_panel={props.widget.category_selection_panel} 
           toggleCategorySelection={toggleCategorySelection}
+          readNextPage={readNextPage}
+          readPreviousPage={readPreviousPage}
+          readLogPage={readLogPage}
+          pagination={pagination}
           loading={loading} 
         />
     </React.Fragment>
