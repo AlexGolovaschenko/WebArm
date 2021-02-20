@@ -92,7 +92,7 @@ function EventForm(props) {
   const handlExpressionChange = (e) => { setEvent({...event, expression: e.target.value}) }
   const handlRaiseMessageChange = (e) => { setEvent({...event, raise_message: e.target.value}) }
   const handlFallMessageChange = (e) => { setEvent({...event, fall_message: e.target.value}) }
-  const handlСategoriesChange = (e) => { setEvent({...event, categories: getSelectedOptions(e)}) }
+  const handlСategoriesChange = (e) => { setEvent({...event, category: getSelectedOptions(e)[0]}) }
 
   return (
     <React.Fragment>
@@ -151,7 +151,7 @@ function EventForm(props) {
           titel={'Категория'} 
           id={'categories'} 
           placeholder={'...'} 
-          value={event.categories[0]} 
+          value={event.category} 
           options={categoriesOptions} 
           onChange={handlСategoriesChange}
         />

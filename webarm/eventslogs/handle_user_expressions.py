@@ -28,6 +28,9 @@ def eval_expression(expression):
 
 # check expration for being safe
 def is_expression_safe(expression):
+    if expression is None:
+        return True
+
     result = expression
     # remove tag codes
     result = re.sub(r'\{\{\w*\}\}', '', result)

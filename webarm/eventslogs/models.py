@@ -11,7 +11,7 @@ from . import choices
 class Event(models.Model):
     # configuration fields
     device = models.ForeignKey(Device, on_delete=models.CASCADE, verbose_name='Устройство')
-    categories = ArrayField(models.CharField(max_length=20, choices=choices.EVENT_CATEGORIES), blank=True, default=list, verbose_name='Категории')
+    category = models.CharField(max_length=20, choices=choices.EVENT_CATEGORIES, default=choices.EVENT_CATEGORY_ALARM, verbose_name='Категория')
     enable = models.BooleanField(verbose_name='Активировать', default=False)
     expression = models.TextField(verbose_name='Формула', blank=True)     
     raise_message = models.TextField(verbose_name='Сообщение срабатывания', blank=True) 
@@ -37,19 +37,19 @@ class Event(models.Model):
     def check_event(self):
         res = eval_expression(self.expression)
         if res:
-            if not self.is_active: self._add_record_to_log(self.raise_message)
+            if not self.is_active: self._add_record_to_log(self.raise_message, self.category)
             self.is_active = True
         else:
-            if self.is_active: self._add_record_to_log(self.fall_message)
+            if self.is_active: self._add_record_to_log(self.fall_message, self.category)
             self.is_active = False
         self.save()
 
-    def _add_record_to_log(self, message):
+    def _add_record_to_log(self, message, category):
         try:
             log = Log.objects.get(device = self.device)
         except Log.DoesNotExist:
             log = Log.objects.create(device = self.device)
-        Record.objects.create(log = log, message = message)
+        Record.objects.create(log = log, message = message, category = category)
 
 
 
@@ -68,6 +68,7 @@ class Record(models.Model):
     log = models.ForeignKey(Log, on_delete=models.CASCADE, verbose_name='Журнал')
     message = models.TextField(verbose_name='Сообщение', default='-')
     date = models.DateTimeField(verbose_name='Время и дата записи', auto_now_add=True)
+    category = models.CharField(max_length=20, choices=choices.EVENT_CATEGORIES, verbose_name='Категория')
 
     class Meta():
         verbose_name = 'Запись журнала'

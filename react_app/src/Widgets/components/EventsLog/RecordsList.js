@@ -7,6 +7,8 @@ export default function TagsCurrentValueList(props) {
   const [modal, setModal] = React.useState(false) // use it just for force update this component
   const modalButton = React.useRef(null)
   const graphCard = React.useRef(null)
+  const toggleCategorySelection = props.toggleCategorySelection
+  const categories = props.categories
 
   const toggleModal = () => {
     const cl = ' full-screen-card'
@@ -28,6 +30,8 @@ export default function TagsCurrentValueList(props) {
       <div className='d-flex mb-1'>
         <h5 className="px-3 pt-1 pb-0 m-0">{props.title}</h5>
         <span className='ml-auto'></span>
+
+        { props.category_selection_panel && <CategorySelectionPanel toggleCategorySelection={toggleCategorySelection} categories={categories}/> }
 
         <button type="button" 
           ref={modalButton} 
@@ -76,4 +80,34 @@ function RecordsTable(props) {
 
 function NoRecords() {
   return <i className='text-secondary ml-3'>Записи отсутствуют ...</i>
+}
+
+
+function CategorySelectionPanel(props) {
+  const toggleCategorySelection = props.toggleCategorySelection
+  const categories = props.categories
+  return(
+    <>
+      <div className='d-inline mr-3'>
+        {categories.map( (category, index)=>{
+          return <CategorySecetionButton key={index} selected={category.selected} onClick={()=>{toggleCategorySelection(index)}}>{category.name}</CategorySecetionButton>
+        } )}
+      </div>
+    </>
+  )
+}
+
+
+function CategorySecetionButton(props) {
+  return (
+    <button 
+      type="button" 
+      className='btn btn-link text-light ml-3 p-0 mt-1' 
+      style={{boxShadow: 'none'}}
+      onClick={props.onClick}
+    >
+      { props.selected ? <i className='fas fa-check-square text-success mr-2'></i> : <i className='far fa-square text-info mr-2'></i> }
+      { props.children }
+    </button>    
+  )
 }

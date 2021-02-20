@@ -14,13 +14,13 @@ class LogRecordSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
-        if not is_expression_safe(attrs['expression']):
+        if not is_expression_safe(attrs.get('expression', None)):
             raise serializers.ValidationError({"expression": "Формула некорректна или содержит запрещенные символы"})
         return attrs
 
     class Meta:
         model = Event
-        fields = ('id', 'device', 'categories', 'enable', 'expression', 'raise_message', 'fall_message', 'is_alarm', 'is_active', 'raise_time', 'used_tags')
+        fields = ('id', 'device', 'category', 'enable', 'expression', 'raise_message', 'fall_message', 'is_alarm', 'is_active', 'raise_time', 'used_tags')
         read_only_fields = ('id', 'is_alarm', 'is_active', 'raise_time', 'used_tags')
 
 

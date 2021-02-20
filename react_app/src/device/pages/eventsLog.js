@@ -24,6 +24,7 @@ const WidgetsTemplate = {
       type: 'eventslog',
       width: 4,
       title: 'Журнал событий',
+      category_selection_panel: true
     }      
   ]
 }

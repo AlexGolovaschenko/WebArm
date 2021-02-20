@@ -7,7 +7,7 @@ from rest_framework import status
 from devices.models import Device
 from .models import Log, Record, Event
 from .serializers import LogRecordSerializer, EventSerializer
-
+from .utils import decode_categories
 
 def get_device_obj(request):
     device_id = request.GET.get('id', None)
@@ -17,9 +17,15 @@ def get_device_obj(request):
 class EventsLogView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj(request)
+        categories = request.GET.getlist('categories[]', None)
+        categories = decode_categories(categories)
+
         try:
             log = Log.objects.get(device=device)
-            records = Record.objects.filter(log=log).order_by('-date')
+            if categories :
+                records = Record.objects.filter(log=log, category__in=categories).order_by('-date')
+            else:
+                records = Record.objects.filter(log=log).order_by('-date')
             serializer = LogRecordSerializer(records, many=True)
             data = serializer.data
         except Log.DoesNotExist:
