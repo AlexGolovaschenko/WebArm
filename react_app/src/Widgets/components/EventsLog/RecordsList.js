@@ -46,7 +46,7 @@ export default function TagsCurrentValueList(props) {
         :
         <>
           { props.records.length > 0 ? <RecordsTable records={props.records}/> : <NoRecords /> }
-          <PaginationBar readNextPage={props.readNextPage} readPreviousPage={props.readPreviousPage} readLogPage={props.readLogPage} pagination={props.pagination} />
+          <PaginationBar readNextPage={props.readNextPage} readPreviousPage={props.readPreviousPage} changePage={props.changePage} pagination={props.pagination} />
         </>
       }
     </div>
@@ -131,7 +131,7 @@ function PaginationBar(props) {
             <button type='button' key={index}
               className={'btn btn-sm btn-outline-info m-1' + active} 
               style={{minWidth:'35px'}}
-              onClick={()=>{props.readLogPage(index+1)}}
+              onClick={()=>{props.changePage(index+1)}}
             >
               {index+1}
             </button>

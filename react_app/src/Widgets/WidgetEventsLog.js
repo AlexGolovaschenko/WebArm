@@ -52,6 +52,9 @@ export default function WidgetEventsLog(props) {
   function readPreviousPage() {
     pagination.previous && setPage(page-1)
   }
+  function changePage(page) {
+    setPage(page)
+  }  
   function updateFirstPage(page) {
     if (page===1) {readLogPage(1)}
   }
@@ -80,7 +83,7 @@ export default function WidgetEventsLog(props) {
           toggleCategorySelection={toggleCategorySelection}
           readNextPage={readNextPage}
           readPreviousPage={readPreviousPage}
-          readLogPage={readLogPage}
+          changePage={changePage}
           pagination={pagination}
           loading={loading} 
         />
