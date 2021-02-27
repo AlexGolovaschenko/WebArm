@@ -93,7 +93,6 @@
   outline: none;
 }
 
-
 .full-screen-card{
   position: fixed;
   top: 0;
@@ -102,6 +101,11 @@
   width: 100% !important;
   height: 100% !important;
 }
+
+.table-row-like-link:hover{
+  cursor: pointer;
+}
+
 
 /*------------------------------------ fix react-vis ------------------------------------*/
 .rv-discrete-color-legend-item {

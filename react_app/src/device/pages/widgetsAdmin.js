@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react' 
+import {useParams} from 'react-router-dom'
 
 import {
   TextField,
@@ -12,12 +13,12 @@ import {
 import sortWidgetsByOrder from '../utils/sortWidgetsByOrder'
 
 import Loader from '../../base/components/Loader'
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import axiosInstance from "../../backendAPI/axiosApi";
+import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
 export default function WidgetsAdminPage(props) {
-  const device_id = props.device_id;
+  const { device_id } = useParams();
   const updateWidgetsTemplate = props.updateWidgetsTemplate
   const [widgetsTemplate, setWidgetsTemplate] = React.useState( sortWidgetsByOrder(props.widgetsTemplate) )
   const [selectedWidget, setSelectedWidget] = React.useState(0)

@@ -4,16 +4,15 @@ import {useParams} from 'react-router-dom'
 import Loader from '../../base/components/Loader'
 import {CheckboxField, SelectField, TextField, getSelectedOptions} from '../../base/forms/forms'
 
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import axiosInstance from "../../backendAPI/axiosApi";
+import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
 
 export default function EventDetailPage(props) {
-  let { event_id } = useParams();
+  const { event_id, device_id } = useParams();
   const [event, setEvent] = useState({})
   const [loading, setLoading] = React.useState(true)
-  const device_id = props.device_id;
 
   function readEventDetail( cb = ()=>{} ) {
     axiosInstance.get(BASE_URL + "/events/config/", { params: { id: device_id, events_id: [event_id] }} )
@@ -40,12 +39,12 @@ export default function EventDetailPage(props) {
   return (
     <React.Fragment>
         <h3 className='mb-3'>Параметры события</h3>
-          <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
-          { loading ? 
-            <div className='d-flex justify-content-center'><Loader /></div> : 
-            <EventForm event={event} onSubmit={postEventDetail}/>
-          }
-          </div>
+        <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
+        { loading ? 
+          <div className='d-flex justify-content-center'><Loader /></div> : 
+          <EventForm event={event} onSubmit={postEventDetail}/>
+        }
+        </div>
     </React.Fragment>
   );
 }
@@ -53,7 +52,7 @@ export default function EventDetailPage(props) {
 
 
 export function EventCreatePage(props) {
-  const device_id = props.device_id;
+  const { device_id } = useParams();
   const defaultEventSettings = { device: device_id, enable: false, categories: [] }
   
   function postEventDetail( event, cb = ()=>{} ) {
@@ -69,9 +68,9 @@ export function EventCreatePage(props) {
   return (
     <React.Fragment>
         <h3 className='mb-3'>Параметры события</h3>
-          <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
-            <EventForm event={defaultEventSettings} onSubmit={postEventDetail}/>
-          </div>
+        <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
+          <EventForm event={defaultEventSettings} onSubmit={postEventDetail}/>
+        </div>
     </React.Fragment>
   );
 }
@@ -92,7 +91,7 @@ function EventForm(props) {
   const handlSubmit = (e) => { 
     e.preventDefault();
     onSubmit(event);
-   }
+  }
   const handlEnableChange = (e) => { setEvent({...event, enable: e.target.checked}) }
   const handlExpressionChange = (e) => { setEvent({...event, expression: e.target.value}) }
   const handlRaiseMessageChange = (e) => { setEvent({...event, raise_message: e.target.value}) }

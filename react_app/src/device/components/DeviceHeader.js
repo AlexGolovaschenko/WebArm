@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react' 
 
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import axiosInstance from "../../backendAPI/axiosApi";
+import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
 

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 import Loader from '../../base/components/Loader'
 import FacilityCard from '../components/FacilityCard'
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import axiosInstance from "../../backendAPI/axiosApi";
+import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
 

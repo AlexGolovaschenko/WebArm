@@ -8,41 +8,69 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import (
-    Device, Tag,
+    Device, Tag, ModbusDeviceParameters,
     CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue,
     HistoricalIntValue, HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
 )
 from . import serializers
+from .utils import get_device_obj_from_request
 
 
 # -----------------------------------------------------------------------------------------------
-def get_device_obj(request):
-    device_id = request.GET.get('id', None)
-    return Device.objects.get(id=device_id)
-
-
 class DeviceParametersView(APIView):
-    ''' return device configuration parameters '''
     def get(self, request, *args, **kwargs):
-        obj = get_device_obj(request)
+        obj = get_device_obj_from_request(request)
         serializer = serializers.DeviceParametersSerializer(obj)
         return Response(serializer.data)
 
+    def post(self, request, *args, **kwargs):
+        obj = get_device_obj_from_request(request)   
+        serializer = serializers.DeviceParametersSerializer(obj, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+
+class ModbusDeviceParametersView(APIView):
+    def get(self, request, *args, **kwargs):
+        device = get_device_obj_from_request(request)
+        mdp = ModbusDeviceParameters.objects.get(device=device)
+        serializer = serializers.ModbusDeviceParametersSerializer(mdp)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        device = get_device_obj_from_request(request) 
+        try:
+            # update parameters
+            mdp = ModbusDeviceParameters.objects.get(device=device)
+            serializer = serializers.ModbusDeviceParametersSerializer(mdp, data=request.data)
+        except ModbusDeviceParameters.DoesNotExist:
+            # create parameters
+            serializer = serializers.ModbusDeviceParametersSerializer(data=request.data)
+ 
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
 
 class DeviceTagsParametersView(APIView):
-    ''' return tags configuration parameters '''
     def get(self, request, *args, **kwargs):
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         tags = Tag.objects.filter(device=device)
         data = serializers.TagsParametersSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
 
+# -----------------------------------------------------------------------------------------------
 class DeviceTagsCurrentValueView(APIView):
     ''' return current values of device tags '''
     def get(self, request, *args, **kwargs):
         rq_tags = request.GET.getlist('tags[]', None)
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         if rq_tags:
             # return just selected tags
             tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
@@ -62,7 +90,7 @@ class DeviceTagsHistoricalValueView(APIView):
         rq_interval = request.GET.get('interval', None)
         rq_resolution = request.GET.get('resolution', None)
 
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         if rq_tags:
             # return just selected tags
             tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')

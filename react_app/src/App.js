@@ -20,7 +20,7 @@ import Navbar from './base/components/Navbar'
 import WelcomePage from './base/pages/welcome'
 import Page404 from './base/pages/pageNotFound'
 
-import auth from './utils/auth'
+import auth from './backendAPI/auth'
 
 export default function App() {
   const [loading, setLoading] = useState(true)

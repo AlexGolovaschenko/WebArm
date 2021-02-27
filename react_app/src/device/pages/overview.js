@@ -1,4 +1,5 @@
 import React from 'react' 
+import {useParams} from 'react-router-dom'
 
 import DeviceHeader from '../components/DeviceHeader'
 import RenderWidgets from '../../Widgets/renderWidgets'
@@ -6,7 +7,7 @@ import RenderWidgets from '../../Widgets/renderWidgets'
 
 
 export default function DeviceOverviewPage(props) {
-  const device_id = props.device_id;
+  const { device_id } = useParams();
   const widgetsTemplate = props.widgetsTemplate;
   
   // render the page

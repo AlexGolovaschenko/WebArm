@@ -4,31 +4,31 @@ WEBARM_DATA_TYPE_FLOAT = 'FLOAT'
 WEBARM_DATA_TYPE_STRING = 'STRING'
 WEBARM_DATA_TYPE_BOOL = 'BOOL'
 
-WEBARM_SUPPORTED_DATA_TYPES = {
+WEBARM_SUPPORTED_DATA_TYPES = [
     (WEBARM_DATA_TYPE_INT,     'INT'), 
     (WEBARM_DATA_TYPE_FLOAT,   'FLOAT'), 
     (WEBARM_DATA_TYPE_STRING,  'STRING'), 
     (WEBARM_DATA_TYPE_BOOL,    'BOOL'),    
-}
+]
 
 # ------------------------------------------------------------
 # modbus parameters
-MODBUS_PROTOCOL_TYPE = {
+MODBUS_PROTOCOL_TYPE = [
     ('RTU',     'MODBUS-RTU'), 
     ('ASCII',   'MODBUS-ASCII'), 
     ('TCP',     'MODBUS-TCP'),
-}
+]
 
-MODBUS_DATA_TYPES = {
+MODBUS_DATA_TYPES = [
     ('WORD',    'WORD'), 
     ('INT',     'INT'), 
     ('UINT',    'UINT'), 
     ('FLOAT',   'FLOAT'), 
     ('STRING',  'STRING'), 
     ('BOOL',    'BOOL'), 
-}
+]
 
-MODBUS_BAUDRATE = {
+MODBUS_BAUDRATE = [
     (300,   '300'), 
     (600,   '600'),  
     (1200,  '1200'), 
@@ -41,15 +41,17 @@ MODBUS_BAUDRATE = {
     (38400, '38400'),  
     (57600, '57600'),  
     (115200,'115200'), 
-}
+]
 
-MODBUS_PARITY = {
+MODBUS_PARITY = [
     ('none',    'none'), 
     ('odd',     'odd'), 
     ('even',    'even'),
-}
+]
 
-MODBUS_ADDRESS_SIZE = { ('8', '8') }
+MODBUS_ADDRESS_SIZE = [ 
+    ('8', '8') 
+]
 
 MODBUS_STOP_BIT = [
     ('1', '1'), 

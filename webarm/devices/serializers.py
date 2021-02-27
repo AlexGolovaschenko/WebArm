@@ -19,14 +19,14 @@ class ModbusDeviceParametersSerializer(serializers.ModelSerializer):
 class DeviceParametersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
-        fields = (
-            'id', 
-            'name', 
-            'polling_period',
-            'last_update',
-            'verbose_last_update',
-            'is_online',
+        fields = ('id', 'name', 'polling_period', 'timeout', 'last_update', 
+            'verbose_last_update', 'is_online', 'connector', 'facility',
         )
+
+        read_only_fields = ('id', 'last_update', 'verbose_last_update', 
+            'is_online', 'connector', 'facility',
+        )
+
 
 # ---------------------------------------------------------------------
 # tags
@@ -41,17 +41,15 @@ class TagsParametersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = (
-            'id',
-            'code',  
+        fields = ('id', 'code', 'name', 'data_type', 'value', 
             'modbus_parameters',
         )
 
         # https://www.django-rest-framework.org/api-guide/validators/
         validators = [
             UniqueTogetherValidator(
-                queryset=Tag.objects.all(),
-                fields=['code', 'device']
+                queryset = Tag.objects.all(),
+                fields = ['code', 'device']
             )
         ]
 

@@ -1,17 +1,17 @@
 import React, {useState, useEffect} from 'react' 
-import {NavLink} from 'react-router-dom'
+import {NavLink, useParams} from 'react-router-dom'
 
 import Loader from '../../base/components/Loader'
-import axiosInstance from "../../utils/axiosApi";
-import getBaseUrl from '../../utils/localSettings'
+import axiosInstance from "../../backendAPI/axiosApi";
+import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
 
 export default function EventsAdminPage(props) {
+  const { device_id } = useParams();
   const [events, setEvents] = useState([])
   const [deviceData, setDeviceData] = React.useState({})
   const [loading, setLoading] = React.useState(true)
-  const device_id = props.device_id;
 
   function readDeviceParameters() {
     axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device_id }} )
@@ -40,10 +40,11 @@ export default function EventsAdminPage(props) {
   }  
 
   function toggleEventEnable(event) {
-    const body = [{...event, enable: !event.enable}]   
+    const body = [{...event, enable: !event.enable}]  
     const params = { id: device_id, events_id: [event.id] }
     axiosInstance.post(BASE_URL + "/events/config/", body, { params: params} )
     .then((responce) => {
+      console.log(responce.data); 
       const ev = events.map((event)=>{
         return responce.data[0].id === event.id ? {...responce.data[0]} : event
       })

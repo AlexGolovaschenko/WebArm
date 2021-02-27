@@ -10,15 +10,12 @@ from devices.models import Device
 from .models import Log, Record, Event
 from .serializers import LogRecordSerializer, EventSerializer
 
-
-def get_device_obj(request):
-    device_id = request.GET.get('id', None)
-    return Device.objects.get(id=device_id)
+from devices.utils import get_device_obj_from_request
 
 
 # class EventsLogView(APIView):
 #     def get(self, request, *args, **kwargs):
-#         device = get_device_obj(request)
+#         device = get_device_obj_from_request(request)
 #         categories = request.GET.getlist('categories[]', None)
 
 #         try:
@@ -56,7 +53,7 @@ class EventsLogView(generics.ListAPIView):
 
     def get_queryset(self):
         request = self.request
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         categories = request.GET.getlist('categories[]', None)
 
         try:
@@ -81,7 +78,7 @@ class EventsLogView(generics.ListAPIView):
 
 class EventsConfigView(APIView):
     def get(self, request, *args, **kwargs):
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         events_id = request.GET.getlist('events_id[]', None)
         if events_id:
             # return selected objects
@@ -93,7 +90,7 @@ class EventsConfigView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         events = request.data
         response_data = []
         for e in events:
@@ -122,7 +119,7 @@ class EventsConfigView(APIView):
         return Response(response_data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs):
-        device = get_device_obj(request)
+        device = get_device_obj_from_request(request)
         events_id = request.GET.getlist('events_id[]', None)
         if events_id:
             # delete all passed events

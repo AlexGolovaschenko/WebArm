@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {Link} from 'react-router-dom'
 
-import axiosInstance from "../../utils/axiosApi";
+import axiosInstance from "../../backendAPI/axiosApi";
 
 class Signup extends Component{
     constructor(props){

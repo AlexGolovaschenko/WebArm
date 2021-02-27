@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {Link, withRouter} from 'react-router-dom'
 
-import auth from '../../utils/auth' 
+import auth from '../../backendAPI/auth' 
 
 class LogoutBtn extends Component {
     constructor(props) {

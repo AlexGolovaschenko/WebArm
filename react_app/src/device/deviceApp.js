@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react' 
 import {Switch, Route, useParams} from 'react-router-dom'
 
-import axiosInstance from "../utils/axiosApi"
-import getBaseUrl from '../utils/localSettings'
+import axiosInstance from "../backendAPI/axiosApi"
+import getBaseUrl from '../backendAPI/localSettings'
 import sortWidgetsByOrder from './utils/sortWidgetsByOrder'
 
 import Sidebar from './components/DeviceSidebar'
@@ -14,6 +14,7 @@ import DeviceAdminPage from './pages/deviceAdmin'
 import WidgetsAdminPage from './pages/widgetsAdmin'
 import EventsAdminPage from './pages/eventsAdmin'
 import EventDetailPage, {EventCreatePage} from './pages/eventDetail'
+import TagDetailPage from './pages/tagDetail'
 import Page404 from '../base/pages/pageNotFound'
 
 const BASE_URL = getBaseUrl()
@@ -43,19 +44,18 @@ export default function DeviceApp() {
         <div className="col-10 m-0 p-0">
           <div className="content-height p-3">
             <Switch>
-              <Route exact path={`/device/${id}/overview/`} 
-                component={()=><DeviceOverviewPage device_id={id} widgetsTemplate={widgetsTemplate}/>} 
+              <Route exact path={`/device/:device_id/overview/`} component={()=><DeviceOverviewPage widgetsTemplate={widgetsTemplate}/>} />
+              <Route exact path={`/device/:device_id/settings/`} component={()=><DeviceSettingsPage />} />
+              <Route exact path={`/device/:device_id/events/`} component={()=><DeviceEventsLogPage />} />
+              <Route exact path={`/device/:device_id/graphs/`} component={()=><DeviceGraphsPage />} />
+              <Route exact path={`/device/:device_id/admin/config/`} component={()=><DeviceAdminPage />} />
+              <Route exact path={`/device/:device_id/admin/widgets/`} 
+                component={()=><WidgetsAdminPage updateWidgetsTemplate={updateWidgetsTemplate} widgetsTemplate={widgetsTemplate}/>} 
               />
-              <Route exact path={`/device/${id}/settings/`} component={()=><DeviceSettingsPage device_id={id}/>} />
-              <Route exact path={`/device/${id}/events/`} component={()=><DeviceEventsLogPage device_id={id}/>} />
-              <Route exact path={`/device/${id}/graphs/`} component={()=><DeviceGraphsPage device_id={id}/>} />
-              <Route exact path={`/device/${id}/admin/config/`} component={()=><DeviceAdminPage device_id={id}/>} />
-              <Route exact path={`/device/${id}/admin/widgets/`} 
-                component={()=><WidgetsAdminPage device_id={id} updateWidgetsTemplate={updateWidgetsTemplate} widgetsTemplate={widgetsTemplate}/>} 
-              />
-              <Route exact path={`/device/${id}/admin/events/`} component={()=><EventsAdminPage device_id={id}/>} />
-              <Route exact path={`/device/${id}/admin/events/:event_id/detail/`} component={()=><EventDetailPage device_id={id}/>} />
-              <Route exact path={`/device/${id}/admin/events/create/`} component={()=><EventCreatePage device_id={id}/>} />
+              <Route exact path={`/device/:device_id/admin/events/`} component={()=><EventsAdminPage/>} />
+              <Route exact path={`/device/:device_id/admin/events/:event_id/detail/`} component={()=><EventDetailPage/>} />
+              <Route exact path={`/device/:device_id/admin/events/create/`} component={()=><EventCreatePage/>} />
+              <Route exact path={`/device/:device_id/admin/tags/:tag_id/detail/`} component={()=><TagDetailPage/>} />
               <Route component={Page404} />
             </Switch>
           </div>
