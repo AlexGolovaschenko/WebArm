@@ -29,11 +29,12 @@ class DeviceParametersSerializer(serializers.ModelSerializer):
 
 
 # ---------------------------------------------------------------------
-# tags
+# tags parameters
 class ModbusTagParametersSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModbusTagParameters
         exclude = ['id', 'tag']
+
 
 
 class TagsParametersSerializer(serializers.ModelSerializer):
@@ -41,9 +42,8 @@ class TagsParametersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ('id', 'code', 'name', 'data_type', 'value', 
-            'modbus_parameters',
-        )
+        fields = ('id', 'device', 'code', 'name', 'data_type', 'value', 'modbus_parameters')
+        read_only_fields = ('id', 'value')
 
         # https://www.django-rest-framework.org/api-guide/validators/
         validators = [
@@ -53,6 +53,35 @@ class TagsParametersSerializer(serializers.ModelSerializer):
             )
         ]
 
+    def create(self, validated_data):
+        print('-- TagsParametersSerializer: CREATE')
+        modbus_data = validated_data.pop('modbus_parameters')
+        tag = Tag.objects.create(**validated_data)
+        ModbusTagParameters.objects.create(tag=tag, **modbus_data)
+        return tag
+
+    def update(self, instance, validated_data):
+        print('-- TagsParametersSerializer: UPDATE')
+        mb_data = validated_data.pop('modbus_parameters')
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        try:
+            mb_obj = ModbusTagParameters.objects.get(tag=instance)
+            for attr, value in mb_data.items():
+                setattr(mb_obj, attr, value)
+            mb_obj.save()
+        except ModbusTagParameters.DoesNotExist:
+            mb_obj = ModbusTagParameters.objects.create(tag=instance, **mb_data)
+
+        return instance
+
+
+
+# ---------------------------------------------------------------------
+# tag values
 
 class TagsValueSerializer(serializers.ModelSerializer):
     class Meta:

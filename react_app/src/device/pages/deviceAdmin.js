@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react' 
 import { useHistory, useParams } from "react-router-dom"
 
+import AdminDeviceStatusBar from '../components/AdminDeviceStatusBar'
 import Loader from '../../base/components/Loader'
 import {
   getDeviceParameters, 
@@ -31,7 +32,7 @@ export default function DeviceAdminPage(props) {
       setDeviceModbusParameters(data)
       setLoading2(false)
     })
-    getDeviceTagsParameters(device_id, (data)=>{
+    getDeviceTagsParameters(device_id, [], (data)=>{
       setDeviceTagsParameters(data)
       setLoading3(false)
     })
@@ -52,14 +53,14 @@ export default function DeviceAdminPage(props) {
           <div className='d-flex justify-content-center'><Loader /></div> 
           :
           <div>
-            <DeviceStatusBar deviceParameters={deviceParameters} /> 
+            <AdminDeviceStatusBar deviceParameters={deviceParameters} /> 
             <div className='row'>
-              <div className='col-12 col-lg-6'>
+              <div className='col-12 col-lg-5'>
                 <DeviceConfigsForm deviceParameters={deviceParameters} submitDeviceConfig={submitDeviceConfig} />
                 <p className='my-3 border-top border-secondary'></p>
                 <DeviceModbusParametersForm deviceModbusParameters={deviceModbusParameters} submitModbusParameters={submitModbusParameters} />
               </div>
-              <div className='col-12 col-lg-6 border-left border-secondary'>
+              <div className='col-12 col-lg-7 border-left border-secondary'>
                 <p className='my-3 d-lg-none border-top border-secondary'></p>
                 <TagsList deviceTagsParameters={deviceTagsParameters} device_id={device_id} />
               </div>
@@ -182,10 +183,18 @@ function DeviceModbusParametersForm(props) {
 // ----------------------------------------------------------------------------------------------------------------------------
 function TagsList (props) {
   const tags = props.deviceTagsParameters
-  
+  const history = useHistory()
+
+  const createNewTag = () => {
+    history.push(`/device/${props.device_id}/admin/tags/create/`)
+  }
+
   return (
     <React.Fragment>
-      <h5 className='text-info'>Теги прибора</h5>
+      <div className='d-flex'>
+        <h5 className='text-info'>Теги прибора</h5>
+        <button type="button" className="btn btn-outline-success ml-auto" onClick={createNewTag}>Добавить новый тег</button>
+      </div>
 
       { tags.length > 0 ?
         <div className="table-responsive">
@@ -194,7 +203,8 @@ function TagsList (props) {
               <tr>
                 <th className='border-0 text-secondary font-weight-bold pl-2'>№</th>
                 <th className='border-0 text-secondary font-weight-bold'>Код параметра</th>
-                <th className='border-0 text-secondary font-weight-bold'>Наименование параметра</th>
+                <th className='border-0 text-secondary font-weight-bold'>Тип данных</th>
+                <th className='border-0 text-secondary font-weight-bold'>Наименование</th>
                 <th className='border-0 text-secondary font-weight-bold'>Текущее значение</th>
               </tr>
             </thead>
@@ -227,6 +237,7 @@ function TagsListEntry (props) {
     <tr className='table-row-like-link' onClick={()=> goToTagDetail(tag.id)}>
       <td className='border-0 text-secondary pl-2'> {props.index + 1} </td> 
       <td className='border-0'> {tag.code} </td>
+      <td className='border-0'> {tag.data_type} </td>
       <td className='border-0'> {tag.name} </td>
       <td className='border-0'> {tag.value} </td>
     </tr>
@@ -234,46 +245,5 @@ function TagsListEntry (props) {
 }
 
 
-// import { useHistory } from "react-router-dom";
 
-// const Table = () => {
-//   ...
-//   const history = useHistory();
-//   const handleRowClick = (row) => {
-//     history.push(`/use-cases/${row.original.id}`);
-//   }  
-
-//   return (
-//     ...
-//     <tr onClick={()=> handleRowClick(row)}}>
-//       ...
-//     </tr>
-//     ...
-//   );
-// }
-
-
-// ----------------------------------------------------------------------------------------------------------------------------
-function DeviceStatusBar (props) {
-  return (
-    <div className='d-flex border-bottom border-secondary mb-3 pb-2'>
-      <h5 className='pt-2 mt-1'>Прибор: <b>{props.deviceParameters.name}</b></h5>
-      <div className='ml-auto mx-3 px-3 border-x border-secondary'>
-        { props.deviceParameters.is_online ? 
-          <div className='text-success'>
-            <span>Онлайн</span> <br/>
-            <i className='fas fa-check text-center w-100'></i>
-          </div>
-        : <div className='text-danger'>
-            <span>Нет связи</span> <br/>
-            <i className='fas fa-times text-center w-100'></i>
-          </div>
-        }
-      </div>
-      <div>
-        <p className='m-0 mr-1 text-right'>Последний сеанс связи: <br/> {props.deviceParameters.verbose_last_update}</p>
-      </div>
-    </div>
-  )
-}
 

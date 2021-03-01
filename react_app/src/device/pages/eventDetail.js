@@ -9,7 +9,7 @@ import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
 
-export default function EventDetailPage(props) {
+export default function EventDetailPage() {
   const { event_id, device_id } = useParams();
   const [event, setEvent] = useState({})
   const [loading, setLoading] = React.useState(true)
@@ -51,7 +51,7 @@ export default function EventDetailPage(props) {
 
 
 
-export function EventCreatePage(props) {
+export function EventCreatePage() {
   const { device_id } = useParams();
   const defaultEventSettings = { device: device_id, enable: false, categories: [] }
   

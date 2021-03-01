@@ -33,8 +33,19 @@ export async function postDeviceModbusParameters(device_id, device_parameters, c
 }
 
 // access to device tags parameters
-export async function getDeviceTagsParameters(device_id, cb) {
-  const params = { id: device_id }
+export async function getDeviceTagsParameters(device_id, tags_list, cb) {
+  const params = { id: device_id, tags: tags_list }
   const responce = await axiosInstance.get(BASE_URL + "/device/tags/parameters/", { params: params } )
+  responce && cb(responce.data)
+}
+export async function postDeviceTagsParameters(device_id, tags_parameters, cb) {
+  const params = { id: device_id }
+  const body = tags_parameters 
+  const responce = await axiosInstance.post(BASE_URL + "/device/tags/parameters/", body, { params: params } )
+  responce && cb(responce.data)
+}
+export async function deleteDeviceTags(device_id, tags_list, cb) {
+  const params = { id: device_id, tags: tags_list }
+  const responce = await axiosInstance.delete(BASE_URL + "/device/tags/parameters/", { params: params } )
   responce && cb(responce.data)
 }

@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import (
-    Device, Tag, ModbusDeviceParameters,
+    Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
     CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue,
     HistoricalIntValue, HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
 )
@@ -60,9 +60,57 @@ class ModbusDeviceParametersView(APIView):
 class DeviceTagsParametersView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
-        tags = Tag.objects.filter(device=device)
+        tags_id = request.GET.getlist('tags[]', None)
+        if tags_id:
+            # return selected objects
+            tags = Tag.objects.filter(id__in=tags_id, device=device).order_by('id')
+        else:
+            # return all
+            tags = Tag.objects.filter(device=device).order_by('id')
         data = serializers.TagsParametersSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
+
+
+    def post(self, request, *args, **kwargs):
+        device = get_device_obj_from_request(request)
+        response_data = []
+        for tag in request.data:
+            serializer = None
+            if tag.get('id', False) :
+                # update
+                try:
+                    tag_obj = Tag.objects.get(id = tag['id'], device = device)
+                    serializer = serializers.TagsParametersSerializer(tag_obj, data=tag)
+                except Tag.DoesNotExist:
+                    # tag with this id does not exist for this device
+                    error = 'tag with id = %s does not exist for device = %s' %(tag['id'], device)
+                    response_data.append({'id': tag['id'],'error': error})
+            else:
+                # create
+                tag['device'] = device.id
+                serializer = serializers.TagsParametersSerializer(data=tag)
+
+            if serializer:
+                if serializer.is_valid():
+                    serializer.save()
+                    response_data.append(serializer.data)
+                else:
+                    response_data.append(serializer.errors)
+
+        return Response(response_data)
+
+
+    def delete(self, request, *args, **kwargs):
+        device = get_device_obj_from_request(request)
+        tags_id = request.GET.getlist('tags[]', None)
+        if tags_id:
+            # delete all passed events
+            tags = Tag.objects.filter(id__in=tags_id, device=device)
+            for t in tags:
+                t.delete()
+        else:
+            pass
+        return Response({}, status=status.HTTP_200_OK)
 
 
 # -----------------------------------------------------------------------------------------------
@@ -74,7 +122,6 @@ class DeviceTagsCurrentValueView(APIView):
         if rq_tags:
             # return just selected tags
             tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
-         
         else:
             # return all tags, if tags[] param does not passed
              tags = Tag.objects.filter(device=device).order_by('name')
