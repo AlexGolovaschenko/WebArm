@@ -89,10 +89,12 @@ class EventsConfigView(APIView):
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
     def post(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
         events = request.data
         response_data = []
+        has_errors = False
         for e in events:
             serializer = None
             if e.get('id', False) :
@@ -102,8 +104,8 @@ class EventsConfigView(APIView):
                     serializer = EventSerializer(event_obj, data=e)
                 except Event.DoesNotExist:
                     # event with this id does not exist for this device
-                    error = 'event with id = %s does not exist for device = %s' %(e['id'], device)
-                    response_data.append({'id': e['id'],'error': error})
+                    response_data.append({'id': 'event with id = %s does not exist for device = %s' %(e['id'], device)})
+                    has_errors = True
             else:
                 # create
                 e['device'] = device.id
@@ -115,8 +117,13 @@ class EventsConfigView(APIView):
                     response_data.append(serializer.data)
                 else:
                     response_data.append(serializer.errors)
+                    has_errors = True
 
-        return Response(response_data, status=status.HTTP_201_CREATED)
+        if has_errors:
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response_data, status=status.HTTP_200_OK)  
+
 
     def delete(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)

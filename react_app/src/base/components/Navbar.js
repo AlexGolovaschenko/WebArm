@@ -6,6 +6,7 @@ import LogoutBtn from '../../users/components/LogoutBtn'
 export default function Navbar(props) {
     const authed = props.authed
     const userInfo = props.userInfo
+    
     return (
         <nav className="navbar navbar-expand-sm bg-dark navbar-dark bg-color-indigo header-height p-0 m-0">
             <Link className="navbar-brand header-height py-2 pl-3 pr-0 m-0" to="/">WebArm</Link>

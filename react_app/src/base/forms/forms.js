@@ -175,6 +175,10 @@ export function CommentMessage(props){
   return <div className='text-small text-info p-0 m-0'> {props.children} </div> 
 }
 
+export function FormContainer(props) {
+  return <div className='container p-0' style={{maxWidth: '800px'}}> {props.children} </div> 
+}
+
   // ----------------------------------------------------------------------------------
 // utils
 

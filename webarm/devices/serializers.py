@@ -53,6 +53,7 @@ class TagsParametersSerializer(serializers.ModelSerializer):
             unique_validator(attrs, self)
         except serializers.ValidationError:
             raise serializers.ValidationError({"code": "Тег с таким кодом уже существует для данного устройства"})
+        return attrs
 
     def create(self, validated_data):
         print('-- TagsParametersSerializer: CREATE')

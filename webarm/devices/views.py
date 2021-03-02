@@ -27,11 +27,9 @@ class DeviceParametersView(APIView):
     def post(self, request, *args, **kwargs):
         obj = get_device_obj_from_request(request)   
         serializer = serializers.DeviceParametersSerializer(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class ModbusDeviceParametersView(APIView):
@@ -51,11 +49,10 @@ class ModbusDeviceParametersView(APIView):
             # create parameters
             serializer = serializers.ModbusDeviceParametersSerializer(data=request.data)
  
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
 
 
 class DeviceTagsParametersView(APIView):

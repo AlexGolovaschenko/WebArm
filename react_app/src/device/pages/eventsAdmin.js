@@ -2,59 +2,47 @@ import React, {useState, useEffect} from 'react'
 import {NavLink, useParams} from 'react-router-dom'
 
 import Loader from '../../base/components/Loader'
-import axiosInstance from "../../backendAPI/axiosApi";
-import getBaseUrl from '../../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
+
+import {
+  getEventsConfig,
+  postEventsConfig,
+  deleteEvents,
+  getDeviceParameters,
+} from '../../backendAPI/backendAPI'
 
 
-export default function EventsAdminPage(props) {
+
+export default function EventsAdminPage() {
   const { device_id } = useParams();
   const [events, setEvents] = useState([])
   const [deviceData, setDeviceData] = React.useState({})
   const [loading, setLoading] = React.useState(true)
 
-  function readDeviceParameters() {
-    axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device_id }} )
-      .then(responce => { 
-        responce && setDeviceData({...responce.data}) 
-      }) 
-  }
-
-  function readEventsConfig( cb = ()=>{} ) {
-    axiosInstance.get(BASE_URL + "/events/config/", { params: { id: device_id }} )
-    .then((responce) => {
-      responce && setEvents(responce.data)  
-      cb()   
-    })  
-  }
-
-  function deleteEvent(event_id) {
-    axiosInstance.delete(BASE_URL + "/events/config/", { params: { id: device_id, events_id: [event_id] }} )
-    .then(() => {
+  function handlEventDelete(event_id) {
+    deleteEvents(device_id, [event_id], ()=>{
       setEvents(
-        events.filter((event)=>{
-          return event_id === event.id ? false : true
-        })
+        events.filter((event)=>{ return event_id === event.id ? false : true })
       )
-    })  
+    }) 
   }  
 
   function toggleEventEnable(event) {
-    const body = [{...event, enable: !event.enable}]  
-    const params = { id: device_id, events_id: [event.id] }
-    axiosInstance.post(BASE_URL + "/events/config/", body, { params: params} )
-    .then((responce) => {
-      console.log(responce.data); 
-      const ev = events.map((event)=>{
-        return responce.data[0].id === event.id ? {...responce.data[0]} : event
-      })
-      setEvents(ev)
-    })  
+    const events_parameters = [{...event, enable: !event.enable}]  
+    postEventsConfig(device_id, events_parameters, 
+      (data)=>{
+        const ev = events.map((event)=>{ return data[0].id === event.id ? {...data[0]} : event })
+        setEvents(ev)
+      }, 
+      (errors_data)=>{ console.log(errors_data); }
+    )
   }
 
   useEffect(() => {
-    readEventsConfig( ()=>{setLoading(false)} );
-    readDeviceParameters();
+    getEventsConfig(device_id, [], (data)=>{
+      setEvents(data);
+      setLoading(false);
+    }) 
+    getDeviceParameters(device_id, setDeviceData);
   }, [])
 
   return (
@@ -75,7 +63,7 @@ export default function EventsAdminPage(props) {
                 </div>
 
                 { events.length > 0 ?
-                  <EventsList events={events} device_id={device_id} handlEventDelete={deleteEvent} toggleEventEnable={toggleEventEnable}/>
+                  <EventsList events={events} device_id={device_id} handlEventDelete={handlEventDelete} toggleEventEnable={toggleEventEnable}/>
                   :
                   <NoEvents />
                 }
@@ -89,6 +77,7 @@ export default function EventsAdminPage(props) {
 
 
 
+//---------------------------------------------------------------------------------------
 function EventsList(props) {
   const events = props.events
   const device_id = props.device_id

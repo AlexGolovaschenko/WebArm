@@ -13,8 +13,8 @@ class Event(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE, verbose_name='Устройство')
     category = models.CharField(max_length=20, choices=choices.EVENT_CATEGORIES, default=choices.EVENT_CATEGORY_ALARM, verbose_name='Категория')
     enable = models.BooleanField(verbose_name='Активировать', default=False)
-    expression = models.TextField(verbose_name='Формула', blank=True)     
-    raise_message = models.TextField(verbose_name='Сообщение срабатывания', blank=True) 
+    expression = models.TextField(verbose_name='Формула')     
+    raise_message = models.TextField(verbose_name='Сообщение срабатывания') 
     fall_message = models.TextField(verbose_name='Сообщение отключения', blank=True) 
 
     # read only fields

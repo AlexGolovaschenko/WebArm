@@ -1,39 +1,48 @@
 import React, {useState, useEffect} from 'react' 
-import {useParams} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 import Loader from '../../base/components/Loader'
-import {CheckboxField, SelectField, TextField, getSelectedOptions} from '../../base/forms/forms'
+import {CheckboxField, SelectField, TextField, FormContainer, getSelectedOptions} from '../../base/forms/forms'
 
-import axiosInstance from "../../backendAPI/axiosApi";
-import getBaseUrl from '../../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
+import {
+  getEventsConfig,
+  postEventsConfig,
+  deleteEvents,
+} from '../../backendAPI/backendAPI'
 
 
 export default function EventDetailPage() {
   const { event_id, device_id } = useParams();
   const [event, setEvent] = useState({})
+  const [eventFormErrors, setEventFromErrors] = useState(null)
   const [loading, setLoading] = React.useState(true)
+  const history = useHistory()
 
-  function readEventDetail( cb = ()=>{} ) {
-    axiosInstance.get(BASE_URL + "/events/config/", { params: { id: device_id, events_id: [event_id] }} )
-    .then((responce) => {
-      responce && setEvent(responce.data[0])  
-      cb()   
-    })  
+  function submitEventParameters( event ) {
+    postEventsConfig(device_id, [event], 
+      ()=>{ 
+        setEventFromErrors(null);
+        history.push(`/device/${device_id}/admin/events/`); 
+      },
+      (errors_data)=>{ setEventFromErrors(errors_data[0]); }
+    )
   }
-  
-  function postEventDetail( event, cb = ()=>{} ) {
-    const body = [event]   
-    const params = { id: device_id, events_id: [event_id] }
-    axiosInstance.post(BASE_URL + "/events/config/", body, { params: params} )
-    .then((responce) => {
-      cb && cb(responce.data)
-      device_id && (window.location.href = `/device/${device_id}/admin/events/`)
-    })  
+
+  const cancelChanges = () => { 
+    history.push(`/device/${device_id}/admin/events/`)
+  }
+
+  const deleteEvent = () => { 
+    deleteEvents(device_id, [event_id], ()=>{
+      history.push(`/device/${device_id}/admin/events/`)
+    }) 
   }
 
   useEffect(() => {
-    readEventDetail( ()=>{setLoading(false)} );
+    getEventsConfig(device_id, [event_id], (data)=>{
+      setEvent(data[0]);
+      setLoading(false);
+    }) 
   }, [])
 
   return (
@@ -41,8 +50,11 @@ export default function EventDetailPage() {
         <h3 className='mb-3'>Параметры события</h3>
         <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
         { loading ? 
-          <div className='d-flex justify-content-center'><Loader /></div> : 
-          <EventForm event={event} onSubmit={postEventDetail}/>
+          <div className='d-flex justify-content-center'><Loader /></div> :
+          <FormContainer> 
+            <h5 className='text-info text-center mb-3'>Редактирование параметров события</h5>  
+            <EventForm event={event} formErrors={eventFormErrors} onSubmit={submitEventParameters} onCancel={cancelChanges} onDelete={deleteEvent}/>
+          </FormContainer>
         }
         </div>
     </React.Fragment>
@@ -53,23 +65,32 @@ export default function EventDetailPage() {
 
 export function EventCreatePage() {
   const { device_id } = useParams();
-  const defaultEventSettings = { device: device_id, enable: false, categories: [] }
-  
-  function postEventDetail( event, cb = ()=>{} ) {
-    const body = [event]   
-    const params = { id: device_id }
-    axiosInstance.post(BASE_URL + "/events/config/", body, { params: params} )
-    .then((responce) => {
-      cb && cb(responce.data)
-      device_id && (window.location.href = `/device/${device_id}/admin/events/`)
-    })  
+  const defaultEventSettings = { device: device_id, enable: false, category: 'Alarm' }
+  const [eventFormErrors, setEventFromErrors] = useState(null)
+  const history = useHistory()
+
+  function submitEventParameters( event ) {
+    postEventsConfig(device_id, [event], 
+      ()=>{ 
+        setEventFromErrors(null);
+        history.push(`/device/${device_id}/admin/events/`); 
+      },
+      (errors_data)=>{ setEventFromErrors(errors_data[0]); }
+    )
+  }
+
+  const cancelChanges = () => { 
+    history.push(`/device/${device_id}/admin/events/`)
   }
 
   return (
     <React.Fragment>
         <h3 className='mb-3'>Параметры события</h3>
         <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
-          <EventForm event={defaultEventSettings} onSubmit={postEventDetail}/>
+          <FormContainer>
+            <h5 className='text-info text-center mb-3'>Создание нового события</h5>  
+            <EventForm event={defaultEventSettings} formErrors={eventFormErrors} onSubmit={submitEventParameters} onCancel={cancelChanges}/>
+          </FormContainer>
         </div>
     </React.Fragment>
   );
@@ -81,6 +102,9 @@ export function EventCreatePage() {
 function EventForm(props) {
   const [event, setEvent] = useState(props.event)
   const onSubmit = props.onSubmit
+  const onCancel = props.onCancel
+  const onDelete = props.onDelete
+  const buttonsStyle = {minWidth: '150px'}
   let categoriesOptions = [
     {value: 'Alarm',    name:'Аварйное'}, 
     {value: 'Warning',  name:'Предупреждение'}, 
@@ -101,8 +125,12 @@ function EventForm(props) {
   return (
     <React.Fragment>
       <form onSubmit={handlSubmit}>
-        <CheckboxField titel={'Активировать контроль события'} id={'enable'} checked={event.enable} onChange={handlEnableChange}/>  
+        <CheckboxField titel={'Активировать контроль события'} id={'enable'} checked={event.enable} onChange={handlEnableChange}
+          errors={props.formErrors ? props.formErrors.enable : null}
+        />
+
         <TextField titel={'Формула'} id={'expression'} placeholder={'...'} value={event.expression} onChange={handlExpressionChange}
+          errors={props.formErrors ? props.formErrors.expression : null}
           comment={
             <div>
             <button type='button' className='mt-3 btn btn-sm btn-outline-info' data-toggle="collapse" data-target="#expressions_help">
@@ -149,15 +177,19 @@ function EventForm(props) {
           </div>
           }
         />
-        <TextField titel={'Сообщение срабатывания'} id={'raise_message'} placeholder={'...'} value={event.raise_message} onChange={handlRaiseMessageChange}/>
-        <TextField titel={'Сообщение отключения'} id={'fall_message'} placeholder={'...'} value={event.fall_message} onChange={handlFallMessageChange}/>
-        <SelectField 
-          titel={'Категория'} 
-          id={'categories'} 
-          placeholder={'...'} 
-          value={event.category} 
+
+        <TextField titel={'Сообщение срабатывания'} id={'raise_message'} placeholder={'...'} value={event.raise_message} 
+          onChange={handlRaiseMessageChange}
+          errors={props.formErrors ? props.formErrors.raise_message : null}
+        />
+        <TextField titel={'Сообщение отключения'} id={'fall_message'} placeholder={'...'} value={event.fall_message} 
+          onChange={handlFallMessageChange}
+          errors={props.formErrors ? props.formErrors.fall_message : null}
+        />
+        <SelectField titel={'Категория'} id={'category'} placeholder={'...'} value={event.category} 
           options={categoriesOptions} 
           onChange={handlСategoriesChange}
+          errors={props.formErrors ? props.formErrors.category : null}
         />
 
         <p className='border-top border-secondary'></p>        
@@ -173,8 +205,14 @@ function EventForm(props) {
               } 
           </p>
         </div>
+
         <p className='border-top border-secondary'></p>
-        <button type="submit" className="btn btn-outline-primary">Сохранить</button>
+        <div className='d-flex flex-wrap justify-content-center'>
+          <button type="submit" className="btn btn-outline-primary m-2" style={buttonsStyle}>Сохранить</button>
+          <button type="button" className="btn btn-outline-secondary m-2" style={buttonsStyle} onClick={onCancel}>Отмена</button>
+          { props.onDelete && <button type="button" className="btn btn-outline-danger m-2" style={buttonsStyle} onClick={onDelete}>Удалить</button> }
+        </div>
+
       </form>
     </React.Fragment>
   )

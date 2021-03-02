@@ -7,7 +7,8 @@ import {
   postDeviceTagsParameters,
   deleteDeviceTags,
 } from '../../backendAPI/backendAPI'
-import {TextField, NumberField, SelectField, getSelectedOptions, ErrorMessage} from '../../base/forms/forms'
+
+import {TextField, NumberField, SelectField, getSelectedOptions, ErrorMessage, FormContainer} from '../../base/forms/forms'
 
 
 
@@ -27,7 +28,10 @@ export default function TagDetailPage() {
   
   const submitTagParameters = (tag_parameters) => {
     postDeviceTagsParameters(device_id, [tag_parameters], 
-      (responce_data)=>{ setTagParameters(responce_data[0]); setFormErrors(null); },
+      (responce_data)=>{ 
+        setTagParameters(responce_data[0]); setFormErrors(null);  
+        history.push(`/device/${device_id}/admin/config/`);
+      },
       (errors_data)=>{ setFormErrors(errors_data[0]) }
     )
   }
@@ -45,7 +49,13 @@ export default function TagDetailPage() {
       { loading ? 
         <div className='d-flex justify-content-center'><Loader /></div> 
         :
-        <TagDetailForm tagParameters={tagParameters} formErrors={formErrors} submitTagParameters={submitTagParameters} cancelChanges={cancelChanges} deleteTag={deleteTag} />
+        <FormContainer> 
+          <TagDetailForm tagParameters={tagParameters} formErrors={formErrors} 
+            submitTagParameters={submitTagParameters} 
+            cancelChanges={cancelChanges} 
+            deleteTag={deleteTag} 
+          />
+        </FormContainer> 
       }
     </React.Fragment>
   )
@@ -74,9 +84,15 @@ export function TagCreatePage() {
   }
   
   return (
-    <TagDetailForm tagParameters={defaultTagParameters} formErrors={formErrors} submitTagParameters={submitTagParameters} cancelChanges={cancelChanges} />
+    <FormContainer> 
+      <TagDetailForm tagParameters={defaultTagParameters} formErrors={formErrors} 
+        submitTagParameters={submitTagParameters} 
+        cancelChanges={cancelChanges} 
+      />
+    </FormContainer>
   )
 }
+
 
 
 // ----------------------------------------------------------------------------------------------------------------------------
@@ -138,8 +154,8 @@ function TagDetailForm (props) {
 
   return (
     <React.Fragment>
-      <form onSubmit={handlSubmit} className='container p-0' style={{maxWidth: '800px'}}>
-        <h5 className='text-info text-center'>Параметры тега</h5>        
+      <form onSubmit={handlSubmit}> 
+        <h5 className='text-info text-center'>Параметры тега</h5>     
         <TextField titel={'Код'} id={'code'} value={tag.code} onChange={handlCodeChange} 
           errors={props.formErrors ? props.formErrors.code : null}
         />  
