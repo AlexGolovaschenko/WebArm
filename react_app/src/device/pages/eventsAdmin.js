@@ -47,7 +47,7 @@ export default function EventsAdminPage() {
 
   return (
     <React.Fragment>
-        <h3 className='mb-3'>Настройка событй устройства</h3>
+        <h3 className='mb-3'>Настройка событий устройства</h3>
           <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
             { loading ? 
               <div className='d-flex justify-content-center'><Loader /></div> : 
