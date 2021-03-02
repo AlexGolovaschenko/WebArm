@@ -1,13 +1,15 @@
 mysqlclient-1.4.6-cp37-cp37m-win32.whl
 media/*/*
 static/*
-docs/
 host_admin.txt
 install_postgresql.txt
 git commands.txt
 local_settings.json
 OwenCloud API.pdf
 
+_design_parts/
+_docs/
+_notes/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

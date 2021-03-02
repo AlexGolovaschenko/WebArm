@@ -51,7 +51,7 @@ export default function App() {
             <Route exact path='/' component={()=>{
               return (
               <video autoplay="autoplay" muted loop="loop" id="myVideo">
-                <source src="Earth13426.mp4" type="video/mp4" />
+                <source src="Map145956.mp4" type="video/mp4" />
               </video>
               )}
             }/>

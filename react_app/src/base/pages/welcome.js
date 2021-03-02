@@ -20,7 +20,8 @@ function WelcomePage(props) {
   return (
     <React.Fragment>
       <div className='bg-color-dark-gray text-light content-height'>
-        <div className='container card mt-5 p-3 w-100' style={{background:'rgba(0,0,0,0.8)'}}>
+      <div className='card' style={{background:'none', border:'none'}}>
+        <div className='container card my-5 p-3 w-100' style={{background:'rgba(30,30,30, 0.9)'}}>
             <div className='text-center pt-4'>
                 <h3>Добро пожаловать на <b>BFCloud</b></h3>
             </div>
@@ -73,8 +74,38 @@ function WelcomePage(props) {
                   </h6> 
                 </div>
               </div>
-            </div>            
+            </div>  
+
+            <h5 className='pb-3 text-info text-center'>Список последних обновлений: </h5>
+            <div className="card border-secondary mb-3" style={{background:'none'}}>
+              <div className="card-body">
+                <h6 className='text-primary'> Релиз Альфа 0.7 </h6> 
+                <h6 className='text-success'> Доступна функция Жунала событий </h6> 
+                <p className='text-info'> Теперь вы можите настраивать аварийные и другие события, 
+                  облако будет автоматически контролировать условия их срабатывания.
+                  При срабатывании условия события в Журнал будет записано соответствующее сообщение.
+                </p> 
+                <h6 className='text-success'> Доступна настройка параметров и тегов прибора </h6> 
+                <p className='text-info'> Теперь в разделе Администрирование доступен
+                подраздел Прибор, в котором собраны все настройки подключения прибора. 
+                Так же в данном подразделе Вы можите настраивать и добавление Теги прибора.
+                </p> 
+              </div>
+            </div>
+
+            <div className="card border-secondary mb-3" style={{background:'none'}}>
+              <div className="card-body">
+                <h6 className='text-primary'> Релиз Альфа 0.6 </h6> 
+                <h6 className='text-success'> Доступны Виджеты устройства </h6> 
+                <p className='text-info'> Теперь в разделе Администрирование доступен
+                подраздел Виджеты, в котором вы можите добавлять и настраивать виджеты, 
+                для отображения информации об устройстве на странице Обзор.
+                </p> 
+              </div>
+            </div>
+
         </div>
+      </div>
       </div>
     </React.Fragment>
   );

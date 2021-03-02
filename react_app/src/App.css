@@ -149,11 +149,10 @@ input:-webkit-autofill:active  {
 }
 #myVideo {
   position: fixed;
-  right: 0; 
-  top: -40px;
-  min-width: 100%;
-  min-height: 100%;
-  
+  right: -15px; 
+  top: -15px;
+  min-width: calc(100vw + 30px);
+  min-height: calc(100vh + 30px);
 }
 
 /*------------------------------------ borders ------------------------------------*/
