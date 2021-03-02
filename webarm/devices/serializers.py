@@ -44,14 +44,15 @@ class TagsParametersSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('id', 'device', 'code', 'name', 'data_type', 'value', 'modbus_parameters')
         read_only_fields = ('id', 'value')
+        validators = [] # Remove a default "unique together" constraint.
 
-        # https://www.django-rest-framework.org/api-guide/validators/
-        validators = [
-            UniqueTogetherValidator(
-                queryset = Tag.objects.all(),
-                fields = ['code', 'device']
-            )
-        ]
+    def validate(self, attrs):
+        # call the UniqueTogetherValidator her for add the field name for validator error message (by default it in 'non_field_errors')
+        unique_validator = UniqueTogetherValidator(queryset = Tag.objects.all(), fields = ['code', 'device'])      
+        try:
+            unique_validator(attrs, self)
+        except serializers.ValidationError:
+            raise serializers.ValidationError({"code": "Тег с таким кодом уже существует для данного устройства"})
 
     def create(self, validated_data):
         print('-- TagsParametersSerializer: CREATE')

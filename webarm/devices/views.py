@@ -6,6 +6,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.serializers import ValidationError
 
 from .models import (
     Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
@@ -74,17 +75,18 @@ class DeviceTagsParametersView(APIView):
     def post(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
         response_data = []
+        has_errors = False
         for tag in request.data:
             serializer = None
             if tag.get('id', False) :
                 # update
                 try:
                     tag_obj = Tag.objects.get(id = tag['id'], device = device)
-                    serializer = serializers.TagsParametersSerializer(tag_obj, data=tag)
+                    serializer = serializers.TagsParametersSerializer(tag_obj, data=tag)                  
                 except Tag.DoesNotExist:
                     # tag with this id does not exist for this device
-                    error = 'tag with id = %s does not exist for device = %s' %(tag['id'], device)
-                    response_data.append({'id': tag['id'],'error': error})
+                    response_data.append( {'id': 'tag with id = %s does not exist for device = %s' %(tag['id'], device)} )   
+                    has_errors = True   
             else:
                 # create
                 tag['device'] = device.id
@@ -96,8 +98,12 @@ class DeviceTagsParametersView(APIView):
                     response_data.append(serializer.data)
                 else:
                     response_data.append(serializer.errors)
+                    has_errors = True
 
-        return Response(response_data)
+        if has_errors:
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response_data, status=status.HTTP_200_OK)  
 
 
     def delete(self, request, *args, **kwargs):

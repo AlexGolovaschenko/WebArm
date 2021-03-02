@@ -14,7 +14,6 @@ import DeviceAdminPage from './pages/deviceAdmin'
 import WidgetsAdminPage from './pages/widgetsAdmin'
 import EventsAdminPage from './pages/eventsAdmin'
 import EventDetailPage, {EventCreatePage} from './pages/eventDetail'
-import TagDetailPage, {TagCreatePage} from './pages/tagDetail'
 import Page404 from '../base/pages/pageNotFound'
 
 const BASE_URL = getBaseUrl()
@@ -48,15 +47,13 @@ export default function DeviceApp() {
               <Route exact path={`/device/:device_id/settings/`} component={()=><DeviceSettingsPage />} />
               <Route exact path={`/device/:device_id/events/`} component={()=><DeviceEventsLogPage />} />
               <Route exact path={`/device/:device_id/graphs/`} component={()=><DeviceGraphsPage />} />
-              <Route exact path={`/device/:device_id/admin/config/`} component={()=><DeviceAdminPage />} />
+              <Route path={`/device/:device_id/admin/config/`} component={()=><DeviceAdminPage />} />
               <Route exact path={`/device/:device_id/admin/widgets/`} 
                 component={()=><WidgetsAdminPage updateWidgetsTemplate={updateWidgetsTemplate} widgetsTemplate={widgetsTemplate}/>} 
               />
               <Route exact path={`/device/:device_id/admin/events/`} component={()=><EventsAdminPage/>} />
               <Route exact path={`/device/:device_id/admin/events/:event_id/detail/`} component={()=><EventDetailPage/>} />
               <Route exact path={`/device/:device_id/admin/events/create/`} component={()=><EventCreatePage/>} />
-              <Route exact path={`/device/:device_id/admin/tags/:tag_id/detail/`} component={()=><TagDetailPage/>} />
-              <Route exact path={`/device/:device_id/admin/tags/create/`} component={()=><TagCreatePage/>} />
               <Route component={Page404} />
             </Switch>
           </div>

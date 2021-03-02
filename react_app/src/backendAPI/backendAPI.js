@@ -38,11 +38,16 @@ export async function getDeviceTagsParameters(device_id, tags_list, cb) {
   const responce = await axiosInstance.get(BASE_URL + "/device/tags/parameters/", { params: params } )
   responce && cb(responce.data)
 }
-export async function postDeviceTagsParameters(device_id, tags_parameters, cb) {
+export async function postDeviceTagsParameters(device_id, tags_parameters, cb_success, cb_error) {
   const params = { id: device_id }
-  const body = tags_parameters 
-  const responce = await axiosInstance.post(BASE_URL + "/device/tags/parameters/", body, { params: params } )
-  responce && cb(responce.data)
+  const body = tags_parameters
+  try { 
+    const responce = await axiosInstance.post(BASE_URL + "/device/tags/parameters/", body, { params: params } )
+    responce && cb_success(responce.data)
+  } catch (error) {
+    error.response && cb_error(error.response.data)
+    console.log(error.response); // TODO: delete this log
+  }
 }
 export async function deleteDeviceTags(device_id, tags_list, cb) {
   const params = { id: device_id, tags: tags_list }

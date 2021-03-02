@@ -1,41 +1,35 @@
 import React, {useState, useEffect} from 'react' 
 import { useHistory, useParams } from "react-router-dom"
 
-import AdminDeviceStatusBar from '../components/AdminDeviceStatusBar'
 import Loader from '../../base/components/Loader'
 import {
-  getDeviceParameters, 
   getDeviceTagsParameters,
   postDeviceTagsParameters,
   deleteDeviceTags,
 } from '../../backendAPI/backendAPI'
-import {TextField, NumberField, SelectField, getSelectedOptions} from '../../base/forms/forms'
+import {TextField, NumberField, SelectField, getSelectedOptions, ErrorMessage} from '../../base/forms/forms'
 
 
 
 export default function TagDetailPage() {
   const { tag_id, device_id } = useParams();
-  const [deviceParameters, setDeviceParameters] = useState({})
   const [tagParameters, setTagParameters] = useState({})
-  const [loading1, setLoading1] = React.useState(true)
-  const [loading2, setLoading2] = React.useState(true)
+  const [formErrors, setFormErrors] = useState(null)
+  const [loading, setLoading] = React.useState(true)
   const history = useHistory()
 
   useEffect(()=>{
-    getDeviceParameters(device_id, (data)=>{
-      setDeviceParameters(data)
-      setLoading1(false)
-    })
     getDeviceTagsParameters(device_id, [tag_id], (data)=>{
       setTagParameters(data[0])
-      setLoading2(false)
+      setLoading(false)
     })
   }, [])
   
   const submitTagParameters = (tag_parameters) => {
-    postDeviceTagsParameters(device_id, [tag_parameters], (responce_data)=>{
-      setTagParameters(responce_data[0])
-    })
+    postDeviceTagsParameters(device_id, [tag_parameters], 
+      (responce_data)=>{ setTagParameters(responce_data[0]); setFormErrors(null); },
+      (errors_data)=>{ setFormErrors(errors_data[0]) }
+    )
   }
 
   const cancelChanges = () => { 
@@ -43,24 +37,16 @@ export default function TagDetailPage() {
   }
 
   const deleteTag = () => { 
-    deleteDeviceTags(device_id, [tag_id], ()=>{
-      history.push(`/device/${device_id}/admin/config/`)
-    })
+    deleteDeviceTags(device_id, [tag_id], ()=>{ history.push(`/device/${device_id}/admin/config/`) })
   }
   
   return (
     <React.Fragment>
-      <h3 className='mb-3'>Настройка параметров прибора</h3>
-      <div className='px-3 pb-3 pt-2 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
-        { loading1 || loading2 ? 
-          <div className='d-flex justify-content-center'><Loader /></div> 
-          :
-          <div>
-            <AdminDeviceStatusBar deviceParameters={deviceParameters} /> 
-            <TagDetailForm tagParameters={tagParameters} submitTagParameters={submitTagParameters} cancelChanges={cancelChanges} deleteTag={deleteTag} />
-          </div>
-        }
-      </div>
+      { loading ? 
+        <div className='d-flex justify-content-center'><Loader /></div> 
+        :
+        <TagDetailForm tagParameters={tagParameters} formErrors={formErrors} submitTagParameters={submitTagParameters} cancelChanges={cancelChanges} deleteTag={deleteTag} />
+      }
     </React.Fragment>
   )
 }
@@ -68,24 +54,19 @@ export default function TagDetailPage() {
 
 
 export function TagCreatePage() {
+  const { device_id } = useParams();
+  const history = useHistory()
   const defaultTagParameters = { 
     code: '', name: '', data_type: 'INT',
     modbus_parameters: {data_type: 'INT', register_address: 0, read_function: '3', write_function: '6'}
   }
-  const { device_id } = useParams();
-  const [deviceParameters, setDeviceParameters] = useState({})
-  const history = useHistory()
+  const [formErrors, setFormErrors] = useState({})
 
-  useEffect(()=>{
-    getDeviceParameters(device_id, (data)=>{
-      setDeviceParameters(data)
-    })
-  }, [])
-  
   const submitTagParameters = (tag_parameters) => {
-    postDeviceTagsParameters(device_id, [tag_parameters], ()=>{
-      history.push(`/device/${device_id}/admin/config/`)
-    })
+    postDeviceTagsParameters(device_id, [tag_parameters], 
+      ()=>{ history.push(`/device/${device_id}/admin/config/`) },
+      (errors_data)=>{ setFormErrors(errors_data[0]) }
+    )
   }
 
   const cancelChanges = () => { 
@@ -93,42 +74,10 @@ export function TagCreatePage() {
   }
   
   return (
-    <React.Fragment>
-      <h3 className='mb-3'>Настройка параметров прибора</h3>
-      <div className='px-3 pb-3 pt-2 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
-        <div>
-          <AdminDeviceStatusBar deviceParameters={deviceParameters} /> 
-          <TagDetailForm tagParameters={defaultTagParameters} submitTagParameters={submitTagParameters} cancelChanges={cancelChanges} />
-        </div>
-      </div>
-    </React.Fragment>
+    <TagDetailForm tagParameters={defaultTagParameters} formErrors={formErrors} submitTagParameters={submitTagParameters} cancelChanges={cancelChanges} />
   )
 }
 
-
-// export function TagCreatePage() {
-//   const { device_id } = useParams();
-//   const defaultEventSettings = { device: device_id, enable: false, categories: [] }
-  
-//   function postEventDetail( event, cb = ()=>{} ) {
-//     const body = [event]   
-//     const params = { id: device_id }
-//     axiosInstance.post(BASE_URL + "/events/config/", body, { params: params} )
-//     .then((responce) => {
-//       cb && cb(responce.data)
-//       device_id && (window.location.href = `/device/${device_id}/admin/events/`)
-//     })  
-//   }
-
-//   return (
-//     <React.Fragment>
-//         <h3 className='mb-3'>Параметры события</h3>
-//         <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
-//           <EventForm event={defaultEventSettings} onSubmit={postEventDetail}/>
-//         </div>
-//     </React.Fragment>
-//   );
-// }
 
 // ----------------------------------------------------------------------------------------------------------------------------
 function TagDetailForm (props) {
@@ -190,21 +139,43 @@ function TagDetailForm (props) {
   return (
     <React.Fragment>
       <form onSubmit={handlSubmit} className='container p-0' style={{maxWidth: '800px'}}>
-        <h5 className='text-info text-center'>Параметры тега</h5>
-        <TextField titel={'Код'} id={'code'} value={tag.code} onChange={handlCodeChange}/>
-        <TextField titel={'Наименование'} id={'name'} value={tag.name} onChange={handlNameChange}/>
-        <SelectField titel={'Тип данных на сервере'} id={'data_type'} value={tag.data_type} options={serverDataTypeOptions} onChange={handlDataTypeChange} />
+        <h5 className='text-info text-center'>Параметры тега</h5>        
+        <TextField titel={'Код'} id={'code'} value={tag.code} onChange={handlCodeChange} 
+          errors={props.formErrors ? props.formErrors.code : null}
+        />  
+        <TextField titel={'Наименование'} id={'name'} value={tag.name} onChange={handlNameChange}
+          errors={props.formErrors ? props.formErrors.name : null}
+        />
+        <SelectField titel={'Тип данных на сервере'} id={'data_type'} value={tag.data_type} options={serverDataTypeOptions} onChange={handlDataTypeChange} 
+          errors={props.formErrors ? props.formErrors.data_type : null}
+        />
 
         <h5 className='text-info text-center'>Параметры Modbus</h5>
         <SelectField titel={'Тип данных в устройстве'} id={'modbus_data_type'} value={tag.modbus_parameters ? tag.modbus_parameters.data_type : null} 
-          options={modbusDataTypeOptions} onChange={handlModbusDataTypeChange} />
+          options={modbusDataTypeOptions} onChange={handlModbusDataTypeChange} 
+          errors={props.formErrors && props.formErrors.modbus_parameters ? props.formErrors.modbus_parameters.data_type : null}
+        />
         <NumberField titel={'Адрес регистра'} id={'modbus_register_address'} value={tag.modbus_parameters ? tag.modbus_parameters.register_address : null } 
-          onChange={handlModbusRegisterAddressChange}/>
+          onChange={handlModbusRegisterAddressChange}
+          errors={props.formErrors && props.formErrors.modbus_parameters ? props.formErrors.modbus_parameters.register_address : null}
+        />
         <SelectField titel={'Функиця чтения'} id={'modbus_read_function'} value={tag.modbus_parameters ? tag.modbus_parameters.read_function : null} 
-          options={modbusReadFunctionOptions} onChange={handlModbusReadFunctionChange} />
+          options={modbusReadFunctionOptions} onChange={handlModbusReadFunctionChange} 
+          errors={props.formErrors && props.formErrors.modbus_parameters ? props.formErrors.modbus_parameters.read_function : null}
+        />
         <SelectField titel={'Функиця записи'} id={'modbus_write_function'} value={tag.modbus_parameters ? tag.modbus_parameters.write_function : null} 
-          options={modbusWriteFunctionOptions} onChange={handlModbusWriteFunctionChange} />
-      
+          options={modbusWriteFunctionOptions} onChange={handlModbusWriteFunctionChange} 
+          errors={props.formErrors && props.formErrors.modbus_parameters ? props.formErrors.modbus_parameters.write_function : null}  
+        />
+
+        <ErrorMessage>
+          {props.formErrors && props.formErrors.non_field_errors ? 
+            <div className='card bg-danger text-dark my-3 p-2'> {props.formErrors.non_field_errors}</div>
+            : null
+          }
+        </ErrorMessage>
+
+
         <div className='d-flex flex-wrap justify-content-center'>
           <button type="submit" className="btn btn-outline-primary m-2" style={buttonsStyle}>Сохранить</button>
           <button type="button" className="btn btn-outline-secondary m-2" style={buttonsStyle} onClick={onCancel}>Отмена</button>

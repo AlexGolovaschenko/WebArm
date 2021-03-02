@@ -19,7 +19,8 @@ export function TextField(props){
             defaultValue={props.value}
             onChange={props.onChange}
           ></input>
-          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
+          <ErrorMessage> {props.errors} </ErrorMessage>
+          <CommentMessage> {props.comment} </CommentMessage>
         </div>
       </React.Fragment>
     ) 
@@ -48,7 +49,8 @@ export function NumberField(props){
             max={props.max}
             onChange={props.onChange}            
           ></input>
-          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
+          <ErrorMessage> {props.errors} </ErrorMessage>
+          <CommentMessage> {props.comment} </CommentMessage>
         </div>
       </React.Fragment>
     ) 
@@ -78,7 +80,8 @@ export function SelectField(props){
               return <option key={index} value={option.value}>{option.name}</option>
             })}
           </select>
-          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
+          <ErrorMessage> {props.errors} </ErrorMessage>
+          <CommentMessage> {props.comment} </CommentMessage>
         </div>
       </React.Fragment>
     ) 
@@ -108,7 +111,8 @@ export function MultipleSelectField(props){
               return <option key={index} value={option.value}>{option.name}</option>
             })}
           </select>
-          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
+          <ErrorMessage> {props.errors} </ErrorMessage>
+          <CommentMessage> {props.comment} </CommentMessage>
         </div>
       </React.Fragment>
     ) 
@@ -131,36 +135,45 @@ export function CheckboxField(props){
             onChange={props.onChange}
         ></input>
           <span>{props.titel}</span>
-          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
+          <ErrorMessage> {props.errors} </ErrorMessage>
+          <CommentMessage> {props.comment} </CommentMessage>
         </div>
       </React.Fragment>
     ) 
   }
   
 export function InlineCheckboxField(props){
-    // props.titel : str
-    // props.id : str
-    // props.checked : boolean
-    // props.comment : str or jsx
-    // props.onChange : function
-    return (
-      <React.Fragment>
-        <div className="form-check-inline pb-3">
-          <input 
-            type="checkbox" 
-            className="form-check-input" 
-            id={props.id} 
-            checked={props.checked}
-            onChange={props.onChange}
-          ></input>
-          <span>{props.titel}</span>
-          <div className='text-small text-info p-0 m-0'>{props.comment}</div>
-        </div>
-      </React.Fragment>
-    ) 
-  }
+  // props.titel : str
+  // props.id : str
+  // props.checked : boolean
+  // props.comment : str or jsx
+  // props.onChange : function
+  return (
+    <React.Fragment>
+      <div className="form-check-inline pb-3">
+        <input 
+          type="checkbox" 
+          className="form-check-input" 
+          id={props.id} 
+          checked={props.checked}
+          onChange={props.onChange}
+        ></input>
+        <span>{props.titel}</span>
+        <ErrorMessage> {props.errors} </ErrorMessage>
+        <CommentMessage> {props.comment} </CommentMessage>
+      </div>
+    </React.Fragment>
+  ) 
+}
 
 
+
+export function ErrorMessage(props){
+  return <div className='text-small text-danger p-0 m-0'> {props.children} </div>  
+}
+export function CommentMessage(props){
+  return <div className='text-small text-info p-0 m-0'> {props.children} </div> 
+}
 
   // ----------------------------------------------------------------------------------
 // utils
