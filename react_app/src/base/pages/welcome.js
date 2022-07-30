@@ -14,7 +14,7 @@ function WelcomePage(props) {
 
   function loginDemoUser() {
     const cb = ()=>{ props.history.push('/company/overview/') }
-    auth.login('admin', 'admin', cb );
+    auth.login('demo', 'DemoUserPassword', cb);
   }
 
   return (
@@ -23,7 +23,7 @@ function WelcomePage(props) {
       <div className='card' style={{background:'none', border:'none'}}>
         <div className='container card my-5 p-3 w-100' style={{background:'rgba(30,30,30, 0.9)'}}>
             <div className='text-center pt-4'>
-                <h3>Добро пожаловать на <b>BFCloud</b></h3>
+                <h3>Добро пожаловать на <b>CI Cloud</b></h3>
             </div>
             <br/>
             <div className='text-center'>
@@ -69,8 +69,9 @@ function WelcomePage(props) {
 
               <div className="card border-secondary" style={{background:'none'}}>
                 <div className="card-body text-center">
-                  <h6> Вы можете воспользоваться демо-версией сервиса 
-                    <a className="px-2" href='#' onClick={loginDemoUser}>Демо-версия: БУМП-14</a>
+                  <h6> Вы можете воспользоваться  
+                    <a className="px-2" href='#' onClick={loginDemoUser}>демо-версией сервиса</a>
+                    для ознакомления
                   </h6> 
                 </div>
               </div>

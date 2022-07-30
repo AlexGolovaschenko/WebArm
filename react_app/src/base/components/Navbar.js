@@ -9,7 +9,7 @@ export default function Navbar(props) {
     
     return (
         <nav className="navbar navbar-expand-sm bg-dark navbar-dark bg-color-indigo header-height p-0 m-0">
-            <Link className="navbar-brand header-height py-2 pl-3 pr-0 m-0" to="/">WebArm</Link>
+            <Link className="navbar-brand header-height py-2 pl-3 pr-0 m-0" to="/">CI Cloud</Link>
 
             <button className="navbar-toggler header-height border-0 m-0" style={{outline: 'none', boxShadow: 'none'}} type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span className="navbar-toggler-icon"></span>
