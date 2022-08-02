@@ -18,7 +18,7 @@ function FacilityCard(props) {
 
   return (
     <React.Fragment>
-    <div className='card bg-dark text-light shadow-sm p-0 m-0'>
+    <div className='card desk-color-secondary text-light shadow-sm p-0 m-0'>
       <h6 className='px-2 pt-2 pb-0 m-0'>{facilityInfo.name}</h6>
       <div className='container-fluid h-100 p-1 m-0 row'>
           {devices.length > 0 ? mapDeviceCards(devices) : <p className='text-secondary p-1'>Устройств нет ...</p> }       

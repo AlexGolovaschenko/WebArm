@@ -4,7 +4,7 @@ import React from 'react'
 export default function ProfilePage(props) {
   return (
     <React.Fragment>
-    <div className='bg-color-dark-gray text-secondary content-height'> 
+    <div className='desk-color-primary text-secondary content-height'> 
       <div className='container card bg-dark shadow-sm my-4 pt-4'>
         <h2>Профиль пользователя</h2>
 

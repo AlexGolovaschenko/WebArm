@@ -104,6 +104,6 @@ async function backendApiRequest(method, endpoint, body, params, cb_success, cb_
       break;
 
     default:
-      throw `Api method ${method} not supported.`
+      throw new Error(`Api method ${method} not supported.`)
   }
 }

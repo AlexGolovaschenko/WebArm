@@ -1,9 +1,9 @@
 import React from 'react' 
-import {useParams} from 'react-router-dom'
+// import {useParams} from 'react-router-dom'
 
 
 export default function DeviceSettingsPage() {
-  const { device_id } = useParams();
+  // const { device_id } = useParams();
 
   return (
     <React.Fragment>

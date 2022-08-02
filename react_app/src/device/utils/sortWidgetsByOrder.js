@@ -1,10 +1,11 @@
 
 
 export default function sortWidgetsByOrder(template) {
-    var widgets = template.widgets
-    if (!widgets) {return {'widgets':[]}}
+    if (template === null || template.widgets === null) {
+      return {'widgets':[]}
+    }
 
-
+    let widgets = template.widgets
     widgets.sort( (a, b) => {
         var KeyA = parseInt(a.order)
         var KeyB = parseInt(b.order)
@@ -12,7 +13,5 @@ export default function sortWidgetsByOrder(template) {
         if (KeyA > KeyB) return 1;
         return 0;
       });
-
-
     return {'widgets':widgets}
 }

@@ -25,7 +25,7 @@ class Login extends Component {
 
   render() {
     return (
-    <div className='bg-color-dark-gray text-secondary content-height'>  
+    <div className='desk-color-primary text-secondary content-height'>  
       <div className='container card p-3 mt-5 bg-dark' style={{maxWidth: '500px'}}>
         <h2>Вход</h2>
         <form onSubmit={this.handleSubmit}>

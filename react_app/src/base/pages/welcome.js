@@ -19,7 +19,7 @@ function WelcomePage(props) {
 
   return (
     <React.Fragment>
-      <div className='bg-color-dark-gray text-light content-height'>
+      <div className='desk-color-primary text-light content-height'>
       <div className='card' style={{background:'none', border:'none'}}>
         <div className='container card my-5 p-3 w-100' style={{background:'rgba(30,30,30, 0.9)'}}>
             <div className='text-center pt-4'>
@@ -70,7 +70,9 @@ function WelcomePage(props) {
               <div className="card border-secondary" style={{background:'none'}}>
                 <div className="card-body text-center">
                   <h6> Вы можете воспользоваться  
-                    <a className="px-2" href='#' onClick={loginDemoUser}>демо-версией сервиса</a>
+                    <button type="button" className="btn btn-link px-2" href='#' onClick={loginDemoUser}>
+                      демо-версией сервиса
+                    </button>
                     для ознакомления
                   </h6> 
                 </div>

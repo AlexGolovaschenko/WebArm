@@ -8,7 +8,7 @@ class WidgetsTemplateSerializer(serializers.ModelSerializer):
     template = serializers.JSONField()
     class Meta:
         model = WidgetsTemplate
-        fields = ('template', )
+        fields = ('device', 'template')
 
 
 

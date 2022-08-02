@@ -18,7 +18,7 @@ class LogoutBtn extends Component {
     render() {
         return (
             <li className="nav-item" >
-                <Link className="nav-link" to="" onClick={this.handleLogout}>Выйти</Link>
+                <Link className="nav-link navbar-text-color-primary" to="" onClick={this.handleLogout}>Выйти</Link>
             </li>
         )
     };

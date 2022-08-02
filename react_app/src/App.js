@@ -1,4 +1,5 @@
 import './App.css'
+import './themes.css'
 import '../node_modules/react-vis/dist/style.css'
 
 import React, { useEffect, useState } from 'react' 
@@ -9,7 +10,7 @@ import {
 } from 'react-router-dom'
 
 import {ProtectedRoute} from './utils/protectedRoute'
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import {FullScreen, useFullScreenHandle} from "react-full-screen";
 
 import DeviceApp from './device/deviceApp'
 import CompanyApp from './company/companyApp'
@@ -50,7 +51,7 @@ export default function App() {
           <Router>        
             <Route exact path='/' component={()=>{
               return (
-              <video autoplay="autoplay" muted loop="loop" id="myVideo">
+              <video autoPlay="autoplay" muted loop="loop" id="myVideo">
                 <source src="Map145956.mp4" type="video/mp4" />
               </video>
               )}

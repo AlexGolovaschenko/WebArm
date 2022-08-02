@@ -33,7 +33,7 @@ function Graph(props) {
 
   
   let has_displayed_tags = false
-  displayedTags.map( (tag) => {
+  displayedTags.forEach(tag => {
     if (tag.values.length > 0) {has_displayed_tags = true}
   })
 

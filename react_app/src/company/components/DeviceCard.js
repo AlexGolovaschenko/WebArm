@@ -31,10 +31,10 @@ function DeviceCard(props) {
     return (
         <React.Fragment>
         <Link className="nav-link p-0 m-0" to={`/device/${device.id}/overview/`}>
-            <div className='border border-secondary rounded p-2 h-100 bg-dark text-light card-hover' style={{overflow: 'hidden'}} >
+            <div className='border border-secondary rounded p-2 h-100 desk-color-secondary text-light card-hover' style={{overflow: 'hidden'}} >
                 <h6 className='text-nowrap'>{device.name}</h6>
                 <div className='p-0 m-0 small w-100'>
-                    <table className="table table-sm p-0 m-0 table-dark text-light w-100">
+                    <table className="table table-sm p-0 m-0 table-dark text-light desk-color-secondary w-100">
                         <tbody>
                             <tr>
                                 <td> Связь: </td>   

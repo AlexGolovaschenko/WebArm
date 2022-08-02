@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 
 export default function TagsCurrentValueRow({record, index}) {
@@ -13,7 +12,6 @@ export default function TagsCurrentValueRow({record, index}) {
         </tr>
     )
 }
-
 
 
 function format_time(time, style='medium') {

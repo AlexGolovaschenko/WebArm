@@ -7,9 +7,7 @@ from .serializers import WidgetsTemplateSerializer
 from devices.utils import get_device_obj_from_request
 
 
-
 class WidgetsTemplateView(APIView):
-
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
         template_obj = WidgetsTemplate.objects.filter(device=device).first()
@@ -24,10 +22,12 @@ class WidgetsTemplateView(APIView):
         if templates_qs.exists():
             # update template
             obj = templates_qs.first()
-            serializer = WidgetsTemplateSerializer(obj, data={'template': template_data})
+            serializer = WidgetsTemplateSerializer(obj, 
+                data={'template': template_data})
         else:
             # create template
-            serializer = WidgetsTemplateSerializer(data={'template': template_data})
+            serializer = WidgetsTemplateSerializer(
+                data={'device': device.id, 'template': template_data})
 
         if serializer.is_valid():
             serializer.save()

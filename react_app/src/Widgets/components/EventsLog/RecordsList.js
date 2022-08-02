@@ -4,6 +4,7 @@ import Loader from '../../../base/components/Loader'
 
 
 export default function TagsCurrentValueList(props) {
+  // eslint-disable-next-line no-unused-vars
   const [modal, setModal] = React.useState(false) // use it just for force update this component
   const modalButton = React.useRef(null)
   const graphCard = React.useRef(null)

@@ -8,6 +8,7 @@ import Loader from '../../../base/components/Loader'
 
 
 function TagsHistoricalGraph(props) {
+  // eslint-disable-next-line no-unused-vars
   const [modal, setModal] = React.useState(false) // use it just for force update this component
   const [crosshair, setCrosshair] = React.useState(false)
   const graphCard = React.useRef(null)

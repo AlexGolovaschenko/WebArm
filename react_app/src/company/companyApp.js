@@ -12,7 +12,7 @@ export default function CompanyApp() {
 
   return (
     <React.Fragment>
-      <div className='bg-color-dark-gray text-secondary h-100'>
+      <div className='desk-color-primary text-secondary h-100'>
       <div className="row m-0 p-0">
         <Sidebar />
         <div className="col-10 m-0 p-0">
