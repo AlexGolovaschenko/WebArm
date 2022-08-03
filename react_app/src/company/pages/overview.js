@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react' 
+import {useHistory} from "react-router-dom";
 
 import Loader from '../../base/components/Loader'
 import FacilityCard from '../components/FacilityCard'
@@ -23,6 +24,7 @@ async function readCompanyInfo(cb) {
 export default function CompanyOverviewPage() {
   const [companyInfo, setCompanyInfo] = useState({})
   const [loading, setLoading] = React.useState(true)
+  const history = useHistory();
 
   useEffect(() => {
     readCompanyInfo(inf => {
@@ -31,11 +33,20 @@ export default function CompanyOverviewPage() {
     });   
   }, []);
 
+  const editCompany = () => {history.push(`/company/detail`)}
+
   return (
     <React.Fragment>
-      <h3 className='px-3 pt-3 pb-0'>Компания <b>
-        {(!loading && companyInfo.isExist) ? companyInfo.company.name : null}
-      </b></h3>
+      <h3 className='px-3 pt-3 pb-0'>
+        Компания <b>{ (!loading && companyInfo.isExist) ? 
+          companyInfo.company.name : 
+          null}
+        </b>
+        <button type='button' className='btn btn-outline-secondary border-0 float-right' 
+                onClick={editCompany}>
+          <i className='fas fa-pen' style={{fontSize:'1.3em'}}></i>
+        </button>
+      </h3>
       <div className='container-fluid py-0 px-2 m-0 row'>
         { loading ? 
           <Loader /> : 
@@ -58,12 +69,14 @@ function CompanyOverviewBlock(props) {
 }
 
 function CompanyDoesntExistBlock(props) {
+  const history = useHistory();
+  const createNewCompany = () => {history.push(`/company/create`)}
   return (
     <React.Fragment>
       <div className='container-fluid px-2'>
         <p className='text-warning'>У вас еще нет зарегестрированной компании</p>
         <button type='button' className='btn btn-outline-warning' 
-                onClick={()=>alert('Данная функция еще находится в разработке.')}>
+                onClick={createNewCompany}>
           Зарегистировать
         </button>
       </div>

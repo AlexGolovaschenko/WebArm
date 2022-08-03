@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className='light-thema'>
+    <div className='dark-thema'>
     <App />
     </div>
   </React.StrictMode>,

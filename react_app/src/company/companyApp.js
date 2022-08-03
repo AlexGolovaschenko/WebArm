@@ -6,6 +6,7 @@ import CompanyOverviewPage from './pages/overview'
 import EmployersPage from './pages/employers'
 import FacilitiesOnMapPage from './pages/facilitiesOnMap'
 import CompanyProfilePage from './pages/profile'
+import CompanyDetailPage, {CompanyCreatePage} from './pages/companyDetail'
 import Page404 from '../base/pages/pageNotFound'
 
 export default function CompanyApp() { 
@@ -23,6 +24,8 @@ export default function CompanyApp() {
               <Route exact path='/company/map' component={FacilitiesOnMapPage} />
               <Route exact path='/company/employers' component={EmployersPage} />
               <Route exact path='/company/profile' component={CompanyProfilePage} />
+              <Route exact path='/company/create' component={CompanyCreatePage} />
+              <Route exact path='/company/detail' component={CompanyDetailPage} />
               <Route component={Page404} />
             </Switch>
           </div>
