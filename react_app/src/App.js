@@ -26,11 +26,12 @@ import auth from './backendAPI/auth'
 export default function App() {
   const [loading, setLoading] = useState(true)
   const [loading2, setLoading2] = useState(true)
+  const [darkThema, setDarkThema] = useState(false);
   const [authed, setAuthed] = useState(false)
   const [userInfo, setUserInfo] = useState({})
 
   const handle = useFullScreenHandle();
-
+  
   useEffect(() => {
     auth.checkAuthentication(() => { setLoading(false) })
     auth.onLogin = () => {setAuthed(true)}    
@@ -40,6 +41,16 @@ export default function App() {
       setLoading2(false);
     }   
   }, [])
+
+  const switchThemaHandler = () => {
+    setDarkThema(!darkThema);
+    const root = document.getElementById('root');
+    if (darkThema) {
+      root.className='light-thema';
+    } else {
+      root.className='dark-thema';
+    }
+  }
 
   if (loading || loading2) { 
     return null 
@@ -57,7 +68,8 @@ export default function App() {
               )}
             }/>
 
-            <Navbar authed={authed} userInfo = {userInfo} />
+            <Navbar authed={authed} userInfo={userInfo} darkThema={darkThema} 
+              switchThemaHandler={switchThemaHandler} />
             <Switch>
               <Route exact path='/' component={WelcomePage} />
               <Route exact path='/user/login' component={Login}  />

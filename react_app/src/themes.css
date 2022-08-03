@@ -2,11 +2,12 @@
 .dark-thema .navbar-text-color-logo {color: #fff !important;}
 .dark-thema .navbar-text-color-primary {color: rgba(255,255,255,.5) !important;}
 
-.dark-thema .sidebar-color-primary {background-color:#252526 !important;}
-.dark-thema .sidebar-color-secondary {background-color:#343a40 !important;}
+.dark-thema .sidebar-color-primary {background-color: #252526 !important;}
+.dark-thema .sidebar-color-secondary {background-color: #343a40 !important;}
+.dark-thema .sidebar-text-color-primary {color:#f8f9fa !important;}
 
-.dark-thema .desk-color-primary {background-color:#1E1E1E !important;}
-.dark-thema .desk-color-secondary {background-color:#343a40 !important;}
+.dark-thema .desk-color-primary {background-color: #1E1E1E !important;}
+.dark-thema .desk-color-secondary {background-color: #343a40 !important;}
 
 
 /* ----------------------------------------------------------------------*/
@@ -14,11 +15,12 @@
 .light-thema .navbar-text-color-logo {color: #fff !important;}
 .light-thema .navbar-text-color-primary {color: rgba(255,255,255,.7) !important;}
 
-.light-thema .sidebar-color-primary {background-color:#ECEFF1 !important;}
-.light-thema .sidebar-color-secondary {background-color:#CFD8DC !important;}
+.light-thema .sidebar-color-primary {background-color: #ECEFF1 !important;}
+.light-thema .sidebar-color-secondary {background-color: #CFD8DC !important;}
+.light-thema .sidebar-text-color-primary {color: #212529 !important;}
 
-.light-thema .desk-color-primary {background-color:#FAFAFA !important;}
-.light-thema .desk-color-secondary {background-color:#ECEFF1 !important;}
+.light-thema .desk-color-primary {background-color: #FAFAFA !important;}
+.light-thema .desk-color-secondary {background-color: #ECEFF1 !important;}
 
 
 
