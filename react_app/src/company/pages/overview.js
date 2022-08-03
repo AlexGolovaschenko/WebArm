@@ -25,17 +25,18 @@ export default function CompanyOverviewPage() {
 
   return (
     <React.Fragment>
-      <h3 className='px-3 pt-3 pb-0'>
+      <h3 className='p-1'>
         Компания <b>{ (!loading && companyInfo.isExist) ? 
           companyInfo.company.name : 
           null}
         </b>
-        <button type='button' className='btn btn-outline-secondary border-0 float-right' 
+        <button type='button' className='btn desk-text-color-secondary card-hover float-right' 
                 onClick={editCompany}>
           <i className='fas fa-pen' style={{fontSize:'1.3em'}}></i>
         </button>
       </h3>
-      <div className='container-fluid py-0 px-2 m-0 row'>
+      
+      <div className='container-fluid row p-0 m-0'>
         { loading ? 
           <Loader /> : 
           companyInfo.isExist ? 
@@ -78,7 +79,7 @@ function FacilityOverviewBlock(props) {
     <React.Fragment>
       { props.companyInfo.facilities.map((facility, index) => {
         return (
-          <div key={facility.id} className='container-fluid px-2 py-0 mx-0 my-2 col-xl-6'>
+          <div key={facility.id} className='container-fluid p-1 m-0 col-xl-6'>
             <FacilityCard facilityInfo={facility} index={index}/>
           </div>
         )

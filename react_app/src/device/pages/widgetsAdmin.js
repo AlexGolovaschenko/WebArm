@@ -1,28 +1,23 @@
-import React, {useEffect} from 'react' 
-import {useParams} from 'react-router-dom'
+import React, {useEffect} from 'react';
+import {useParams} from 'react-router-dom';
 
-import {
-  TextField,
-  NumberField,
-  SelectField,
-  MultipleSelectField,
-  CheckboxField,
-  getSelectedOptions
-} from '../../base/forms/forms'
+import {TextField, NumberField, SelectField, MultipleSelectField,
+  CheckboxField, getSelectedOptions
+} from '../../base/forms/forms';
 
-import sortWidgetsByOrder from '../utils/sortWidgetsByOrder'
+import sortWidgetsByOrder from '../utils/sortWidgetsByOrder';
 
-import Loader from '../../base/components/Loader'
-import axiosInstance from "../../backendAPI/axiosApi";
-import getBaseUrl from '../../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
+import Loader from '../../base/components/Loader';
+import axiosInstance from "../../backendAPI/axiosClient";
+import getBaseUrl from '../../backendAPI/localSettings';
+const BASE_URL = getBaseUrl();
 
 export default function WidgetsAdminPage(props) {
   const { device_id } = useParams();
-  const updateWidgetsTemplate = props.updateWidgetsTemplate
-  const [widgetsTemplate, setWidgetsTemplate] = React.useState( sortWidgetsByOrder(props.widgetsTemplate) )
-  const [selectedWidget, setSelectedWidget] = React.useState(0)
-  const [tags, setTags] = React.useState([])
+  const updateWidgetsTemplate = props.updateWidgetsTemplate;
+  const [widgetsTemplate, setWidgetsTemplate] = React.useState( sortWidgetsByOrder(props.widgetsTemplate) );
+  const [selectedWidget, setSelectedWidget] = React.useState(0);
+  const [tags, setTags] = React.useState([]);
 
   // read tags list
   const readDeviceTags = () => {
@@ -30,46 +25,47 @@ export default function WidgetsAdminPage(props) {
     .then((responce) => {
       responce && setTags(responce.data)
     })  
-  }
+  };
+
   useEffect(() => {
     readDeviceTags();
-  }, [])
+  }, []);
 
 
   // I use it for fix bug: witout this, when I change the same type forms, 
   // form fields data does not changing 
   // if i hide and show the form, fields data update correctly
-  const [displayWidget, setDisplayWidget] = React.useState(false) 
+  const [displayWidget, setDisplayWidget] = React.useState(false); 
   const rerenderWidgetForm = () => {
-    setDisplayWidget(false)
+    setDisplayWidget(false);
     setTimeout( () => { setDisplayWidget(true) }, 0);
-  }
+  };
   useEffect(() => {
     rerenderWidgetForm()
-  }, [selectedWidget, tags])  
+  }, [selectedWidget, tags]); 
 
 
   // control buttons
   const changeSelectedWidget = (widgetNumber) => {
     setSelectedWidget(widgetNumber)
-  }
+  };
 
   const saveWidgetsTemplate = () => {
     updateWidgetsTemplate(widgetsTemplate)
-  }
+  };
 
   const cancelTemplateChanges = () => {
     setWidgetsTemplate( sortWidgetsByOrder(props.widgetsTemplate) )
     setSelectedWidget(0)
     rerenderWidgetForm()
-  }
+  };
 
   const deleteWidget = (index) => {
     const wt = widgetsTemplate.widgets.map((w)=>{return w})
     wt.splice(index, 1)
     setWidgetsTemplate({widgets: wt})
     setSelectedWidget(0)
-  }
+  };
 
   // update widget config
   const updateWidget = (WidgetData) => {
@@ -81,7 +77,7 @@ export default function WidgetsAdminPage(props) {
       }
     })
     setWidgetsTemplate({widgets: wt})
-  }
+  };
 
   // const onChangeWidgetOrder = (w_index, new_order) => {
   //   // TODO
@@ -93,32 +89,33 @@ export default function WidgetsAdminPage(props) {
     var a = widgetsTemplate.widgets.map((item)=>{return item})
     a.push(widget)
     setWidgetsTemplate({widgets: a})   
-  }
+  };
 
   const addWidgetHendler = (type) => {
     if (type === 'table') { addWidgetToTemplate(DefaultTable) } 
     else if (type === 'graph') { addWidgetToTemplate(DefaultGraph) }
     else if (type === 'indicator') { addWidgetToTemplate(DefaultIndicator) }
-  }
+  };
 
   if (!widgetsTemplate.widgets) {return <Loader />}
 
   // render page
   return (
     <React.Fragment>
-      <h3 className='mb-3'>Настройка виджетов</h3>
+      <h3 className='p-1'>Настройка виджетов</h3>
       <div className='row equal p-0 m-0'>
         <div className='col-md-6 col-lg-7 col-xl-8 px-1' style={{minHeight: '80vh'}}>
-          <div className='p-0 m-0 bg-dark rounded h-100'>
+          <div className='p-0 m-0 desk-bg-color-secondary rounded h-100'>
             <WidgetsGrid widgetsTemplate={widgetsTemplate} selectedWidget={selectedWidget} changeSelectedWidget={changeSelectedWidget}/>
           </div>
         </div>
         <div className='col-md-6 col-lg-5 col-xl-4 px-1' style={{minHeight: '80vh'}}>
-          <div className='p-0 m-0 bg-dark rounded h-100'>
+          <div className='p-0 m-0 desk-bg-color-secondary rounded h-100'>
             <WidgetsControlPanel addWidget={addWidgetHendler} saveWidgetsTemplate={saveWidgetsTemplate} cancelChanges={cancelTemplateChanges}/>
             { displayWidget ? 
               <WidgetForm widget={widgetsTemplate.widgets[selectedWidget]} tags={tags} updateWidget={updateWidget} deleteWidget={()=>deleteWidget(selectedWidget)}/> 
-              : null }
+            : null 
+            }
           </div>
         </div>
       </div>
@@ -141,7 +138,7 @@ function WidgetsGrid(props){
     const btnAddClass= (index===selectedWidget) ?  'border-primary' : ''
     return (
       <div key={index} className={`col-${widget.width * 3} p-1 m-0`}> 
-        <button className={'btn btn-dark w-100 h-100 text-left p-0 ' + btnAddClass} style={{overflow:'hidden', minHeight:'10vh', boxShadow: 'none'}} onClick={()=>{changeSelectedWidget(index)}}>
+        <button className={'btn desk-bg-color-secondary desk-text-color-secondary w-100 h-100 text-left p-0 ' + btnAddClass} style={{overflow:'hidden', minHeight:'10vh', boxShadow: 'none'}} onClick={()=>{changeSelectedWidget(index)}}>
           <div className='h-100 p-0 px-2'>
             <span className='small text-nowrap'>{widget.title}</span>
             <WidgetPreview widget={widget} />
@@ -153,7 +150,7 @@ function WidgetsGrid(props){
 
   return (
     <div className='d-flex justify-content-center m-0 p-4' style={{}}>
-      <div className='row equal rounded m-0 p-3' style={{backgroundColor: '#1E1E1E', maxWidth:'800px'}}>
+      <div className='row equal rounded desk-bg-color-primary m-0 p-3 w-100' style={{maxWidth:'800px'}}>
         {content}
       </div>
     </div>
@@ -240,7 +237,7 @@ function WidgetForm(props){
 
 function FormContainer(props){
   return (
-    <div className='text-light p-2 m-0 mx-1 h-100'>
+    <div className='desk-text-color-primary p-2 m-0 mx-1 h-100'>
       {props.children}
     </div>
   )

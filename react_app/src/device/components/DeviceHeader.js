@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react' 
 
-import axiosInstance from "../../backendAPI/axiosApi";
+import axiosInstance from "../../backendAPI/axiosClient";
 import getBaseUrl from '../../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 
@@ -29,9 +29,9 @@ export default function DeviceHeader(props) {
   // render the page
   return (
     <React.Fragment>
-      <div className='d-flex border rounded border-dark px-3 mb-1 mx-1'>
+      <div className='d-flex border rounded desk-border-secondary px-3 mb-1 mx-1'>
         <h3 className='pt-1'>Устройство: <b>{deviceData.name}</b></h3>
-        <div className='ml-auto mx-3 px-3 border-x border-dark'>
+        <div className='ml-auto mx-3 px-3 border-x desk-border-secondary'>
           { deviceData.is_online ? 
             <div className='text-success'>
               <span>Онлайн</span> <br/>

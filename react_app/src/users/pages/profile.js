@@ -4,13 +4,13 @@ import React from 'react'
 export default function ProfilePage(props) {
   return (
     <React.Fragment>
-    <div className='desk-color-primary text-secondary content-height'> 
-      <div className='container card bg-dark shadow-sm my-4 pt-4'>
+    <div className='desk-bg-color-primary content-height'> 
+      <div className='container card desk-bg-color-secondary desk-text-color-secondary shadow-sm my-4 pt-4'>
         <h2>Профиль пользователя</h2>
 
         <div className='row my-3'>
           <div className='col-lg-6'>
-            <table className="table text-light tadle-dark ">
+            <table className="table tadle-dark desk-text-color-primary desk-border-color-primary">
               <tbody>
                 <tr>
                   <td className='border-secondary'>Пользователь:</td> 

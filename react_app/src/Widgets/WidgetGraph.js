@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import TagsHistoricalGraph from './components/TagsGraph/TagsHistoricalGraph'
 import getColor from './components/TagsGraph/GraphColors'
-import axiosInstance from "../backendAPI/axiosApi";
+import axiosInstance from "../backendAPI/axiosClient";
 import getBaseUrl from '../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 

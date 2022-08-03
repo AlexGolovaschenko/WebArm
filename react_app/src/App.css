@@ -1,62 +1,4 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
-
-
-/*------------------------------------ colors ------------------------------------
-.bg-color-indigo {
-	background-color: rgb(32,35,64) !important;
-}
-
-.bg-color-pale-indigo {
-	background-color: rgb(232,234,246) !important;
-}
-
-.bg-color-gray {
-	background-color:#252526 !important;
-}
-.bg-color-dark-gray {
-	background-color: #1E1E1E !important;
-} */ 
-
-/*------------------------------------ general ------------------------------------*/
+/*---------------------------------- general ---------------------------------*/
 .header-height {
 	height: 50px;
 }
@@ -69,7 +11,6 @@
 .graph-container {
   overflow: auto;
 }
-
 
 .full-screen-button {
   position: fixed;
@@ -106,8 +47,26 @@
   cursor: pointer;
 }
 
+/*------------------------------------ colors ----------------------------------
+.bg-color-indigo {
+	background-color: rgb(32,35,64) !important;
+}
 
-/*------------------------------------ fix react-vis ------------------------------------*/
+.bg-color-pale-indigo {
+	background-color: rgb(232,234,246) !important;
+}
+
+.bg-color-gray {
+	background-color:#252526 !important;
+}
+.bg-color-dark-gray {
+	background-color: #1E1E1E !important;
+} */ 
+
+/*----------------------------------- fixes ----------------------------------*/
+.remove-outline {outline: none !important; box-shadow: none !important;}
+
+/*------------------------------- fix react-vis ------------------------------*/
 .rv-discrete-color-legend-item {
   color: #f8f9fa !important;
 }
@@ -125,21 +84,10 @@
   border-color: #252526 !important;
 }
 
-/*------------------------------------ fix forms ------------------------------------*/
+/*--------------------------------- fix forms --------------------------------*/
 
-input {
-  caret-color : #f8f9fa;
-  }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active  {
-  -webkit-box-shadow: 0 0 0 30px #6c757d inset;
-  -webkit-text-fill-color:  #f8f9fa;
-}
-
-/*------------------------------------ device cards ------------------------------------*/
+/*----------------------------- device cards ---------------------------------*/
 .card-hover {
   transition: box-shadow .3s, border-color .3s;
 }
@@ -155,7 +103,7 @@ input:-webkit-autofill:active  {
   min-height: calc(100vh + 30px);
 }
 
-/*------------------------------------ borders ------------------------------------*/
+/*--------------------------------- borders ----------------------------------*/
 .debug-border {
 	border: 1px solid blue;
 }
@@ -165,7 +113,7 @@ input:-webkit-autofill:active  {
 	border-left: 1px solid white;
 }
 
-/*------------------------------------ graph buttons ------------------------------------*/
+/*------------------------------ graph buttons -------------------------------*/
 .btn-graph {
   display: block;
   position: absolute !important;
@@ -180,7 +128,7 @@ input:-webkit-autofill:active  {
 }
 
 
-/*------------------------------------ modal ------------------------------------*/
+/*---------------------------------- modal -----------------------------------*/
 /* The Modal (background) */
 .modal-bg {
   position: fixed; /* Stay in place */

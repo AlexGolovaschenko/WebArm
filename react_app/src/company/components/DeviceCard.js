@@ -31,27 +31,28 @@ function DeviceCard(props) {
     return (
         <React.Fragment>
         <Link className="nav-link p-0 m-0" to={`/device/${device.id}/overview/`}>
-            <div className='border border-secondary rounded p-2 h-100 desk-color-secondary text-light card-hover' style={{overflow: 'hidden'}} >
+            <div className='border rounded p-2 h-100 desk-bg-color-secondary desk-text-color-primary desk-border-color-primary card-hover' style={{overflow: 'hidden'}} >
                 <h6 className='text-nowrap'>{device.name}</h6>
                 <div className='p-0 m-0 small w-100'>
-                    <table className="table table-sm p-0 m-0 table-dark text-light desk-color-secondary w-100">
+                    <table className="table table-sm p-0 m-0 desk-bg-color-secondary desk-text-color-primary desk-border-color-primary w-100">
                         <tbody>
+                            <tr></tr>
                             <tr>
-                                <td> Связь: </td>   
+                                <td>Связь: </td>   
                                 <td className='text-right'> {deviceData.is_online ? 
-                                    <span className='text-light' >ОК</span> : 
+                                    <span className='desk-text-color-primary'>ОК</span> : 
                                     <span className='badge badge-pill badge-danger text-dark' style={{fontSize: '0.85em'}}>НЕТ</span> }
                                 </td>
                             </tr> 
                             <tr>
-                                <td>  Обновлено: </td>   
+                                <td>Обновлено: </td>   
                                 <td className='text-right'> {deviceData.last_update ? 
                                     format_time(deviceData.last_update, (deviceData.is_online ? null : 'text-warning')) :
-                                    <span className='text-secondary'>никогда</span> } 
+                                    <span className='desk-text-color-secondary'>никогда</span> } 
                                 </td>
                             </tr>
                             <tr>
-                                <td>   Аварии: </td>   
+                                <td>Аварии: </td>   
                                 <td className='text-right'> Нет  </td>
                             </tr>                                                         
                         </tbody>

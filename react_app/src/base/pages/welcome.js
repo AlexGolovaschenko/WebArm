@@ -19,7 +19,7 @@ function WelcomePage(props) {
 
   return (
     <React.Fragment>
-      <div className='desk-color-primary text-light content-height'>
+      <div className='desk-bg-color-primary text-light content-height'>
       <div className='card' style={{background:'none', border:'none'}}>
         <div className='container card my-5 p-3 w-100' style={{background:'rgba(30,30,30, 0.9)'}}>
             <div className='text-center pt-4'>

@@ -13,11 +13,11 @@ export default function CompanyApp() {
 
   return (
     <React.Fragment>
-      <div className='desk-color-primary text-secondary h-100'>
+      <div className='desk-bg-color-primary desk-text-color-secondary h-100'>
       <div className="row m-0 p-0">
         <Sidebar />
         <div className="col-10 m-0 p-0">
-          <div className="content-height">
+          <div className="content-height p-2">
             <Switch>
               <Route exact path='/company' component={CompanyOverviewPage} />
               <Route exact path='/company/overview' component={CompanyOverviewPage} />

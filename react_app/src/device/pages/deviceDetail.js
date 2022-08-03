@@ -255,7 +255,7 @@ function TagsList (props) {
 
       { tags.length > 0 ?
         <div className="table-responsive">
-          <table className="table table-hover table-dark table-striped table-sm text-light w-100 mb-0">
+          <table className="table table-hover table-dark table-striped table-sm desk-bg-color-secondary desk-text-color-primary desk-border-color-primary w-100 mb-0">
             <thead> 
               <tr>
                 <th className='border-0 text-secondary font-weight-bold pl-2'>№</th>

@@ -27,16 +27,18 @@ export default function TagsCurrentValueList(props) {
   }
 
   return (
-    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light h-100'>
+    <div ref={graphCard} className='card shadow-sm py-2 desk-bg-color-secondary desk-text-color-primary h-100'>
       <div className='d-flex mb-1'>
         <h5 className="px-3 pt-1 pb-0 m-0">{props.title}</h5>
         <span className='ml-auto'></span>
 
-        { props.category_selection_panel && <CategorySelectionPanel toggleCategorySelection={toggleCategorySelection} categories={categories}/> }
+        { props.category_selection_panel && 
+          <CategorySelectionPanel toggleCategorySelection={toggleCategorySelection} categories={categories}/> 
+        }
 
         <button type="button" 
           ref={modalButton} 
-          className={'btn btn-link text-light m-0 p-0 mt-1 mr-2 fas fa-expand'} 
+          className={'btn btn-link desk-text-color-primary m-0 p-0 mt-1 mr-2 fas fa-expand'} 
           style={{width: '28px', height: '28px', fontSize:'1em', textDecoration: 'none', outline: 'none', boxShadow: 'none'}} 
           onClick={toggleModal}
         ></button>  
@@ -58,13 +60,13 @@ export default function TagsCurrentValueList(props) {
 function RecordsTable(props) {
   return (
     <div className="table-responsive px-3">
-      <table className="table table-hover table-dark table-sm text-light w-100 mb-0">
+      <table className="table table-hover table-dark table-sm desk-bg-color-secondary desk-text-color-primary desk-border-color-primary w-100 mb-0">
         <thead> 
           <tr>
-            <th className='border-0 text-secondary font-weight-bold pl-2 d-none d-lg-table-cell' style={{width:'5%'}}>№</th>
-            <th className='border-0 text-secondary font-weight-bold' style={{width:'15%'}}>Дата</th>
-            <th className='border-0 text-secondary font-weight-bold' style={{width:'10%'}}>Время</th>
-            <th className='border-0 text-secondary font-weight-bold'>Событие</th>
+            <th className='border-0 desk-text-color-secondary font-weight-bold pl-2 d-none d-lg-table-cell' style={{width:'5%'}}>№</th>
+            <th className='border-0 desk-text-color-secondary font-weight-bold' style={{width:'15%'}}>Дата</th>
+            <th className='border-0 desk-text-color-secondary font-weight-bold' style={{width:'10%'}}>Время</th>
+            <th className='border-0 desk-text-color-secondary font-weight-bold'>Событие</th>
           </tr>
         </thead>
         <tbody>
@@ -81,7 +83,7 @@ function RecordsTable(props) {
 
 
 function NoRecords() {
-  return <i className='text-secondary ml-3'>Записи отсутствуют ...</i>
+  return <i className='desk-text-color-secondary ml-3'>Записи отсутствуют ...</i>
 }
 
 
@@ -104,7 +106,7 @@ function CategorySecetionButton(props) {
   return (
     <button 
       type="button" 
-      className='btn btn-link text-light ml-3 p-0 mt-1' 
+      className='btn btn-link desk-text-color-primary ml-3 p-0 mt-1' 
       style={{boxShadow: 'none'}}
       onClick={props.onClick}
     >

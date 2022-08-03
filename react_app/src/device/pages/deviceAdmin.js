@@ -14,8 +14,8 @@ export default function DeviceAdminPage() {
 
   return (
     <React.Fragment>
-      <h3 className='mb-3'>Настройка параметров прибора</h3>
-      <div className='px-3 pb-3 pt-2 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
+      <h3 className='p-1'>Настройка параметров прибора</h3>
+      <div className='px-3 pb-3 pt-2 mx-1 my-0 desk-bg-color-secondary rounded desk-text-color-primary' style={{minHeight: 'calc(100vh - 135px)'}}>
         <DeviceStatusBar device_id={device_id}/>
         <Switch>
           <Route exact path={'/device/:device_id/admin/config/'} component={()=><DeviceConfigPage/>} />

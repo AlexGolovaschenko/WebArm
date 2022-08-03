@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react' 
 import {Switch, Route, useParams} from 'react-router-dom'
 
-import axiosInstance from "../backendAPI/axiosApi"
+import axiosInstance from "../backendAPI/axiosClient"
 import getBaseUrl from '../backendAPI/localSettings'
 import sortWidgetsByOrder from './utils/sortWidgetsByOrder'
 
@@ -37,11 +37,11 @@ export default function DeviceApp() {
 
   return (
     <React.Fragment>
-      <div className='desk-color-primary text-secondary h-100'>
+      <div className='desk-bg-color-primary text-secondary h-100'>
       <div className="row m-0 p-0">
         <Sidebar deviceId={id}/>
         <div className="col-10 m-0 p-0">
-          <div className="content-height p-3">
+          <div className="content-height p-2">
             <Switch>
               <Route exact path={`/device/:device_id/overview/`} component={()=><DeviceOverviewPage widgetsTemplate={widgetsTemplate}/>} />
               <Route exact path={`/device/:device_id/settings/`} component={()=><DeviceSettingsPage />} />

@@ -48,7 +48,7 @@ export default function EventDetailPage() {
   return (
     <React.Fragment>
         <h3 className='mb-3'>Параметры события</h3>
-        <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
+        <div className='p-3 mx-1 my-0 rounded desk-bg-color-secondary desk-text-color-primary' style={{minHeight: 'calc(100vh - 135px)'}}>
         { loading ? 
           <div className='d-flex justify-content-center'><Loader /></div> :
           <FormContainer> 
@@ -86,7 +86,7 @@ export function EventCreatePage() {
   return (
     <React.Fragment>
         <h3 className='mb-3'>Параметры события</h3>
-        <div className='p-3 mx-1 my-0 bg-dark rounded text-light' style={{minHeight: 'calc(100vh - 135px)'}}>
+        <div className='p-3 mx-1 my-0 rounded desk-bg-color-secondary desk-text-color-primary' style={{minHeight: 'calc(100vh - 135px)'}}>
           <FormContainer>
             <h5 className='text-info text-center mb-3'>Создание нового события</h5>  
             <EventForm event={defaultEventSettings} formErrors={eventFormErrors} onSubmit={submitEventParameters} onCancel={cancelChanges}/>

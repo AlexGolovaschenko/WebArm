@@ -23,7 +23,7 @@ class WidgetsTemplateView(APIView):
             # update template
             obj = templates_qs.first()
             serializer = WidgetsTemplateSerializer(obj, 
-                data={'template': template_data})
+                data={'template': template_data}, partial=True)
         else:
             # create template
             serializer = WidgetsTemplateSerializer(

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react' 
 
 import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList'
-import axiosInstance from "../backendAPI/axiosApi";
+import axiosInstance from "../backendAPI/axiosClient";
 import getBaseUrl from '../backendAPI/localSettings'
 const BASE_URL = getBaseUrl()
 

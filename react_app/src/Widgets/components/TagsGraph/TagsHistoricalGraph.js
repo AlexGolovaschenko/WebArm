@@ -44,16 +44,16 @@ function TagsHistoricalGraph(props) {
   const toggleCroshair = () => {
     if (crosshair) {
       setCrosshair(!crosshair)
-      crosshairButton.current.className = crosshairButton.current.className.replace('text-primary', 'text-light')      
+      crosshairButton.current.className = crosshairButton.current.className.replace('text-primary', 'desk-text-color-primary')      
     } else {
       setCrosshair(!crosshair)
-      crosshairButton.current.className = crosshairButton.current.className.replace('text-light', 'text-primary') 
+      crosshairButton.current.className = crosshairButton.current.className.replace('desk-text-color-primary', 'text-primary') 
     }
   }
 
   return (   
     <React.Fragment>
-    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light h-100'>
+    <div ref={graphCard} className='card shadow-sm py-2 desk-bg-color-secondary desk-text-color-primary h-100'>
       <div className='d-flex mb-1'>
         <h5 className="px-3 pt-1 pb-2 m-0">{props.title}</h5>
         <span className='ml-auto'></span>
@@ -67,14 +67,14 @@ function TagsHistoricalGraph(props) {
 
         <button type="button"
           ref={crosshairButton} 
-          className={'btn btn-link text-light m-0 p-0 mt-1 mr-2 fas fa-ruler-vertical'} 
+          className={'btn btn-link desk-text-color-primary m-0 p-0 mt-1 mr-2 fas fa-ruler-vertical'} 
           style={{width: '28px', height: '28px', fontSize:'1em', textDecoration: 'none', outline: 'none', boxShadow: 'none'}}
           onClick={toggleCroshair}
         ></button> 
 
         <button type="button" 
           ref={modalButton} 
-          className={'btn btn-link text-light m-0 p-0 mt-1 mr-2 fas fa-expand'} 
+          className={'btn btn-link desk-text-color-primary m-0 p-0 mt-1 mr-2 fas fa-expand'} 
           style={{width: '28px', height: '28px', fontSize:'1em', textDecoration: 'none', outline: 'none', boxShadow: 'none'}} 
           onClick={toggleModal}
         ></button>  
