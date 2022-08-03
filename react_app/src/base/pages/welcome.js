@@ -70,11 +70,11 @@ function WelcomePage(props) {
               <div className="card border-secondary" style={{background:'none'}}>
                 <div className="card-body text-center">
                   <h6> Вы можете воспользоваться  
-                    <button type="button" className="btn btn-link px-2" href='#' onClick={loginDemoUser}>
-                      демо-версией сервиса
+                    <button type="button" className="btn btn-link px-2 py-0 m-0" onClick={loginDemoUser}>
+                      демо-версией
                     </button>
                     для ознакомления
-                  </h6> 
+                  </h6>
                 </div>
               </div>
             </div>  

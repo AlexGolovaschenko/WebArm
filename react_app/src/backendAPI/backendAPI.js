@@ -1,12 +1,13 @@
-import axiosInstance from "./axiosApi";
+import axiosInstance from "./axiosClient";
 import getBaseUrl from './localSettings';
+
 
 // ---------------------------------------------------------------------------------
 // access to company parameters
-export function getCompanyParameters(cb_success) {
+export function getCompanyParameters(cb_success, cb_error=null, cb_finally=null) {
   const params = {};
   const endpoint = "/company/info/";
-  backendApiRequest(GET, endpoint, null, params, cb_success);
+  backendApiRequest(GET, endpoint, null, params, cb_success, cb_error, cb_finally);
 }
 export function postCompanyParameters(parameters, cb_success, cb_error) {
   const params = {};
@@ -18,47 +19,47 @@ export function postCompanyParameters(parameters, cb_success, cb_error) {
 
 // ---------------------------------------------------------------------------------
 // access to device configuration parameters
-export function getDeviceParameters(device_id, cb_success) {
+export function getDeviceParameters(device_id, cb_success, cb_error=null) {
   const params = { id: device_id };
   const endpoint = "/device/parameters/";
-  backendApiRequest(GET, endpoint, null, params, cb_success ); 
+  backendApiRequest(GET, endpoint, null, params, cb_success, cb_error); 
 }
 export function postDeviceParameters(device_id, device_parameters, cb_success, cb_error) {
   const params = { id: device_id };
   const body = {...device_parameters}; 
   const endpoint = "/device/parameters/";
-  backendApiRequest(POST, endpoint, body, params, cb_success, cb_error ); 
+  backendApiRequest(POST, endpoint, body, params, cb_success, cb_error); 
 }
 
 // access to device modbus parameters
-export function getDeviceModbusParameters(device_id, cb_success) {
+export function getDeviceModbusParameters(device_id, cb_success, cb_error=null) {
   const params = { id: device_id };
   const endpoint = "/device/modbus/parameters/";
-  backendApiRequest(GET, endpoint, null, params, cb_success ); 
+  backendApiRequest(GET, endpoint, null, params, cb_success, cb_error); 
 }
 export function postDeviceModbusParameters(device_id, device_parameters, cb_success, cb_error) {
   const params = { id: device_id };
   const body = {...device_parameters};
   const endpoint = "/device/modbus/parameters/";
-  backendApiRequest(POST, endpoint, body, params, cb_success, cb_error );  
+  backendApiRequest(POST, endpoint, body, params, cb_success, cb_error);  
 }
 
 // access to device tags parameters
-export function getDeviceTagsParameters(device_id, tags_list, cb_success) {
+export function getDeviceTagsParameters(device_id, tags_list, cb_success, cb_error=null) {
   const params = { id: device_id, tags: tags_list };
   const endpoint = "/device/tags/parameters/";
-  backendApiRequest(GET, endpoint, null, params, cb_success );
+  backendApiRequest(GET, endpoint, null, params, cb_success, cb_error);
 }
 export function postDeviceTagsParameters(device_id, tags_parameters, cb_success, cb_error) {
   const params = { id: device_id };
   const body = tags_parameters;
   const endpoint = "/device/tags/parameters/";
-  backendApiRequest(POST, endpoint, body, params, cb_success, cb_error );
+  backendApiRequest(POST, endpoint, body, params, cb_success, cb_error);
 }
-export function deleteDeviceTags(device_id, tags_list, cb_success) {
+export function deleteDeviceTags(device_id, tags_list, cb_success, cb_error=null) {
   const params = { id: device_id, tags: tags_list };
   const endpoint = "/device/tags/parameters/";
-  backendApiRequest(DELETE, endpoint, null, params, cb_success );
+  backendApiRequest(DELETE, endpoint, null, params, cb_success, cb_error);
 }
 
 
@@ -87,20 +88,24 @@ export function deleteEvents(device_id, events_list, cb_success) {
 
 // ---------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------
 // commot backend requests
 const GET     = 'GET';
 const POST    = 'POST';
 const DELETE  = 'DELETE';
 
-async function backendApiRequest(method, endpoint, body, params, cb_success, cb_error=null) {
+async function backendApiRequest(method, endpoint, body, params, 
+    cb_success, cb_error=null, cb_finally=null) {
   let response = null;
   const BASE_URL = getBaseUrl();
 
   switch (method) {
     case GET:
-      response = await axiosInstance.get(BASE_URL + endpoint, { params: params } );
-      response && cb_success(response.data);
+      try { 
+        response = await axiosInstance.get(BASE_URL + endpoint, { params: params } );
+        response && cb_success(response.data);
+      } catch (error) {
+        error.response && cb_error && cb_error(error.response.data);
+      }
       break;
 
     case POST:
@@ -120,4 +125,6 @@ async function backendApiRequest(method, endpoint, body, params, cb_success, cb_
     default:
       throw new Error(`Api method ${method} not supported.`);
   }
+
+  cb_finally && cb_finally();
 }

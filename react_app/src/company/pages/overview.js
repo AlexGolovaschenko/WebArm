@@ -1,39 +1,27 @@
-import React, { useEffect, useState } from 'react' 
+import React, { useEffect, useState } from 'react';
 import {useHistory} from "react-router-dom";
 
-import Loader from '../../base/components/Loader'
-import FacilityCard from '../components/FacilityCard'
-import axiosInstance from "../../backendAPI/axiosApi";
-import getBaseUrl from '../../backendAPI/localSettings'
-
-const BASE_URL = getBaseUrl()
-
-
-async function readCompanyInfo(cb) {
-  await axiosInstance.get(
-      BASE_URL + "/company/info/"
-    ).then(response => {
-      cb({'isExist': true, ...response.data});
-    }).catch(e => {
-      console.log(e);
-      cb({'isExist': false});
-    });
-}
+import Loader from '../../base/components/Loader';
+import FacilityCard from '../components/FacilityCard';
+import {getCompanyParameters} from '../../backendAPI/backendAPI';
 
 
 export default function CompanyOverviewPage() {
-  const [companyInfo, setCompanyInfo] = useState({})
-  const [loading, setLoading] = React.useState(true)
+  const [companyInfo, setCompanyInfo] = useState({});
+  const [loading, setLoading] = React.useState(true);
   const history = useHistory();
 
-  useEffect(() => {
-    readCompanyInfo(inf => {
-      setCompanyInfo(inf);
-      setLoading(false);
-    });   
+  useEffect(()=>{
+    getCompanyParameters( 
+      (response) => {setCompanyInfo({'isExist': true, ...response});},
+      (error) => {setCompanyInfo({'isExist': false}); console.log(error);},
+      () => {setLoading(false);}
+    );
   }, []);
 
-  const editCompany = () => {history.push(`/company/detail`)}
+  const editCompany = () => {
+    history.push(`/company/detail`);
+  };
 
   return (
     <React.Fragment>

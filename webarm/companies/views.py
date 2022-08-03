@@ -40,7 +40,7 @@ class CompanyInfoView(APIView):
         try:
             # update
             company = Company.objects.get(owner=user)
-            serializer = CompanyParametersSerializer(company, data=request.data)    
+            serializer = CompanyParametersSerializer(company, data=request.data, partial=True)    
         except Company.DoesNotExist:
             # create
             request.data['owner'] = user.id

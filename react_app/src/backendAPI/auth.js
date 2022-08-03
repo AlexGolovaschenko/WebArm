@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosApi";
+import axiosInstance from "./axiosClient";
 
 class Auth{
     constructor() {
