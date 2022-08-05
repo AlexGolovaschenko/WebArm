@@ -22,7 +22,6 @@ class CompanyInfoView(APIView):
             'id': company.id,
             'name': company.name
         }
-
         data['facilities'] = [{
             'id': f.id,
             'name': f.name, 

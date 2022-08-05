@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 
-import auth from '../../backendAPI/auth' 
+import auth from '../../backendAPI/auth'; 
 
 
-class Login extends Component {
+export default class Login extends Component {
   constructor(props) {
       super(props);
       this.state = {username: "", password: ""};
-
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -19,7 +18,7 @@ class Login extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const cb = ()=>{ this.props.history.push('/company/overview/') }
+    const cb = ()=>{ this.props.history.push('/company/overview/') };
     auth.login(this.state.username, this.state.password, cb );
   }
 
@@ -49,5 +48,3 @@ class Login extends Component {
     )
   }
 }
-
-export default Login;

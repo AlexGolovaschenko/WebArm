@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom'
 
 import {ProtectedRoute} from './utils/protectedRoute'
+import {useLocalStorage} from './utils/useLocalStorage'
 import {FullScreen, useFullScreenHandle} from "react-full-screen";
 
 import DeviceApp from './device/deviceApp'
@@ -26,31 +27,36 @@ import auth from './backendAPI/auth'
 export default function App() {
   const [loading, setLoading] = useState(true)
   const [loading2, setLoading2] = useState(true)
-  const [darkThema, setDarkThema] = useState(false);
+  const [darkThema, setDarkThema] = useLocalStorage("thema", false);
   const [authed, setAuthed] = useState(false)
   const [userInfo, setUserInfo] = useState({})
 
   const handle = useFullScreenHandle();
-  
+
   useEffect(() => {
-    auth.checkAuthentication(() => { setLoading(false) })
-    auth.onLogin = () => {setAuthed(true)}    
-    auth.onLogout = () => {setAuthed(false)}    
+    setCssThema(darkThema);
+    auth.checkAuthentication(() => { setLoading(false) });
+    auth.onLogin = () => {setAuthed(true)};  
+    auth.onLogout = () => {setAuthed(false)}; 
     auth.onUserInfoReaded = (ui) => {
       setUserInfo(ui); 
       setLoading2(false);
-    }   
-  }, [])
+    };   
+  }, [darkThema])
+
+  const setCssThema = (darkThema) => {
+    const root = document.getElementById('root');
+    if (darkThema) {
+      root.className='dark-thema';
+    } else {
+      root.className='light-thema';
+    }
+  };
 
   const switchThemaHandler = () => {
     setDarkThema(!darkThema);
-    const root = document.getElementById('root');
-    if (darkThema) {
-      root.className='light-thema';
-    } else {
-      root.className='dark-thema';
-    }
-  }
+    setCssThema(darkThema);
+  };
 
   if (loading || loading2) { 
     return null 

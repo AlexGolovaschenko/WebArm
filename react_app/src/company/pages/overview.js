@@ -20,7 +20,7 @@ export default function CompanyOverviewPage() {
   }, []);
 
   const editCompany = () => {
-    history.push(`/company/detail`);
+    companyInfo.isExist ? history.push(`/company/detail`) : history.push(`/company/create`);
   };
 
   return (
@@ -30,18 +30,16 @@ export default function CompanyOverviewPage() {
           companyInfo.company.name : 
           null}
         </b>
-        <button type='button' className='btn desk-text-color-secondary card-hover float-right' 
+        <button type='button' className='btn btn-sm desk-text-color-secondary card-hover float-right' 
                 onClick={editCompany}>
           <i className='fas fa-pen' style={{fontSize:'1.3em'}}></i>
         </button>
       </h3>
       
       <div className='container-fluid row p-0 m-0'>
-        { loading ? 
-          <Loader /> : 
-          companyInfo.isExist ? 
-            <CompanyOverviewBlock companyInfo={companyInfo}/> : 
-            <CompanyDoesntExistBlock />  
+        { loading ? <Loader /> 
+        : companyInfo.isExist ? <CompanyOverviewBlock companyInfo={companyInfo}/> 
+          : <CompanyDoesntExistBlock /> 
         }
       </div>
     </React.Fragment>

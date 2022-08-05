@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 
 import axiosInstance from "../../backendAPI/axiosClient";
+import auth from '../../backendAPI/auth';
 
-class Signup extends Component{
+
+export default class Signup extends Component{
   constructor(props){
       super(props);
       this.state = {
@@ -27,6 +29,9 @@ class Signup extends Component{
             username: this.state.username,
             email: this.state.email,
             password: this.state.password
+        }).then(()=>{
+            const cb = ()=>{ this.props.history.push('/company/overview/') };
+            auth.login(this.state.username, this.state.password, cb );
         });
         return response;
     } catch (error) {
@@ -70,4 +75,3 @@ class Signup extends Component{
     )
   }
 }
-export default Signup;

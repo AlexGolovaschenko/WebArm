@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
 
 import {getCompanyParameters, postCompanyParameters
-} from '../../backendAPI/backendAPI';
+  } from '../../backendAPI/backendAPI';
 import Loader from '../../base/components/Loader';
 import {TextField, ErrorMessage, FormContainer} from '../../base/forms/forms';
 
