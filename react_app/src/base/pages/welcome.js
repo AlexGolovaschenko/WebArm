@@ -19,17 +19,14 @@ export default function WelcomePage(props) {
     <React.Fragment>
       <div className='desk-bg-color-primary text-light content-height'>
       <div className='card' style={{background:'none', border:'none'}}>
-        <div className='container card my-5 p-3 w-100' style={{background:'rgba(30,30,30, 0.9)'}}>
-          <div className='text-center pt-4'>
-              <h3>Добро пожаловать на <b>CI Cloud</b></h3>
-          </div>
-          <br/>
-          <div className='text-center'>
-              <h5>Для начала работы
-                <Link className='px-2' to="/user/login/">Войдите</Link>
-                или
-                <Link className='px-2' to="/user/registration/">Зарегистрируйтесь</Link>
-              </h5>
+        <div className='container card border-0 my-4 px-3 pt-3 pb-4 w-100' style={{background:'rgba(5,10,40, 0.3)'}}>
+          <div className="card p-3" style={{background:'rgba(30,30,30, 0.9)'}}>
+            <h3 className='text-center'>Добро пожаловать на <b>CI Cloud</b></h3>
+            <h5 className='text-center text-secondary'>Для начала работы
+              <Link className='px-2' to="/user/login/">Войдите</Link>
+              или
+              <Link className='px-2' to="/user/registration/">Зарегистрируйтесь</Link>
+            </h5>
           </div>
 
           <div className="row equal px-1 py-5">
@@ -62,26 +59,23 @@ export default function WelcomePage(props) {
             </CardContainer>
           </div>  
 
-          <h5 className='pb-3 text-info text-center'>Список последних обновлений: </h5>
+          
           <UpdateDescriptionContainer>
-              <UpdateDescriptionTitle> Обновление 0.1.7 </UpdateDescriptionTitle>
+            <h5 className='pb-3 text-secondary text-center'>Список последних обновлений: </h5>
+            <UpdateDescriptionTitle> Обновление 0.1.7 </UpdateDescriptionTitle>
+            <UpdateDescriptionHeader> Доступна функция Жунала событий </UpdateDescriptionHeader>
+            <UpdateDescriptionMessage> 
+              Теперь вы можите настраивать аварийные и другие события, 
+              облако будет автоматически контролировать условия их срабатывания.
+              При срабатывании условия события в Журнал будет записано соответствующее сообщение.
+            </UpdateDescriptionMessage> 
+            <UpdateDescriptionHeader> Доступна настройка параметров и тегов прибора </UpdateDescriptionHeader>
+            <UpdateDescriptionMessage> 
+              Теперь в разделе Администрирование доступен
+              подраздел Прибор, в котором собраны все настройки подключения прибора. 
+              Так же в данном подразделе Вы можите настраивать и добавление Теги прибора.
+            </UpdateDescriptionMessage>  
 
-              <UpdateDescriptionHeader> Доступна функция Жунала событий </UpdateDescriptionHeader>
-              <UpdateDescriptionMessage> 
-                Теперь вы можите настраивать аварийные и другие события, 
-                облако будет автоматически контролировать условия их срабатывания.
-                При срабатывании условия события в Журнал будет записано соответствующее сообщение.
-              </UpdateDescriptionMessage> 
-
-              <UpdateDescriptionHeader> Доступна настройка параметров и тегов прибора </UpdateDescriptionHeader>
-              <UpdateDescriptionMessage> 
-                Теперь в разделе Администрирование доступен
-                подраздел Прибор, в котором собраны все настройки подключения прибора. 
-                Так же в данном подразделе Вы можите настраивать и добавление Теги прибора.
-              </UpdateDescriptionMessage>  
-          </UpdateDescriptionContainer>
-
-          <UpdateDescriptionContainer>
             <UpdateDescriptionTitle> Обновление 0.1.6 </UpdateDescriptionTitle>
             <UpdateDescriptionHeader> Доступны Виджеты устройства </UpdateDescriptionHeader>
             <UpdateDescriptionMessage> 
@@ -101,8 +95,8 @@ export default function WelcomePage(props) {
 function CardContainer (props) {
   return (
     <div className="col-4 p-2">
-      <div className="card h-100 border-secondary" style={{background:'none'}}>
-        <div className="card-body text-center">
+      <div className="card h-100 border-0" style={{background:'rgba(25,25,25, 0.9)'}}>
+        <div className="card-body text-center text-info">
           {props.children}
         </div>
       </div>
@@ -113,7 +107,7 @@ function CardContainer (props) {
 
 function UpdateDescriptionContainer (props) {
   return (
-    <div className="card border-secondary mb-3" style={{background:'none'}}>
+    <div className="card border-0 mb-3" style={{background:'rgba(25,25,25, 0.9)'}}>
     <div className="card-body">
       {props.children}
     </div>
@@ -122,7 +116,7 @@ function UpdateDescriptionContainer (props) {
 }
 
 function UpdateDescriptionTitle (props) {
-  return <h6 className='text-primary'> {props.children} </h6> 
+  return <h6 className='text-primary border-top border-info pt-3'> {props.children} </h6> 
 }
 
 function UpdateDescriptionHeader (props) {

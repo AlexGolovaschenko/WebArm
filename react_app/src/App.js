@@ -68,9 +68,9 @@ export default function App() {
           <Router>        
             <Route exact path='/' component={()=>{
               return (
-              <video autoPlay="autoplay" muted loop="loop" id="myVideo">
-                <source src="Map145956.mp4" type="video/mp4" />
-              </video>
+                <video autoPlay="autoplay" muted loop="loop" id="myVideo">
+                  <source src="PowerPlant29080.mp4" type="video/mp4" />
+                </video>
               )}
             }/>
 
