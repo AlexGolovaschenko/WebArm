@@ -26,7 +26,7 @@ function TagsCurrentValueList(props) {
   }
 
   return (
-    <div ref={graphCard} className='card shadow-sm py-2 bg-dark text-light h-100'>
+    <div ref={graphCard} className='card shadow-sm py-2 desk-bg-color-secondary desk-text-color-primary h-100'>
       <div className='d-flex mb-1'>
         <h5 className="px-3 pt-1 pb-0 m-0">{props.title}</h5>
         <span className='ml-auto'></span>
@@ -45,7 +45,7 @@ function TagsCurrentValueList(props) {
         <>
         { props.columns ?    
         <div className="table-responsive px-3">
-          <table className="table table-hover table-dark table-sm text-light w-100 mb-0">
+          <table className="table table-hover table-dark table-sm desk-bg-color-secondary desk-text-color-primary desk-border-color-primary w-100 mb-0">
             <thead> 
               <tr>
                 { (props.columns.indexOf('#No') >= 0) ? <th className='border-0 text-secondary font-weight-bold pl-2'>№</th> : null }
