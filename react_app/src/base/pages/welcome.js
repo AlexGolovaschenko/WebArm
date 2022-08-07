@@ -17,10 +17,10 @@ export default function WelcomePage(props) {
 
   return (
     <React.Fragment>
-      <div className='desk-bg-color-primary text-light content-height'>
+      <div className='desk-bg-color-primary text-dark content-height'>
       <div className='card' style={{background:'none', border:'none'}}>
         <div className='container card border-0 my-4 px-3 pt-3 pb-4 w-100' style={{background:'rgba(5,10,40, 0.3)'}}>
-          <div className="card p-3" style={{background:'rgba(30,30,30, 0.9)'}}>
+          <div className="card p-3" style={{background:'rgba(255,255,255, 0.9)'}}>
             <h3 className='text-center'>Добро пожаловать на <b>CI Cloud</b></h3>
             <h5 className='text-center text-secondary'>Для начала работы
               <Link className='px-2' to="/user/login/">Войдите</Link>
@@ -61,7 +61,7 @@ export default function WelcomePage(props) {
 
           
           <UpdateDescriptionContainer>
-            <h5 className='pb-3 text-secondary text-center'>Список последних обновлений: </h5>
+            <h5 className='pb-3 text-dark text-center'>Список последних обновлений: </h5>
             <UpdateDescriptionTitle> Обновление 0.1.7 </UpdateDescriptionTitle>
             <UpdateDescriptionHeader> Доступна функция Жунала событий </UpdateDescriptionHeader>
             <UpdateDescriptionMessage> 
@@ -95,8 +95,8 @@ export default function WelcomePage(props) {
 function CardContainer (props) {
   return (
     <div className="col-4 p-2">
-      <div className="card h-100 border-0" style={{background:'rgba(25,25,25, 0.9)'}}>
-        <div className="card-body text-center text-info">
+      <div className="card h-100 border-0" style={{background:'rgba(255,255,255, 0.9)'}}>
+        <div className="card-body text-center text-dark">
           {props.children}
         </div>
       </div>
@@ -107,7 +107,7 @@ function CardContainer (props) {
 
 function UpdateDescriptionContainer (props) {
   return (
-    <div className="card border-0 mb-3" style={{background:'rgba(25,25,25, 0.9)'}}>
+    <div className="card border-0 mb-3" style={{background:'rgba(255,255,255, 0.9)'}}>
     <div className="card-body">
       {props.children}
     </div>
@@ -124,5 +124,5 @@ function UpdateDescriptionHeader (props) {
 }
 
 function UpdateDescriptionMessage (props) {
-  return <p className='text-info'> {props.children} </p> 
+  return <p className='text-dark'> {props.children} </p> 
 }

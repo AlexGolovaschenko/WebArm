@@ -25,11 +25,11 @@ import Page404 from './base/pages/pageNotFound'
 import auth from './backendAPI/auth'
 
 export default function App() {
-  const [loading, setLoading] = useState(true)
-  const [loading2, setLoading2] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
   const [darkThema, setDarkThema] = useLocalStorage("thema", false);
-  const [authed, setAuthed] = useState(false)
-  const [userInfo, setUserInfo] = useState({})
+  const [authed, setAuthed] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   const handle = useFullScreenHandle();
 
@@ -42,7 +42,7 @@ export default function App() {
       setUserInfo(ui); 
       setLoading2(false);
     };   
-  }, [darkThema])
+  }, [])
 
   const setCssThema = (darkThema) => {
     const root = document.getElementById('root');
@@ -54,8 +54,9 @@ export default function App() {
   };
 
   const switchThemaHandler = () => {
-    setDarkThema(!darkThema);
-    setCssThema(darkThema);
+    const thema = !darkThema; 
+    setDarkThema(thema);
+    setCssThema(thema);
   };
 
   if (loading || loading2) { 
