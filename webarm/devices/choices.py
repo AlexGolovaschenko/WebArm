@@ -1,14 +1,11 @@
+DEVICE_PROTOCOL_MODBUS_RTU = 'MODBUS-RTU'
+DEVICE_PROTOCOL_MODBUS_ASCII = 'MODBUS-ASCII'
+DEVICE_PROTOCOL_MODBUS_TCP = 'MODBUS-TCP'
 
-WEBARM_DATA_TYPE_INT = 'INT'
-WEBARM_DATA_TYPE_FLOAT = 'FLOAT'
-WEBARM_DATA_TYPE_STRING = 'STRING'
-WEBARM_DATA_TYPE_BOOL = 'BOOL'
-
-WEBARM_SUPPORTED_DATA_TYPES = [
-    (WEBARM_DATA_TYPE_INT,     'INT'), 
-    (WEBARM_DATA_TYPE_FLOAT,   'FLOAT'), 
-    (WEBARM_DATA_TYPE_STRING,  'STRING'), 
-    (WEBARM_DATA_TYPE_BOOL,    'BOOL'),    
+DEVICE_PROTOCOL_TYPE = [
+    (DEVICE_PROTOCOL_MODBUS_RTU,     'MODBUS-RTU'), 
+    (DEVICE_PROTOCOL_MODBUS_ASCII,   'MODBUS-ASCII'), 
+    (DEVICE_PROTOCOL_MODBUS_TCP,     'MODBUS-TCP'),
 ]
 
 # ------------------------------------------------------------
@@ -58,29 +55,3 @@ MODBUS_STOP_BIT = [
     ('2', '2')
 ]
 
-
-# ------------------------------------------------------------
-# read functions
-MODBUS_READ_FUNCTIONS = [
-    ('1', '1 - Read Coil'),
-    ('2', '2 - Read Discrete Input'),   
-    ('3', '3 - Read Holding Registers'),    
-    ('4', '4 - Read Input Registers'),  
-]
-
-MODBUS_WRITE_FUNCTIONS = [
-    ('5', '5 - Write Single Coil'),
-    ('6', '6 - Write Single Holding Register'),
-    ('15', '15 - Write Multiple Coils'),
-    ('16', '16 - Write Multiple Holding Registers'),
-]
-
-
-# ------------------------------------------------------------
-# tag values
-TAG_VALUE_QUALITY_GOOD = 'GOOD'
-TAG_VALUE_QUALITY_BAD = 'BAD'
-TAG_VALUE_QUALITY = [
-    (TAG_VALUE_QUALITY_GOOD, 'GOOD'), 
-    (TAG_VALUE_QUALITY_BAD, 'BAD')
-]

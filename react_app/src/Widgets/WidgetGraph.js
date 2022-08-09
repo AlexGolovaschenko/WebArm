@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react' 
+import React, { useEffect } from 'react';
 
-import TagsHistoricalGraph from './components/TagsGraph/TagsHistoricalGraph'
-import getColor from './components/TagsGraph/GraphColors'
-import axiosInstance from "../backendAPI/axiosClient";
-import getBaseUrl from '../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
-
+import TagsHistoricalGraph from './components/TagsGraph/TagsHistoricalGraph';
+import getColor from './components/TagsGraph/GraphColors';
+import {getTagsHistory} from "../backendAPI/backendAPI";
 
 
 export default function WidgetGraph(props) {
-  const [loading, setLoading] = React.useState(true)
-  const [graphInterval, setGraphInterval] = React.useState({interval:'1h', resolution:'1m', tags: props.widget.tags})
-  const [tagsHistory, setTagsHistory] = React.useState([])
+  const [loading, setLoading] = React.useState(true);
+  const [graphInterval, setGraphInterval] = React.useState(
+    {interval:'1h', resolution:'1m', tags: props.widget.tags}
+  );
+  const [tagsHistory, setTagsHistory] = React.useState([]);
   const device_id = props.device_id;
 
-  function updateTagsHistory(tags) {
+  const updateTagsHistory = (tags) => {
     const prepared_tags = tags.map( (tag, index) => {
       return ({
         tag_id: tag.tag_id,
@@ -26,41 +25,37 @@ export default function WidgetGraph(props) {
           return {x: new Date(value.add_date), y: value.value}
         })
       })
-    })  
+    });
     setTagsHistory( (prev) => {
       return prepared_tags.map( (tag)=> {
         const fltr = prev.filter( entry=>entry.tag_id === tag.tag_id )
         var disabled = (fltr.length > 0) ? fltr[0].disabled : tag.disabled
         return {...tag, disabled: disabled}
       })
-    }) 
-  }
+    });
+  };
 
-  // read tags historical data
-  function readTagsHistory() {
-    axiosInstance.get(BASE_URL + "/device/tags/history/", { params: { id: device_id, ...graphInterval}} )
-    .then(responce => {
-      responce && updateTagsHistory(responce.data)
-    })  
-  }
+  const readTagsHistory = () => {
+    getTagsHistory(device_id, graphInterval, 
+      (responce) => responce && updateTagsHistory(responce)
+    );
+  };
   
-  // read parameters
   useEffect(() => {
     readTagsHistory();
     const loadingTimeout = setTimeout( () => { setLoading(false) }, 1000);
-    const graphUpdateInterval = setInterval( readTagsHistory, getGraphUpdateTimeout(graphInterval.interval))
+    const graphUpdateInterval = setInterval(readTagsHistory, getGraphUpdateTimeout(graphInterval.interval));
     return () => {
       clearTimeout(loadingTimeout);
       clearInterval(graphUpdateInterval);
     };
-  }, [graphInterval])
+  }, [graphInterval]);
 
-  
   function changeGraphInterval(interval, resolution){
     setGraphInterval( (prev) => {
       return {...prev, interval: interval, resolution: resolution}
     })
-  }
+  };
 
   function getGraphUpdateTimeout(interval){
     if (interval === '5m') {
@@ -80,7 +75,7 @@ export default function WidgetGraph(props) {
     } else {
       return 60000 * 5                  // 5m
     }
-  }
+  };
 
   // toggle curve display
   function toggleCurveDisplay(tag_id){
@@ -91,7 +86,6 @@ export default function WidgetGraph(props) {
     setTagsHistory(n)
   }
 
-  // render the widget
   return (
     <React.Fragment>
         <TagsHistoricalGraph 

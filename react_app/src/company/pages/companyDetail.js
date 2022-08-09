@@ -25,7 +25,7 @@ export default function CompanyDetailPage() {
         setCompanyParams(response); setFormErrors(null);  
         history.push(`/company/overview/`);
       },
-      (errors)=>{setFormErrors(errors);}
+      (errors) => setFormErrors(errors)
     );
   }
 

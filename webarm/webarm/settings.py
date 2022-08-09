@@ -52,8 +52,9 @@ INSTALLED_APPS = [
     'facilities.apps.FacilitiesConfig',
     'devices.apps.DevicesConfig',
     'connectors.apps.ConnectorsConfig',
+    'tags.apps.TagsConfig',
     'widgets.apps.WidgetsConfig',
-    'eventslogs.apps.EventslogsConfig',
+    'eventlogs.apps.EventlogsConfig',
 ]
 
 MIDDLEWARE = [
@@ -174,8 +175,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Load local settings
 try:

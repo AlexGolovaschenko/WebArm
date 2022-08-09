@@ -487,8 +487,6 @@ function WIndicatorForm(props){
 
 
 // ----------------------------------------------------------------------------------
-// utils
-
 const DefaultTable = {
   type: 'table',
   width: 4,

@@ -3,25 +3,18 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework import exceptions
 
-from devices.models import (
-    Device, Tag, ModbusDeviceParameters
-)
-from devices.serializers import (
-    DeviceParametersSerializer, ModbusDeviceParametersSerializer, TagsParametersSerializer,
-    get_current_tag_value_serializer
-)
-from devices import choices
-
 from .models import Connector
 
+from tags.models import Tag
+from devices import choices
+from devices.models import Device, DeviceProtocol
+from devices.serializers import (DeviceParametersSerializer, DeviceProtocolSerializer, 
+    TagsParametersSerializer, get_current_tag_value_serializer
+)
 
-# -----------------------------------------------------------------------------------------------
-# view for polling modbus devices
-class ModbusDeviceView(APIView):
-    ''' 
-    through this vie you can get modbus parameters for polling modbus device
-    and post tags value data  
-    '''
+
+# ------------------------------------------------------------------------------
+class RestApiConnectorView(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     
@@ -30,10 +23,10 @@ class ModbusDeviceView(APIView):
         data = []
         for device in devices:
             tags = Tag.objects.filter(device=device)
-            modbus_parameters = ModbusDeviceParameters.objects.get(device=device)
+            modbus_parameters = DeviceProtocol.objects.get(device=device)
             device_data = {
                 'device': DeviceParametersSerializer(device).data, 
-                'modbus_parameters': ModbusDeviceParametersSerializer(modbus_parameters).data               
+                'modbus_parameters': DeviceProtocolSerializer(modbus_parameters).data               
             }
             tags_list = TagsParametersSerializer(tags, many=True).data
             device_data['tags_count'] = len(tags_list)        
@@ -59,7 +52,6 @@ class ModbusDeviceView(APIView):
     def _update_tag_value(self, tag_obj, tag_value, tag_quality):
         ''' write tag value depending on tag data type '''    
         data = {'tag': tag_obj.id, 'value':tag_value, 'quality':tag_quality}
-
         serializer = get_current_tag_value_serializer(tag_obj)
         try:
             obj = tag_obj.CurrentValueModel.objects.get(tag=tag_obj)
@@ -81,9 +73,9 @@ class ModbusDeviceView(APIView):
         else:
             return Device.objects.filter(connector=connector)
 
-
     def _get_connector(self, request):
-        authorization_token = request.META.get('HTTP_AUTHORIZATION', None)  # check modem token
+        # check connector token
+        authorization_token = request.META.get('HTTP_AUTHORIZATION', None)
         try:
             key, authorization_token = authorization_token.split(' ')
             return Connector.objects.get(token=authorization_token)

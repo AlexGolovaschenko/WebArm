@@ -1,20 +1,20 @@
 import re
-
 from datetime import timedelta
-from django.utils import timezone
 
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
 
-from .models import (
-    Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
-    CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue,
-    HistoricalIntValue, HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
-)
 from . import serializers
+from .models import Device, DeviceProtocol
 from .utils import get_device_obj_from_request
+
+from tags.models import (Tag, ModbusTagParameters, CurrentIntValue, CurrentFloatValue, 
+    CurrentStringValue, CurrentBooleanValue, HistoricalIntValue, 
+    HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
+)
 
 
 # -----------------------------------------------------------------------------------------------
@@ -35,19 +35,19 @@ class DeviceParametersView(APIView):
 class ModbusDeviceParametersView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
-        mdp = ModbusDeviceParameters.objects.get(device=device)
-        serializer = serializers.ModbusDeviceParametersSerializer(mdp)
+        mdp = DeviceProtocol.objects.get(device=device)
+        serializer = serializers.DeviceProtocolSerializer(mdp)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request) 
         try:
             # update parameters
-            mdp = ModbusDeviceParameters.objects.get(device=device)
-            serializer = serializers.ModbusDeviceParametersSerializer(mdp, data=request.data)
-        except ModbusDeviceParameters.DoesNotExist:
+            mdp = DeviceProtocol.objects.get(device=device)
+            serializer = serializers.DeviceProtocolSerializer(mdp, data=request.data)
+        except DeviceProtocol.DoesNotExist:
             # create parameters
-            serializer = serializers.ModbusDeviceParametersSerializer(data=request.data)
+            serializer = serializers.DeviceProtocolSerializer(data=request.data)
  
         serializer.is_valid(raise_exception=True)
         serializer.save()

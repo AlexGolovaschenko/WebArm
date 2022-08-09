@@ -26,7 +26,7 @@ class LogAdmin(admin.ModelAdmin):
     inlines = [RecordsInline]
 
     class Media:
-        css = { "all" : ("eventslogs/css/hide_admin_original.css",) }
+        css = { "all" : ("eventlogs/css/hide_admin_original.css",) }
 
 class RecordAdmin(admin.ModelAdmin):
     list_display  = ('__str__', 'date', 'log__device', 'log', 'category')

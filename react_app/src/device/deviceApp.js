@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react' 
 import {Switch, Route, useParams} from 'react-router-dom'
 
-import axiosInstance from "../backendAPI/axiosClient"
-import getBaseUrl from '../backendAPI/localSettings'
+import {getWidgetsTemplate, postWidgetsTemplate} from "../backendAPI/backendAPI"
 import sortWidgetsByOrder from './utils/sortWidgetsByOrder'
 
 import Sidebar from './components/DeviceSidebar'
@@ -16,23 +15,20 @@ import EventsAdminPage from './pages/eventsAdmin'
 import EventDetailPage, {EventCreatePage} from './pages/eventDetail'
 import Page404 from '../base/pages/pageNotFound'
 
-const BASE_URL = getBaseUrl()
-
-
 
 export default function DeviceApp() { 
   let { id } = useParams();
   const [widgetsTemplate, setWidgetsTemplate] = React.useState({})
 
   useEffect(() => {
-    getWidgetsTemplate( id, (data)=> {
+    getWidgetsTemplate( id, (data) => {
       setWidgetsTemplate( sortWidgetsByOrder(data.template) );
     });   
   }, []) 
 
   function updateWidgetsTemplate(newTemplate){
     setWidgetsTemplate(newTemplate)
-    postWidgetsTemplate(id, newTemplate)
+    postWidgetsTemplate(id, newTemplate, null)
   }
 
   return (
@@ -63,17 +59,4 @@ export default function DeviceApp() {
     </React.Fragment>
   );
 }
-
-
-async function getWidgetsTemplate(device_id, cb) {
-  const request = await axiosInstance.get(BASE_URL + "/widgets/template/", { params: { id: device_id }})
-  cb({...request.data});
-}
-
-async function postWidgetsTemplate(device_id, template_data, cb) {
-  const body = {'template': template_data}
-  const request = await axiosInstance.post(BASE_URL + "/widgets/template/", body, { params: { id: device_id }})
-  cb && cb({...request.data});
-}
-
 
