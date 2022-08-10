@@ -1,30 +1,29 @@
-import React, {useState, useEffect} from 'react' 
-import { useHistory, useParams } from "react-router-dom"
+import React, {useState, useEffect} from 'react';
+import { useHistory, useParams } from "react-router-dom";
 
-import Loader from '../../base/components/Loader'
-import {
-  getDeviceTagsParameters,
-  postDeviceTagsParameters,
-  deleteDeviceTags,
-} from '../../backendAPI/backendAPI'
+import Loader from '../../base/components/Loader';
+import {getDeviceTagsParameters, postDeviceTagsParameters, deleteDeviceTags,
+} from '../../backendAPI/backendAPI';
 
-import {TextField, NumberField, SelectField, getSelectedOptions, ErrorMessage, FormContainer} from '../../base/forms/forms'
+import {TextField, NumberField, SelectField, getSelectedOptions, ErrorMessage, 
+  FormContainer
+} from '../../base/forms/forms';
 
 
 
 export default function TagDetailPage() {
   const { tag_id, device_id } = useParams();
-  const [tagParameters, setTagParameters] = useState({})
-  const [formErrors, setFormErrors] = useState(null)
-  const [loading, setLoading] = React.useState(true)
-  const history = useHistory()
+  const [tagParameters, setTagParameters] = useState({});
+  const [formErrors, setFormErrors] = useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const history = useHistory();
 
   useEffect(()=>{
     getDeviceTagsParameters(device_id, [tag_id], (data)=>{
       setTagParameters(data[0])
       setLoading(false)
     })
-  }, [])
+  }, []);
   
   const submitTagParameters = (tag_parameters) => {
     postDeviceTagsParameters(device_id, [tag_parameters], 
@@ -34,15 +33,17 @@ export default function TagDetailPage() {
       },
       (errors_data)=>{ setFormErrors(errors_data[0]) }
     )
-  }
+  };
 
   const cancelChanges = () => { 
     history.push(`/device/${device_id}/admin/config/`)
-  }
+  };
 
   const deleteTag = () => { 
-    deleteDeviceTags(device_id, [tag_id], ()=>{ history.push(`/device/${device_id}/admin/config/`) })
-  }
+    deleteDeviceTags(device_id, [tag_id], 
+      () => history.push(`/device/${device_id}/admin/config/`)
+    )
+  };
   
   return (
     <React.Fragment>

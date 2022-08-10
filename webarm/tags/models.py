@@ -34,13 +34,13 @@ class Tag(models.Model):
 
     @property
     def HistoricalValueModel(self):
-        if self.data_type == choices.WEBARM_DATA_TYPE_INT:
+        if self.data_type == choices.DATA_TYPE_INT:
             return HistoricalIntValue
-        elif self.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+        elif self.data_type == choices.DATA_TYPE_FLOAT:
             return HistoricalFloatValue
-        elif self.data_type == choices.WEBARM_DATA_TYPE_STRING:
+        elif self.data_type == choices.DATA_TYPE_STRING:
             return HistoricalStringValue     
-        elif self.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+        elif self.data_type == choices.DATA_TYPE_BOOL:
             return HistoricalBooleanValue
         else:
             raise('Error: tag data type "%s" not supported' %(self.data_type))  

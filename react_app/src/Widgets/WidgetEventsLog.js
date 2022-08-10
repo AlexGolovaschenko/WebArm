@@ -12,7 +12,7 @@ export default function WidgetEventsLog(props) {
     {name: 'Предупреждения',  code: 'Warning',  selected: true},
     {name: 'Информационные',  code: 'Info',     selected: true},
     {name: 'Отладочные',      code: 'Debug',    selected: false}
-  ])
+  ]);
   const device_id = props.device_id;
   const [pagination, setPagination] = React.useState({next: null, previous: null});
   const [page, setPage] = React.useState(1);
@@ -28,12 +28,12 @@ export default function WidgetEventsLog(props) {
   const readLogRecords = (parameters) => {
     getLogRecords(device_id, parameters,
       (responce) => {
-        responce && setRecords(responce.data.results)
+        responce && setRecords(responce.results)
         responce && setPagination({
-          next: responce.data.next, 
-          previous: responce.data.previous, 
-          num_pages: responce.data.num_pages, 
-          page_number: responce.data.page_number, 
+          next: responce.next, 
+          previous: responce.previous, 
+          num_pages: responce.num_pages, 
+          page_number: responce.page_number, 
         })
       }
     );

@@ -5,27 +5,21 @@ import SearchableDiscreteColorLegend from 'react-vis/dist/legends/searchable-dis
 
 
 export default function Legend(props) { 
-  var [searchText, setSearchText] = React.useState('')
-
-  var state = {
+  const [searchText, setSearchText] = React.useState('');
+  const state = {
     onClick: props.onClick,
     items: props.tags.map((tag) => {
       return {title: tag.tag_name, color: tag.curve_color, tag_id:tag.tag_id, disabled:tag.disabled}
     })
-  }
-
-  function _clickHandler (item) {
-    state.onClick(item.tag_id);    
   };
-
-  function _searchChangeHandler (searchText) {
-    setSearchText(searchText)
-  };
+  const legendBlockHeight = parseInt(props.height.replace('px', '')) || null; // TODO: this can't be parsed and couse of error if height seted like 65vh
+  const _clickHandler = (item) => state.onClick(item.tag_id);    
+  const _searchChangeHandler = (searchText) => setSearchText(searchText);
 
   return (
     <div className='d-block text-dark pl-3'>
       <SearchableDiscreteColorLegend
-        height={ parseInt(props.height.replace('px', '')) }
+        height={legendBlockHeight} 
         // width={300}
         onSearchChange={_searchChangeHandler}
         searchPlaceholder={'Поиск...'}
