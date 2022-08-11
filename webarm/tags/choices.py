@@ -23,16 +23,16 @@ TAG_VALUE_QUALITY = [
 
 # ------------------------------------------------------------
 MODBUS_READ_FUNCTIONS = [
-    ('1', '1 - Read Coil'),
-    ('2', '2 - Read Discrete Input'),   
-    ('3', '3 - Read Holding Registers'),    
-    ('4', '4 - Read Input Registers'),  
+    ('1', '1 (0x01) - Read Coil'),
+    ('2', '2 (0x02) - Read Discrete Input'),   
+    ('3', '3 (0x03) - Read Holding Registers'),    
+    ('4', '4 (0x04) - Read Input Registers'),  
 ]
 
 MODBUS_WRITE_FUNCTIONS = [
-    ('5',  '5 - Write Single Coil'),
-    ('6',  '6 - Write Single Holding Register'),
-    ('15', '15 - Write Multiple Coils'),
-    ('16', '16 - Write Multiple Holding Registers'),
+    ('5',  '5 (0x05) - Write Single Coil'),
+    ('6',  '6 (0x06) - Write Single Holding Register'),
+    ('15', '15 (0x0F) - Write Multiple Coils'),
+    ('16', '16 (0x10) - Write Multiple Holding Registers'),
 ]
 

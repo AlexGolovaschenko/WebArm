@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import RestApiConnectorView
+from .con_rest import RestApiConnectorView
 
 
 urlpatterns = [

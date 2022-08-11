@@ -1,7 +1,5 @@
-import React from 'react' 
+import React from 'react'; 
 import SearchableDiscreteColorLegend from 'react-vis/dist/legends/searchable-discrete-color-legend';
-
-
 
 
 export default function Legend(props) { 

@@ -1,41 +1,33 @@
 from django.contrib import admin
-from django.utils.html import mark_safe
-from django.urls import reverse
-from django.forms.models import ModelForm
+from django_reverse_admin import ReverseModelAdmin
 
-from . import choices
-from .models import Device, DeviceProtocol
-
-
-# -------------------------------------------------------------------
-# inline form sets
-class AlwaysChangedModelForm(ModelForm):
-    def has_changed(self):
-        """ Should returns True if data differs from initial. 
-        By always returning true even unchanged inlines will get validated and saved."""
-        return True
-        
-class DeviceProtocolInline(admin.StackedInline):
-    model = DeviceProtocol
-    form = AlwaysChangedModelForm
+from .models import Device
 
 
 # -------------------------------------------------------------------
 # admin models
-class DeviceAdmin(admin.ModelAdmin):
-    inlines = [DeviceProtocolInline]
-    list_display  = ('name', 'company_owner', 'company_name', 'facility_name', 'connector')
+class DeviceAdmin(ReverseModelAdmin):
+    list_display  = ('name', 'company_owner', 'company_name', 
+        'facility_name', 'connector')
+
+    inline_type = 'tabular'
+    inline_reverse = [
+        'protocol_mb_rtu', 
+        'protocol_mb_ascii', 
+        'protocol_mb_tcp'
+        ]          
 
     def company_owner(self, obj):
         return str(obj.facility.company.owner)
-    company_owner.short_description = 'Владелец'
-
+    
     def company_name(self, obj):
         return str(obj.facility.company.name)
-    company_name.short_description = 'Компания'
 
     def facility_name(self, obj):
         return str(obj.facility.name)
+
+    company_owner.short_description = 'Владелец'
+    company_name.short_description = 'Компания'
     facility_name.short_description = 'Объект'
 
     class Media:

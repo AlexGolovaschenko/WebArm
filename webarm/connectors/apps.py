@@ -8,3 +8,5 @@ class ConnectorsConfig(AppConfig):
 
     def ready(self):
         import connectors.signals
+        from .con_mqtt import app as mqtt_app
+        mqtt_app()

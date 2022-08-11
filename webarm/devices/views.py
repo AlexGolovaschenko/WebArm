@@ -8,16 +8,11 @@ from rest_framework import status
 from rest_framework.serializers import ValidationError
 
 from . import serializers
-from .models import Device, DeviceProtocol
-from .utils import get_device_obj_from_request
-
-from tags.models import (Tag, ModbusTagParameters, CurrentIntValue, CurrentFloatValue, 
-    CurrentStringValue, CurrentBooleanValue, HistoricalIntValue, 
-    HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
-)
+from .models import Device
+from tags.models import Tag
 
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class DeviceParametersView(APIView):
     def get(self, request, *args, **kwargs):
         obj = get_device_obj_from_request(request)
@@ -32,6 +27,7 @@ class DeviceParametersView(APIView):
         return Response(serializer.data)
 
 
+# ------------------------------------------------------------------------------
 class ModbusDeviceParametersView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
@@ -54,7 +50,7 @@ class ModbusDeviceParametersView(APIView):
         return Response(serializer.data)
 
 
-
+# ------------------------------------------------------------------------------
 class DeviceTagsParametersView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
@@ -116,14 +112,13 @@ class DeviceTagsParametersView(APIView):
         return Response({}, status=status.HTTP_200_OK)
 
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class DeviceTagsCurrentValueView(APIView):
     ''' return current values of device tags '''
     def get(self, request, *args, **kwargs):
         rq_tags = request.GET.getlist('tags[]', None)
         device = get_device_obj_from_request(request)
         if rq_tags:
-            print(rq_tags)
             # return just selected tags
             tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
         else:
@@ -133,7 +128,7 @@ class DeviceTagsCurrentValueView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class DeviceTagsHistoricalValueView(APIView):
     ''' return list of historycal values of device tags (value and date/time) '''    
     def get(self, request, *args, **kwargs):
@@ -219,3 +214,7 @@ class DeviceTagsHistoricalValueView(APIView):
         return timezone.timedelta(days=d , hours=h, minutes=m, seconds=s)
 
 
+# ------------------------------------------------------------------------------
+def get_device_obj_from_request(request):
+    device_id = request.GET.get('id', None)
+    return Device.objects.get(id=device_id)

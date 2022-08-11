@@ -4,7 +4,7 @@ from rest_framework import status
 
 from .models import WidgetsTemplate
 from .serializers import WidgetsTemplateSerializer
-from devices.utils import get_device_obj_from_request
+from devices.views import get_device_obj_from_request
 
 
 class WidgetsTemplateView(APIView):
@@ -36,3 +36,4 @@ class WidgetsTemplateView(APIView):
             responce_data = serializer.errors
 
         return Response(responce_data, status=status.HTTP_201_CREATED)        
+

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from tags import choices
-from .models import Device, DeviceProtocol
+from .models import Device
 
 from tags.models import (Tag, ModbusTagParameters, CurrentIntValue, CurrentFloatValue, 
     CurrentStringValue, CurrentBooleanValue, HistoricalIntValue, 
@@ -11,12 +11,6 @@ from tags.models import (Tag, ModbusTagParameters, CurrentIntValue, CurrentFloat
 
 # ---------------------------------------------------------------------
 # devices
-class DeviceProtocolSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DeviceProtocol
-        exclude = ['id', 'device']
-
-
 class DeviceParametersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
