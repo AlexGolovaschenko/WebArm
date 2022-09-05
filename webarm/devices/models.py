@@ -93,6 +93,10 @@ class Device(models.Model):
         '''
         return verbose_update_timestamp(self.last_update)
 
+    def refresh(self):
+        # update connection timestamp
+        self.last_update = timezone.now()
+
     def __str__(self):
         return self.name
 

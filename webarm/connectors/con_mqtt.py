@@ -24,6 +24,13 @@
         r   - first register
         v   - list of registers values
 
+
+# use example
+def app():
+    mqtt = PullHandler()
+    handler = PullHandler(mqtt)
+    while True:
+        handler.make_requests()
 """
 #-------------------------------------------------------------------------------
 import json
@@ -31,6 +38,8 @@ import struct
 import paho.mqtt.client as paho
 from paho import mqtt
 from paho.mqtt.subscribeoptions import SubscribeOptions
+
+from django.utils import timezone
 
 from .models import Connector
 from .utils import update_tag_value
@@ -82,8 +91,7 @@ class MqttClient:
 
     def registry_callback(self, event, callback):
         if event not in self._callbacks:
-            print(f'Callback registaration error, the {event} does not exist.')
-            return
+            raise Exception(f'Callback registaration error. Wrong event name: {event}')
         self._callbacks[event].append(callback) 
 
     def remove_callbacks(self, event):
@@ -128,37 +136,35 @@ class PullQueue:
         self.init_pull_queue()
 
     def init_pull_queue(self):
-        # collect list of connectors with theirs devices and tags
+        # Collect list of connectors with theirs devices for pulling
         mqtt_connectors = Connector.objects.filter(connector_type=CONNECTOR_MQTT_1)
         for con in mqtt_connectors:
-            self._pull_queue[con.id] = {'weating_for_response':False, 'devices':{}}
-            devices = con.device_set.all()
-            for d in devices:
-                self._pull_queue[con.id]['devices'][d.id] = {
-                    'device': d,
-                    'tags': {},
-                    'done': False
-                    }
-                tags = d.tag_set.all()
-                for t in tags:
-                    self._pull_queue[con.id]['devices'][d.id]['tags'][t.id] = {'tag':t, 'done':False}
+            self._pull_queue[con.id] = {
+                'weating_for_response':False, 
+                'devices':{dev.id: DeviceCom(con, dev) for dev in con.device_set.all()}
+                }
 
     def next(self, many=False):
-        # Return the next tag for pulling 
-        # or list of tags if many=True
+        # Return next device for pulling (or list of devices if many=True)
         items = []
         for con_id, con_props in self._pull_queue.items():
             # skip if connector is weating for responce from device
             if self._pull_queue[con_id]['weating_for_response']:
                 continue
-            next_tag = self._find_next(con_id, con_props)
-            if next_tag:
+            next_device = self._find_next_device(con_id, con_props)
+            if next_device:
                 if many:
-                    items.append(next_tag)
+                    items.append(next_device)
                 else:
-                    items = next_tag
+                    items = next_device
                     break
         return items if items else None
+
+    def pass_com_response(self, con_id, response):
+        dev_id = response.get('id', None)
+        if dev_id is None:
+            return
+        self._pull_queue[con_id]['devices'][dev_id].handle_responce(response)
 
     def set_connector_busy(self, con_id):
         self._pull_queue[con_id]['weating_for_response'] = True
@@ -166,179 +172,71 @@ class PullQueue:
     def reset_connector_busy(self, con_id):
         self._pull_queue[con_id]['weating_for_response'] = False
 
-    def set_device_done(self, con_id, dev_id):
-        self._pull_queue[con_id]['devices'][dev_id]['done'] = True
-
-    def set_tag_done(self, con_id, dev_id, tag_id):
-        self._pull_queue[con_id]['devices'][dev_id]['tags'][tag_id]['done'] = True
-
-    def reset_all_done_flags(self, con_id, con_props):
-        for dev_id, dev_props in self._pull_queue[con_id]['devices'].items():
-            dev_props['done'] = False
-            tags = dev_props.get('tags', {})
-            for tag_id, tag_props in tags.items():
-                tag_props['done'] = False
-
-    def _find_next(self, con_id, con_props):
-        while True:
-            dev_id, dev_props = self._find_next_device(con_props)
-            if dev_props is None:
-                # all devices was pulled (reset done flag and return)
-                self.reset_all_done_flags(con_id, con_props)
-                return
-            tag_id, tag_props = self._find_next_tag(dev_props)
-            if tag_props is None:
-                # all tags was pulled (set the done flag and go to the next device)
-                self.set_device_done(con_id, dev_id)
-                continue
-            else:
-                # tag is found (exit from cycle)
-                break
-        return tag_props['tag']
-
-    def _find_next_device(self, con_props):
+    def _find_next_device(self, con_id, con_props):
         # return the next device from queue for pulling
-        for dev_id, dev_props in con_props['devices'].items():
-            dev_done = dev_props.get('done', True)
-            dev = dev_props.get('device', None)
-            if dev_done or (dev is None):
+        for dev_id, dev in con_props['devices'].items():
+            if dev.done:
                 continue
-            return dev_id, dev_props
+            return dev
         else:
-            return None, None
-
-    def _find_next_tag(self, dev_props):
-        # return the next tag from queue for pulling
-        tags = dev_props.get('tags', {})
-        for tag_id, tag_props in tags.items():
-            tag_done = tag_props.get('done', True)
-            tag = tag_props.get('tag', None)
-            if tag_done or (tag is None):
-                continue
-            return tag_id, tag_props
-        else:
-            return None, None
-
-
-#-------------------------------------------------------------------------------
-class PullHandler:
-    def __init__(self, mqtt_client, pull_queue, device_com):
-        self._mqtt = mqtt_client
-        self._queue = pull_queue
-        self._com = device_com
-        self._mqtt.registry_callback('on_connect', self.print_on_connect)
-        self._mqtt.registry_callback('on_publish', self.print_on_publish)
-        self._mqtt.registry_callback('on_subscribe', self.print_on_subscribe)
-        self._mqtt.registry_callback('on_message', self.print_on_message)
-        self._mqtt.registry_callback('on_message', self.handle_response)
-
-    def subscribe(self, topic='ci-cloud/#'):
-        self._mqtt.subscribe(topic)
-        self._mqtt.loop_start()
-
-    def print_on_connect(self, client, userdata, flags, rc, properties=None):
-        print("MQTT CONNACK received with code %s." % rc)
-
-    def print_on_publish(self, client, userdata, mid, properties=None):
-        print("MQTT published: mid-" + str(mid))
-
-    def print_on_subscribe(self, client, userdata, mid, granted_qos, properties=None):
-        print("MQTT subscribed: " + str(mid) + " " + str(granted_qos))
-
-    def print_on_message(self, client, userdata, msg):
-        print("MQTT received:" + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
-
-    def make_requests(self):
-        if self._mqtt is None:
-            raise Exception('MQTT Client is not provided')
-        tags_list = self._queue.next(many=True)
-        if tags_list is None:
-            print('Queue is empty OR all connectors are busy')
-            return
-        for tag in tags_list:
-            self._make_request(tag)
-
-    def handle_response(self, client, userdata, msg):
-        cloud, token, topic = msg.topic.split('/')
-        connector = self._fined_connector_by_token(token)
-        if   topic == 'ping':    self._handle_ping_response(connector, msg.payload)
-        elif topic == 'com':     self._handle_com_response(connector, msg.payload)
-        elif topic == 'control': self._handle_control_response(connector, msg.payload)
-        else: print(f'invalide topic: {msg}')
-
-    def ping_connection(self, connector):
-        token = _get_connector_token(connector)
-        topic = TOPIC_TEMPLATE.format(token=token, topic='ping')
-        request = 'ping'
-        self._mqtt.publish(topic, request)
-
-    def _make_request(self, tag):
-        connector = tag.device.connector
-        token = connector.token
-        topic = TOPIC_TEMPLATE.format(token=token, topic='com')
-        device = tag.device
-        request = self._com.create_com_request(device, tag)
-        self._mqtt.publish(topic, request)
-        self._queue.set_connector_busy(connector.id)
-        self._queue.set_tag_done(connector.id, device.id, tag.id)
-
-    def _handle_com_response(self, connector, response):
-        response = self._parse_payload(response)
-        self._queue.reset_connector_busy(connector.id)
-        return self._com.handle_com_response(connector, response)
-
-    def _handle_ping_response(self, connector, response):
-        if not connector: 
+            # all devices was pulled
             return None
-        connector.refresh()
-        if response.payload == 'pong':
-            # this is correct answer
-            pass
-        else:
-            # this is wrong answer
-            pass
-
-    def _handle_control_response(self, connector, response):
-        # do nothing for now
-        pass
-
-    def _parse_payload(self, payload):
-        try:
-            return json.loads(payload)
-        except json.decoder.JSONDecodeError:
-            print(f'MQTT error: JSON decode error')
-            return {}
-
-    def _fined_connector_by_token(self, token):
-        try:
-            connector = Connector.objects.get(token=token)
-        except Connector.DoesNotExist:
-            print(f'MQTT error: Connector with token {token} does not exists')
-            connector = None
-        return connector
 
 
 #-------------------------------------------------------------------------------
 class DeviceCom:
-    def create_com_request(self, device, tag, value=None):
-        # reques example (JSON): {"id":12566, "f":16, "adr":16, "r":25, "n":4}
-        if device.id != tag.device.id:
-            raise Exception(f'The tag {tag} does not belong to the device {device}')
+    def __init__(self, connector, device):
+        if connector is not device.connector:
+            raise Exception('Given device is not belongs to given connector')
+        self.connector_id = device.id
+        self.device_id = device.id
+        self._tags_done = {}
+        self._refresh_tags_list(self.device.tag_set.all())
 
-        # select modbus function
-        # TODO: for now supported only reading functions
-        if value is None:
-            mb_function = tag.modbustagparameters.read_function
+    @property
+    def device(self):
+        # here is fix access to DB (if i store the device object on init, it hasn't 
+        # access to DB data, just local copy of DB data)
+        return Device.objects.get(pk=self.device_id)
+
+    @property
+    def connector(self):
+        # here is fix access to DB (if i store the connector object on init, it hasn't 
+        # access to DB data, just local copy of DB data)
+        return Connector.objects.get(pk=self.connector_id)
+
+    @property
+    def done(self):
+        for t, v in self._tags_done.items():
+            if not v: return False
+        # check device polling period after reading all tags
+        need_update = self._is_need_update()
+        if need_update:
+            self._reset_all_done_tags()
+            return False
         else:
-            raise Exception('Write function is not supported yet')
-            mb_function = tag.modbustagparameters.write_function
+            return True 
 
+    def create_read_request(self, tag=None):
+        """ Reques example (JSON): {"id":12566, "f":16, "adr":16, "r":25, "n":4}
+            Tag object can be passed for read a singl tag.
+        """
+        # Select tags to read. 
+        # For groupe reading will be selected tags with tha same mb function.
+        if tag is None:
+            tags_list = self._select_tags_for_reading()
+        else:
+            tags_list = [tag]
+        if tags_list is None:
+            return None
+
+        # create request payload
         payload = {
-            'id': tag.device.id,
-            'adr': self._get_device_modbus_address(tag.device),
-            'r': tag.modbustagparameters.register_address,
-            'f': mb_function,
-            'n': self._get_tag_register_size(tag),
+            'id': self.device_id,
+            'adr': self._get_modbus_address(),
+            'r': tags_list[0].modbustagparameters.register_address,
+            'f': tags_list[0].modbustagparameters.read_function,
+            'n': self._count_request_data_size(tags_list),
         }
         try:
             return json.dumps(payload)
@@ -346,30 +244,39 @@ class DeviceCom:
             print(f'MQTT error: Error on dump request data to JSON')
             return None
 
-    def handle_com_response(self, connector, response):
-        # response example (JSON): {"id":12566, "s":0, "r":25, "v":[0, 255, 761, 15]}
-        # get connector by token
-        if not connector: return None
-        connector.refresh()
+    def create_write_request(self, tag, value):
+        # TODO: for now supported only tags reading
+        # mb_function = tag.modbustagparameters.write_function
+        raise Exception('Write tags is not supported yet')
 
-        # get device by modbus address and connector
-        device = self._fined_device_by_id(connector, response.get('id', None))
-        if not device: return None
+    def handle_responce(self, response):
+        # response example (JSON): {"id":12566, "s":0, "r":25, "v":[0, 255, 761, 15]}
+        # update connection timestamp
+        self.device.refresh()
+        self.connector.refresh()
+
+        # check device id
+        if self.device.id != response.get('id', None): 
+            print(f'Error: Device id is not equal to responce data')
+            return None
 
         # get tags by register address and device
-        tag = self._fined_tag_by_register_adr(device, response.get('r', None))
-        if not tag: return None
-        
+        tag = self._fined_tag_by_register_adr(response.get('r', None))
+        if not tag: 
+            return None
+
         # convert received value to tag data type
         values = response.get('v', None)
-        swap = self._check_need_to_swap_registers(device)
-        tag_value = self._convert_registars_list_to_tag_value(values, tag.data_type, swap=swap)
-        if not values: return None
+        swap = self._check_need_to_swap_registers(self.device)
+        tag_value = self._convert_registars_list_to_tag_value(
+            values, tag.data_type, swap=swap)
+        if not values: 
+            return None
 
-        # quality
+        # tag data quality
         connection_status = response.get('s', None)
         if connection_status is None:
-            print(f'MQTT error: Device connection status not provided')
+            print(f'Warning: Device connection status is not provided')
             quality = TAG_VALUE_QUALITY_GOOD
         elif connection_status == 0:
             quality = TAG_VALUE_QUALITY_GOOD
@@ -380,41 +287,39 @@ class DeviceCom:
         update_tag_value(tag, tag_value, quality)
         print(tag_value)
 
-    def _fined_device_by_id(self, connector, device_id):
-        if not device_id: 
-            print(f'MQTT error: Device.get - Device id not provided')
-            return None
-        try:
-            device = Device.objects.get(pk=device_id, connector=connector)
-            return device
-        except Device.DoesNotExist:
-            print(f'MQTT error: Device.get - Object does not exist')
-            return None
-        except Device.MultipleObjectsReturned:
-            print(f'MQTT error: Device.get - Multiple objects returned')
-            return None
+    def _is_need_update(self):
+        # return True if it's time to update device tags
+        period = timezone.timedelta(seconds=self.device.polling_period)
+        if self.device.last_update < (timezone.now()-period):
+            return True
+        return False
 
-    def _get_device_modbus_address(self, device):
-        if device.protocol_type == DEVICE_PROTOCOL_MODBUS_RTU:
-            return device.protocol_mb_rtu.device_address
-        elif device.protocol_type == DEVICE_PROTOCOL_MODBUS_ASCII:
-            return device.protocol_mb_ascii.device_address
-        elif device.protocol_type == DEVICE_PROTOCOL_MODBUS_TCP:
-            return device.protocol_mb_tcp.device_ip    
+    def _reset_all_done_tags(self):
+        for t in self._tags_done:
+            self._tags_done[t] = False
 
-    def _fined_tag_by_register_adr(self, device, register_adr):
-        if not register_adr: 
-            print(f'MQTT error: Tag.get - Register address not provided')
+    def _select_tags_for_reading(self):
+        # return the next tag from queue for pulling
+        # TODO: make groupe requests
+        tags = self.device.tag_set.all()
+        self._refresh_tags_list(tags)
+        for tag in tags:
+            if not self._tags_done.get(tag.id, False):
+                break
+        else:
             return None
-        try:
-            tag = Tag.objects.get(device=device, modbustagparameters__register_address=register_adr)
-            return tag
-        except Tag.DoesNotExist:
-            print(f'MQTT error: Tag.get - Object does not exist')
-            return None
-        except Tag.MultipleObjectsReturned:
-            print(f'MQTT error: Tag.get - Multiple objects returned')
-            return None        
+        self._tags_done[tag.id] = True
+        return [tag]
+
+    def _refresh_tags_list(self, tags):
+        new_list = {tag.id: self._tags_done.get(tag.id, False) for tag in tags}
+        self._tags_done = new_list
+
+    def _count_request_data_size(self, tags_list):
+        size = 0
+        for t in tags_list:
+            size += self._get_tag_register_size(t)
+        return size
 
     def _get_tag_register_size(self, tag):
         if tag.data_type == DATA_TYPE_INT: return 1
@@ -423,6 +328,30 @@ class DeviceCom:
         elif tag.data_type == DATA_TYPE_BOOL: return 1
         else: 
             raise Exception(f'Tag datatype "{tag_datatype}" is not supported')
+
+    def _get_modbus_address(self):
+        protocol = self.device.protocol_type
+        if protocol == DEVICE_PROTOCOL_MODBUS_RTU:
+            return self.device.protocol_mb_rtu.device_address
+        elif protocol == DEVICE_PROTOCOL_MODBUS_ASCII:
+            return self.device.protocol_mb_ascii.device_address
+        elif protocol == DEVICE_PROTOCOL_MODBUS_TCP:
+            return self.device.protocol_mb_tcp.device_ip
+
+    def _fined_tag_by_register_adr(self, register_adr):
+        if not register_adr: 
+            print(f'MQTT error: Tag.get - Register address not provided')
+            return None
+        try:
+            tag = Tag.objects.get(device__id=self.device_id, 
+                modbustagparameters__register_address=register_adr)
+            return tag
+        except Tag.DoesNotExist:
+            print(f'MQTT error: Tag.get - Object does not exist')
+            return None
+        except Tag.MultipleObjectsReturned:
+            print(f'MQTT error: Tag.get - Multiple objects returned')
+            return None        
 
     def _convert_registars_list_to_tag_value(self, regs_list, tag_datatype, swap=True):
         if not isinstance(regs_list, list): 
@@ -457,174 +386,96 @@ class DeviceCom:
 
 
 #-------------------------------------------------------------------------------
-# use example
-def use_example_app():
-    mqtt = PullHandler()
-    queue = PullQueue()
-    com = DeviceCom()
-    handler = PullHandler(mqtt, queue, com)
+class PullHandler:
+    def __init__(self, mqtt_client):
+        self._mqtt = mqtt_client
+        self._queue = PullQueue()
+        self._mqtt.registry_callback('on_connect', self.print_on_connect)
+        self._mqtt.registry_callback('on_publish', self.print_on_publish)
+        self._mqtt.registry_callback('on_subscribe', self.print_on_subscribe)
+        self._mqtt.registry_callback('on_message', self.print_on_message)
+        self._mqtt.registry_callback('on_message', self.handle_response)
 
-    while True:
-        handler.make_requests()
+    def subscribe(self, topic='ci-cloud/#'):
+        self._mqtt.subscribe(topic)
+        self._mqtt.loop_start()
 
+    def print_on_connect(self, client, userdata, flags, rc, properties=None):
+        print("MQTT CONNACK received with code %s." % rc)
 
-#-------------------------------------------------------------------------------
+    def print_on_publish(self, client, userdata, mid, properties=None):
+        print("MQTT published: mid-" + str(mid))
 
+    def print_on_subscribe(self, client, userdata, mid, granted_qos, properties=None):
+        print("MQTT subscribed: " + str(mid) + " " + str(granted_qos))
 
+    def print_on_message(self, client, userdata, msg):
+        print("MQTT received:" + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
-#-------------------------------------------------------------------------------
+    def make_requests(self):
+        if self._mqtt is None:
+            raise Exception('MQTT Client is not provided')
+        com_list = self._queue.next(many=True)
+        if com_list is None:
+            print('Queue is empty OR all connectors are busy')
+            return
+        for com in com_list:
+            self._make_request(com)
 
+    def handle_response(self, client, userdata, msg):
+        cloud, token, topic = msg.topic.split('/')
+        connector = self._fined_connector_by_token(token)
+        if   topic == 'ping':    self._handle_ping_response(connector, msg.payload)
+        elif topic == 'com':     self._handle_com_response(connector, msg.payload)
+        elif topic == 'control': self._handle_control_response(connector, msg.payload)
+        else: print(f'invalide topic: {msg}')
 
+    def ping_connection(self, connector):
+        token = _get_connector_token(connector)
+        topic = TOPIC_TEMPLATE.format(token=token, topic='ping')
+        request = 'ping'
+        self._mqtt.publish(topic, request)
 
-# #-------------------------------------------------------------------------------
-# class PullHandler:
-#     def __init__(self):
-#         self._pull_queue = {}
-#         self._mqtt_client = None
-#         self.reinit_pull_queue()
-#         self._connect_mqtt()
-#         self._subscribe_mqtt()
+    def _make_request(self, com):
+        topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
+        request = com.create_read_request()
+        if request is not None:
+            self._mqtt.publish(topic, request)
+            self._queue.set_connector_busy(com.connector_id)
 
-#     def reinit_pull_queue(self):
-#         # collect list of connectors with theirs devices
-#         mqtt_connectors = Connector.objects.filter(connector_type=CONNECTOR_MQTT_1)
-#         for con in mqtt_connectors:
-#             self._pull_queue[con.id] = {'weating_for_response':False, 'devices':{}}
-#             devices = con.device_set.all()
-#             for d in devices:
-#                 self._pull_queue[con.id]['devices'][d.id] = {
-#                     'device': d,
-#                     'tags': {},
-#                     'done': False
-#                     }
-#                 tags = d.tag_set.all()
-#                 for t in tags:
-#                     self._pull_queue[con.id]['devices'][d.id]['tags'][t.id] = {'tag':t, 'done':False}
+    def _handle_com_response(self, connector, response):
+        response = self._parse_payload(response)
+        self._queue.reset_connector_busy(connector.id)
+        self._queue.pass_com_response(connector.id, response)
 
-#     def make_requests(self):
-#         if self._mqtt_client is None:
-#             raise Exception('MQTT Client is not inited')
-#         for con_id, con_props in self._pull_queue.items():
-#             # skip if connector is weating for responce from device
-#             if self._pull_queue[con_id]['weating_for_response']:
-#                 # TODO: check timeout
-#                 print('connector is weating for response')
-#                 continue
-#             self._make_request(con_id, con_props)
+    def _handle_ping_response(self, connector, response):
+        if not connector: 
+            return None
+        connector.refresh()
+        if response.payload == 'pong':
+            # this is correct answer
+            pass
+        else:
+            # this is wrong answer
+            pass
 
-#     def on_response(self):
-#         pass
+    def _handle_control_response(self, connector, response):
+        # do nothing for now
+        pass
 
-#     def _connect_mqtt(self):
-#        if self._mqtt_client is None:
-#             self._mqtt_client = MqttClient()
+    def _parse_payload(self, payload):
+        try:
+            return json.loads(payload)
+        except json.decoder.JSONDecodeError:
+            print(f'MQTT error: JSON decode error')
+            return {}
 
-#     def _subscribe_mqtt(self):
-#         self._mqtt_client.subscribe('ci-cloud/#')
-#         self._mqtt_client.loop_start()
-#         # stop loop on close module
-#         import atexit
-#         atexit.register(self._mqtt_client.loop_stop)
-
-#     def _make_request(self, con_id, con_props):
-#         while True:
-#             dev_id, dev_props = self._get_next_device(con_props)
-#             if dev_props is None:
-#                 # all devices was pulled (reset done flag and return)
-#                 self._reset_all_done_flags(con_id, con_props)
-#                 return
-
-#             tag_id, tag_props = self._get_next_tag(dev_props)
-#             if tag_props is None:
-#                 # all tags was pulled (set the done flag and go to the next device)
-#                 self._pull_queue[con_id]['devices'][dev_id]['done'] = True
-#                 continue
-#             else:
-#                 # tag is found (exit from cycle)
-#                 break
- 
-#         # request the tag
-#         dev = dev_props['device']
-#         tag = tag_props['tag']
-#         publish_tag_request(self._mqtt_client, dev.connector, dev, tag)
-#         # self._pull_queue[con_id]['weating_for_response'] = True
-#         self._pull_queue[con_id]['devices'][dev_id]['tags'][tag_id]['done'] = True
-
-
-#     def _get_next_device(self, con_props):
-#         # return the next device from queue for pulling
-#         for dev_id, dev_props in con_props['devices'].items():
-#             dev_done = dev_props.get('done', True)
-#             dev = dev_props.get('device', None)
-#             if dev_done or (dev is None):
-#                 continue
-#             return dev_id, dev_props
-#         else:
-#             return None, None
-
-#     def _get_next_tag(self, dev_props):
-#         # return the next tag from queue for pulling
-#         tags = dev_props.get('tags', {})
-#         for tag_id, tag_props in tags.items():
-#             tag_done = tag_props.get('done', True)
-#             tag = tag_props.get('tag', None)
-#             if tag_done or (tag is None):
-#                 continue
-#             return tag_id, tag_props
-#         else:
-#             return None, None
-
-#     def _reset_all_done_flags(self, con_id, con_props):
-#         for dev_id, dev_props in self._pull_queue[con_id]['devices'].items():
-#             dev_props['done'] = False
-#             tags = dev_props.get('tags', {})
-#             for tag_id, tag_props in tags.items():
-#                 tag_props['done'] = False
+    def _fined_connector_by_token(self, token):
+        try:
+            connector = Connector.objects.get(token=token)
+        except Connector.DoesNotExist:
+            print(f'MQTT error: Connector with token {token} does not exists')
+            connector = None
+        return connector
 
 
-
-# def init_mqtt():
-#     global MQTT
-#     if MQTT is None:
-#         MQTT = MqttClient()
-#     # subscribe to broker
-#     MQTT.subscribe('ci-cloud/#')
-#     MQTT.loop_start()
-#     # stop loop on close module
-#     import atexit
-#     atexit.register(MQTT.loop_stop)
-#     return True
-
-
-# def pull_connectors():
-#     global MQTT
-#     if MQTT is None:
-#         return None
-#     # get all devices connected by mqtt
-#     mqtt_connectors = Connector.objects.filter(connector_type=CONNECTOR_MQTT_1)
-#     devices = []
-#     for con in mqtt_connectors:
-#         devices += list(con.device_set.all())
-#     print(devices)
-
-#     # test
-#     dev = devices[0]
-#     tag = dev.tag_set.get(code='tag1')
-#     publish_tag_request(MQTT, dev.connector, dev, tag)
-
-
-# def app():
-#     # connect and subscribe to broker
-#     MQTT = MqttClient()
-#     MQTT.subscribe('ci-cloud/#')
-#     MQTT.loop_start()
-
-#     # # test
-#     # device = Device.objects.get(id=2)
-#     # connector = device.connector
-#     # tag = device.tag_set.first()
-#     # publish_tag_request(MQTT, connector, device, tag)
-
-#     # finish loop on close module
-#     import atexit
-#     atexit.register(MQTT.loop_stop)
