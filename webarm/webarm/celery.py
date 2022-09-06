@@ -22,8 +22,5 @@ app.conf.beat_schedule = {
     'call-connectors-every-1-second': {            # name of the scheduler
         'task'      : 'connectors.handle_connectors', # task name which we have created in tasks.py
         'schedule'  : timedelta(seconds=5),        # set the period of running
-    },
+    }
 }
-
-
-
