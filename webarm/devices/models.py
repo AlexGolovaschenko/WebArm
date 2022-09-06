@@ -106,33 +106,3 @@ class Device(models.Model):
 
 
 
-
-#-------------------------------------------------------------------------------
-# class DeviceProtocol(models.Model):
-#     device = models.OneToOneField(Device, on_delete=models.CASCADE)
-#     protocol_type = models.CharField(max_length=20, verbose_name='Протокол', 
-#         choices=choices.DEVICE_PROTOCOL_TYPE, 
-#         default=choices.DEVICE_PROTOCOL_MODBUS_RTU)
-
-#     @property
-#     def protocol_parameters(self):
-#         return self.ProtocolParametersModel.objects.get(protocol=self)
-
-#     @property
-#     def ProtocolParametersModel(self):
-#         if self.protocol_type == choices.DEVICE_PROTOCOL_MODBUS_RTU:
-#             return ModbusRtuProtocolParameters
-#         elif self.protocol_type == choices.DEVICE_PROTOCOL_MODBUS_ASCII:
-#             return ModbusAsciiProtocolParameters
-#         elif self.protocol_type == choices.DEVICE_PROTOCOL_MODBUS_TCP:
-#             return ModbusTcpProtocolParameters
-#         else:
-#             raise('Error: protocol type "%s" is not supported' %(self.protocol_type))
-
-#     def __str__(self):
-#         return 'Параметры связи с устройством ' + self.device.name
-
-#     class Meta():
-#         verbose_name = 'Параметры связи с устройством'
-#         verbose_name_plural = 'Параметры связи с устройством'
-

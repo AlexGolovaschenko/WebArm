@@ -10,16 +10,16 @@
     */com  reques example (JSON):    
     {"id":12566, "f":16, "adr":16, "r":25, "n":4}
     where:  
-        id  - device id (should be returned in response)
+        id  - request id (should be returned in the response)
         adr - device address
         f   - modbus function (string)
-        r   - first register (should be returned in response)
+        r   - first register (should be returned in the response)
         n   - count of registers
 
     */com  response example (JSON):   
     {"id":12566, "s":0, "r":25, "v":[0, 255, 761, 15]}
     where:
-        id  - device id
+        id  - request id
         s   - status code (0 - OK, other - error code)
         r   - first register
         v   - list of registers values
@@ -29,9 +29,11 @@
 def app():
     mqtt = PullHandler()
     handler = PullHandler(mqtt)
+
     while True:
         handler.make_requests()
 """
+
 #-------------------------------------------------------------------------------
 import json
 import struct
@@ -127,60 +129,6 @@ class MqttClient:
                 cb(*args, **kwargs)
             except Exception as e:
                 print('Error while try to execute a callback:', e)
-
-
-#-------------------------------------------------------------------------------
-class PullQueue:
-    def __init__(self):
-        self._pull_queue = {}
-        self.init_pull_queue()
-
-    def init_pull_queue(self):
-        # Collect list of connectors with theirs devices for pulling
-        mqtt_connectors = Connector.objects.filter(connector_type=CONNECTOR_MQTT_1)
-        for con in mqtt_connectors:
-            self._pull_queue[con.id] = {
-                'weating_for_response':False, 
-                'devices':{dev.id: DeviceCom(con, dev) for dev in con.device_set.all()}
-                }
-
-    def next(self, many=False):
-        # Return next device for pulling (or list of devices if many=True)
-        items = []
-        for con_id, con_props in self._pull_queue.items():
-            # skip if connector is weating for responce from device
-            if self._pull_queue[con_id]['weating_for_response']:
-                continue
-            next_device = self._find_next_device(con_id, con_props)
-            if next_device:
-                if many:
-                    items.append(next_device)
-                else:
-                    items = next_device
-                    break
-        return items if items else None
-
-    def pass_com_response(self, con_id, response):
-        dev_id = response.get('id', None)
-        if dev_id is None:
-            return
-        self._pull_queue[con_id]['devices'][dev_id].handle_responce(response)
-
-    def set_connector_busy(self, con_id):
-        self._pull_queue[con_id]['weating_for_response'] = True
-
-    def reset_connector_busy(self, con_id):
-        self._pull_queue[con_id]['weating_for_response'] = False
-
-    def _find_next_device(self, con_id, con_props):
-        # return the next device from queue for pulling
-        for dev_id, dev in con_props['devices'].items():
-            if dev.done:
-                continue
-            return dev
-        else:
-            # all devices was pulled
-            return None
 
 
 #-------------------------------------------------------------------------------
@@ -290,7 +238,7 @@ class DeviceCom:
     def _is_need_update(self):
         # return True if it's time to update device tags
         period = timezone.timedelta(seconds=self.device.polling_period)
-        if self.device.last_update < (timezone.now()-period):
+        if self.device.last_update <= (timezone.now()-period):
             return True
         return False
 
@@ -386,8 +334,62 @@ class DeviceCom:
 
 
 #-------------------------------------------------------------------------------
+class PullQueue:
+    def __init__(self):
+        self._pull_queue = {}
+        self.init_pull_queue()
+
+    def init_pull_queue(self):
+        # Collect list of connectors with theirs devices for pulling
+        mqtt_connectors = Connector.objects.filter(connector_type=CONNECTOR_MQTT_1)
+        for con in mqtt_connectors:
+            self._pull_queue[con.id] = {
+                'weating_for_response':False, 
+                'devices':{dev.id: DeviceCom(con, dev) for dev in con.device_set.all()}
+                }
+
+    def next(self, many=False):
+        # Return next device for pulling (or list of devices if many=True)
+        items = []
+        for con_id, con_props in self._pull_queue.items():
+            # skip if connector is weating for responce from device
+            if self._pull_queue[con_id]['weating_for_response']:
+                continue
+            next_device = self._find_next_device(con_id, con_props)
+            if next_device:
+                if many:
+                    items.append(next_device)
+                else:
+                    items = next_device
+                    break
+        return items if items else None
+
+    def pass_com_response(self, con_id, response):
+        dev_id = response.get('id', None)
+        if dev_id is None:
+            return
+        self._pull_queue[con_id]['devices'][dev_id].handle_responce(response)
+
+    def set_connector_busy(self, con_id):
+        self._pull_queue[con_id]['weating_for_response'] = True
+
+    def reset_connector_busy(self, con_id):
+        self._pull_queue[con_id]['weating_for_response'] = False
+
+    def _find_next_device(self, con_id, con_props):
+        # return the next device from queue for pulling
+        for dev_id, dev in con_props['devices'].items():
+            if dev.done:
+                continue
+            return dev
+        else:
+            # all devices was pulled
+            return None
+
+
+#-------------------------------------------------------------------------------
 class PullHandler:
-    def __init__(self, mqtt_client):
+    def __init__(self, mqtt_client, autorequest=False):
         self._mqtt = mqtt_client
         self._queue = PullQueue()
         self._mqtt.registry_callback('on_connect', self.print_on_connect)
@@ -395,6 +397,7 @@ class PullHandler:
         self._mqtt.registry_callback('on_subscribe', self.print_on_subscribe)
         self._mqtt.registry_callback('on_message', self.print_on_message)
         self._mqtt.registry_callback('on_message', self.handle_response)
+        self.autorequest = autorequest
 
     def subscribe(self, topic='ci-cloud/#'):
         self._mqtt.subscribe(topic)
@@ -413,14 +416,8 @@ class PullHandler:
         print("MQTT received:" + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     def make_requests(self):
-        if self._mqtt is None:
-            raise Exception('MQTT Client is not provided')
-        com_list = self._queue.next(many=True)
-        if com_list is None:
-            print('Queue is empty OR all connectors are busy')
-            return
-        for com in com_list:
-            self._make_request(com)
+        for rq in self._get_requests_list():
+            self._make_request(*rq) 
 
     def handle_response(self, client, userdata, msg):
         cloud, token, topic = msg.topic.split('/')
@@ -430,18 +427,34 @@ class PullHandler:
         elif topic == 'control': self._handle_control_response(connector, msg.payload)
         else: print(f'invalide topic: {msg}')
 
+        # now we can do requests again for free connectors
+        if self.autorequest:
+            self.make_requests()
+
     def ping_connection(self, connector):
         token = _get_connector_token(connector)
         topic = TOPIC_TEMPLATE.format(token=token, topic='ping')
         request = 'ping'
         self._mqtt.publish(topic, request)
 
-    def _make_request(self, com):
-        topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
-        request = com.create_read_request()
-        if request is not None:
-            self._mqtt.publish(topic, request)
-            self._queue.set_connector_busy(com.connector_id)
+    def _get_requests_list(self):
+        rq_list = []
+        com_list = self._queue.next(many=True)
+        if com_list is None:
+            print('Queue is empty OR all connectors are busy')
+            return rq_list
+        for com in com_list:
+            if payload := com.create_read_request():
+                topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
+                rq_list.append((com.connector_id, topic, payload))
+        return rq_list
+            
+    def _make_request(self, connector_id, topic, payload):
+        if self._mqtt is None:
+            raise Exception('MQTT Client is not provided')
+        if payload is not None:
+            self._mqtt.publish(topic, payload)
+            self._queue.set_connector_busy(connector_id) 
 
     def _handle_com_response(self, connector, response):
         response = self._parse_payload(response)

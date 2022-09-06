@@ -18,11 +18,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
-
-
 app.conf.beat_schedule = {
     'call-connectors-every-1-second': {            # name of the scheduler
-        'task'      : 'handl_connectors',          # task name which we have created in tasks.py
+        'task'      : 'connectors.handle_connectors', # task name which we have created in tasks.py
         'schedule'  : timedelta(seconds=5),        # set the period of running
     },
 }

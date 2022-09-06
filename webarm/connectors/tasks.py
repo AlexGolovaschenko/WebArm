@@ -11,17 +11,16 @@ handler = None
 counter = 0
 
 
-@shared_task(name = "handl_connectors")
+@shared_task(name="connectors.handle_connectors")
 def handl_connectors():
     global counter, handler
-    if not handler:
+    if handler is None:
         mqtt = MqttClient()
-        handler = PullHandler(mqtt)
+        handler = PullHandler(mqtt, autorequest=True)
         handler.subscribe('ci-cloud/#')
+        
     handler.make_requests()
+
     counter += 1
     logger.info(f'Connectors task was called [{counter}]')
-
-
-
 
