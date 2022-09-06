@@ -10,16 +10,16 @@
     */com  reques example (JSON):    
     {"id":12566, "f":16, "adr":16, "r":25, "n":4}
     where:  
-        id  - device id (should be returned in response)
+        id  - request id (should be returned in the response)
         adr - device address
         f   - modbus function (string)
-        r   - first register (should be returned in response)
+        r   - first register (should be returned in the response)
         n   - count of registers
 
     */com  response example (JSON):   
     {"id":12566, "s":0, "r":25, "v":[0, 255, 761, 15]}
     where:
-        id  - device id
+        id  - request id
         s   - status code (0 - OK, other - error code)
         r   - first register
         v   - list of registers values
@@ -290,7 +290,7 @@ class DeviceCom:
     def _is_need_update(self):
         # return True if it's time to update device tags
         period = timezone.timedelta(seconds=self.device.polling_period)
-        if self.device.last_update < (timezone.now()-period):
+        if self.device.last_update <= (timezone.now()-period):
             return True
         return False
 
@@ -415,12 +415,21 @@ class PullHandler:
     def make_requests(self):
         if self._mqtt is None:
             raise Exception('MQTT Client is not provided')
+        rq_list = self.get_requests_list()
+        for rq in rq_list:
+            self._pull_connector(*rq)
+
+    def get_requests_list(self):
+        rq_list = []
         com_list = self._queue.next(many=True)
         if com_list is None:
             print('Queue is empty OR all connectors are busy')
-            return
+            return rq_list
         for com in com_list:
-            self._make_request(com)
+            if request := com.create_read_request():
+                topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
+                rq_list.append((com.connector_id, topic, request))
+        return rq_list
 
     def handle_response(self, client, userdata, msg):
         cloud, token, topic = msg.topic.split('/')
@@ -436,12 +445,10 @@ class PullHandler:
         request = 'ping'
         self._mqtt.publish(topic, request)
 
-    def _make_request(self, com):
-        topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
-        request = com.create_read_request()
+    def _pull_connector(self, connector_id, topic, request):
         if request is not None:
             self._mqtt.publish(topic, request)
-            self._queue.set_connector_busy(com.connector_id)
+            self._queue.set_connector_busy(connector_id)  
 
     def _handle_com_response(self, connector, response):
         response = self._parse_payload(response)
