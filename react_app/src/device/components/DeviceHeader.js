@@ -1,20 +1,17 @@
-import React, { useEffect } from 'react' 
+import React, { useEffect } from 'react'; 
 
-import axiosInstance from "../../backendAPI/axiosClient";
-import getBaseUrl from '../../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
+import {getDeviceParameters} from "../../backendAPI/backendAPI";
 
 
 
 export default function DeviceHeader(props) {
-  const [deviceData, setDeviceData] = React.useState({})
+  const [deviceData, setDeviceData] = React.useState({});
   const device_id = props.device_id;
 
   function readDeviceParameters() {
-    axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device_id }} )
-      .then(responce => { 
-        responce && setDeviceData({...responce.data}) 
-      }) 
+    getDeviceParameters(device_id, 
+      (responce) => responce && setDeviceData({...responce})
+    );
   }
   
   useEffect(() => {
@@ -23,10 +20,8 @@ export default function DeviceHeader(props) {
     return () => {
       clearInterval(deviceParametersUpdateInterval);
     };
-  }, [])
+  }, []);
 
-  
-  // render the page
   return (
     <React.Fragment>
       <div className='d-flex border rounded desk-border-secondary px-3 mb-1 mx-1'>

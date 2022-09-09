@@ -11,11 +11,7 @@ class Auth{
     async checkAuthentication (cb) {
         try {
             const response = await axiosInstance.get('/user/token/check/')
-            if (response) {
-                this._onLogin();
-            } else {
-                this._onLogout();
-            }
+            response ? this._onLogin() : this._onLogout();
         } catch (error) {
             this._onLogout();
         }    

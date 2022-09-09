@@ -1,23 +1,18 @@
 import re
-
 from datetime import timedelta
-from django.utils import timezone
 
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
 
-from .models import (
-    Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
-    CurrentIntValue, CurrentFloatValue, CurrentStringValue, CurrentBooleanValue,
-    HistoricalIntValue, HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
-)
 from . import serializers
-from .utils import get_device_obj_from_request
+from .models import Device
+from tags.models import Tag
 
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class DeviceParametersView(APIView):
     def get(self, request, *args, **kwargs):
         obj = get_device_obj_from_request(request)
@@ -32,29 +27,30 @@ class DeviceParametersView(APIView):
         return Response(serializer.data)
 
 
+# ------------------------------------------------------------------------------
 class ModbusDeviceParametersView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
-        mdp = ModbusDeviceParameters.objects.get(device=device)
-        serializer = serializers.ModbusDeviceParametersSerializer(mdp)
+        mdp = DeviceProtocol.objects.get(device=device)
+        serializer = serializers.DeviceProtocolSerializer(mdp)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request) 
         try:
             # update parameters
-            mdp = ModbusDeviceParameters.objects.get(device=device)
-            serializer = serializers.ModbusDeviceParametersSerializer(mdp, data=request.data)
-        except ModbusDeviceParameters.DoesNotExist:
+            mdp = DeviceProtocol.objects.get(device=device)
+            serializer = serializers.DeviceProtocolSerializer(mdp, data=request.data)
+        except DeviceProtocol.DoesNotExist:
             # create parameters
-            serializer = serializers.ModbusDeviceParametersSerializer(data=request.data)
+            serializer = serializers.DeviceProtocolSerializer(data=request.data)
  
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
 
-
+# ------------------------------------------------------------------------------
 class DeviceTagsParametersView(APIView):
     def get(self, request, *args, **kwargs):
         device = get_device_obj_from_request(request)
@@ -116,7 +112,7 @@ class DeviceTagsParametersView(APIView):
         return Response({}, status=status.HTTP_200_OK)
 
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class DeviceTagsCurrentValueView(APIView):
     ''' return current values of device tags '''
     def get(self, request, *args, **kwargs):
@@ -127,12 +123,12 @@ class DeviceTagsCurrentValueView(APIView):
             tags = Tag.objects.filter(device=device, code__in=rq_tags).order_by('name')
         else:
             # return all tags, if tags[] param does not passed
-             tags = Tag.objects.filter(device=device).order_by('name')
+            tags = Tag.objects.filter(device=device).order_by('name')
         data = serializers.TagsValueSerializer(tags, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class DeviceTagsHistoricalValueView(APIView):
     ''' return list of historycal values of device tags (value and date/time) '''    
     def get(self, request, *args, **kwargs):
@@ -218,3 +214,7 @@ class DeviceTagsHistoricalValueView(APIView):
         return timezone.timedelta(days=d , hours=h, minutes=m, seconds=s)
 
 
+# ------------------------------------------------------------------------------
+def get_device_obj_from_request(request):
+    device_id = request.GET.get('id', None)
+    return Device.objects.get(id=device_id)

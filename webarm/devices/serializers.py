@@ -1,30 +1,24 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import (
-    Device, Tag, ModbusDeviceParameters, ModbusTagParameters,
-    CurrentStringValue, CurrentIntValue, CurrentFloatValue, CurrentBooleanValue,
-    HistoricalStringValue, HistoricalIntValue, HistoricalFloatValue, HistoricalBooleanValue,
-) 
-from . import choices
+from tags import choices
+from .models import Device
+
+from tags.models import (Tag, ModbusTagParameters, CurrentIntValue, CurrentFloatValue, 
+    CurrentStringValue, CurrentBooleanValue, HistoricalIntValue, 
+    HistoricalFloatValue, HistoricalStringValue, HistoricalBooleanValue,
+)
 
 # ---------------------------------------------------------------------
 # devices
-class ModbusDeviceParametersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ModbusDeviceParameters
-        exclude = ['id', 'device']
-
-
 class DeviceParametersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ('id', 'name', 'polling_period', 'timeout', 'last_update', 
-            'verbose_last_update', 'is_online', 'connector', 'facility',
+            'verbose_last_update', 'is_online', 'connector', 'facility'
         )
-
         read_only_fields = ('id', 'last_update', 'verbose_last_update', 
-            'is_online', 'connector', 'facility',
+            'is_online', 'connector', 'facility'
         )
 
 
@@ -136,25 +130,25 @@ class HistoricalBooleanValuesSerializer(serializers.ModelSerializer):
 
 
 def get_current_tag_value_serializer(tag):
-    if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
+    if tag.data_type == choices.DATA_TYPE_INT:
         return IntValueSerializer
-    elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+    elif tag.data_type == choices.DATA_TYPE_FLOAT:
         return FloatValueSerializer
-    elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
+    elif tag.data_type == choices.DATA_TYPE_STRING:
         return StringValueSerializer       
-    elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+    elif tag.data_type == choices.DATA_TYPE_BOOL:
         return BooleanValueSerializer        
     else:
         raise('Error: data type not supported')
 
 def get_historical_tag_value_serializer(tag):
-    if tag.data_type == choices.WEBARM_DATA_TYPE_INT:
+    if tag.data_type == choices.DATA_TYPE_INT:
         return HistoricalIntValuesSerializer
-    elif tag.data_type == choices.WEBARM_DATA_TYPE_FLOAT:
+    elif tag.data_type == choices.DATA_TYPE_FLOAT:
         return HistoricalFloatValuesSerializer
-    elif tag.data_type == choices.WEBARM_DATA_TYPE_STRING:
+    elif tag.data_type == choices.DATA_TYPE_STRING:
         return HistoricalStringValuesSerializer       
-    elif tag.data_type == choices.WEBARM_DATA_TYPE_BOOL:
+    elif tag.data_type == choices.DATA_TYPE_BOOL:
         return HistoricalBooleanValuesSerializer        
     else:
         raise('Error: data type not supported')

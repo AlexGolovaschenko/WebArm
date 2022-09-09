@@ -4,13 +4,10 @@ import {useParams} from 'react-router-dom';
 import {TextField, NumberField, SelectField, MultipleSelectField,
   CheckboxField, getSelectedOptions
 } from '../../base/forms/forms';
-
+import Loader from '../../base/components/Loader';
+import {getTagValue} from "../../backendAPI/backendAPI";
 import sortWidgetsByOrder from '../utils/sortWidgetsByOrder';
 
-import Loader from '../../base/components/Loader';
-import axiosInstance from "../../backendAPI/axiosClient";
-import getBaseUrl from '../../backendAPI/localSettings';
-const BASE_URL = getBaseUrl();
 
 export default function WidgetsAdminPage(props) {
   const { device_id } = useParams();
@@ -19,18 +16,13 @@ export default function WidgetsAdminPage(props) {
   const [selectedWidget, setSelectedWidget] = React.useState(0);
   const [tags, setTags] = React.useState([]);
 
-  // read tags list
   const readDeviceTags = () => {
-    axiosInstance.get(BASE_URL + "/device/tags/value/", { params: { id: device_id }} )
-    .then((responce) => {
-      responce && setTags(responce.data)
-    })  
+    getTagValue(device_id, null, 
+      (responce) => responce && setTags(responce)
+    )
   };
 
-  useEffect(() => {
-    readDeviceTags();
-  }, []);
-
+  useEffect(()=>readDeviceTags(), []);
 
   // I use it for fix bug: witout this, when I change the same type forms, 
   // form fields data does not changing 
@@ -487,8 +479,6 @@ function WIndicatorForm(props){
 
 
 // ----------------------------------------------------------------------------------
-// utils
-
 const DefaultTable = {
   type: 'table',
   width: 4,

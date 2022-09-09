@@ -1,17 +1,16 @@
-import React from 'react' 
+import React from 'react'; 
 
-import WidgetGraph from './WidgetGraph'
-import WidgetTable from './WidgetTable'
-import WidgetIndicator from './WidgetIndicator' 
-import WidgetEventsLog from './WidgetEventsLog' 
-
+import WidgetGraph from './WidgetGraph';
+import WidgetTable from './WidgetTable';
+import WidgetIndicator from './WidgetIndicator'; 
+import WidgetEventsLog from './WidgetEventsLog'; 
 
 
 export default function RenderWidgets(props) {
-  const widgetsTemplate = props.widgetsTemplate
-  const device_id = props.device_id
-  if (!props.widgetsTemplate) {return null}
-  if (!props.widgetsTemplate.widgets) {return null}
+  const widgetsTemplate = props.widgetsTemplate;
+  const device_id = props.device_id;
+  if (!props.widgetsTemplate) {return null};
+  if (!props.widgetsTemplate.widgets) {return null};
 
   return (
     <React.Fragment>
@@ -28,8 +27,8 @@ export default function RenderWidgets(props) {
 
 
 function WidgetRender(props) {
-  const widget = props.widget
-  const device_id = props.device_id
+  const widget = props.widget;
+  const device_id = props.device_id;
 
   if (widget.type === 'table') {
     return (
@@ -37,7 +36,7 @@ function WidgetRender(props) {
         <WidgetTable device_id={device_id} widget={widget}/>
       </div>
     )
-  }
+  };
 
   if (widget.type === 'graph') {
     return (
@@ -45,7 +44,7 @@ function WidgetRender(props) {
         <WidgetGraph device_id={device_id} widget={widget}/>
       </div>
     )    
-  }   
+  };   
 
   if (widget.type === 'indicator') {
     return (
@@ -53,7 +52,7 @@ function WidgetRender(props) {
         <WidgetIndicator device_id={device_id} widget={widget}/>
       </div>
     )    
-  }    
+  };    
 
   if (widget.type === 'eventslog') {
     return (
@@ -61,5 +60,5 @@ function WidgetRender(props) {
         <WidgetEventsLog device_id={device_id} widget={widget}/>
       </div>
     )    
-  }    
+  };    
 }

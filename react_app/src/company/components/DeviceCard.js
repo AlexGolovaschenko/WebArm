@@ -1,32 +1,26 @@
-import React, { useEffect } from 'react' 
-import {Link} from 'react-router-dom'
+import React, { useEffect } from 'react';
+import {Link} from 'react-router-dom';
 
-import axiosInstance from "../../backendAPI/axiosClient";
-import getBaseUrl from '../../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
+import {getDeviceParameters} from "../../backendAPI/backendAPI";
+
 
 function DeviceCard(props) {
-    const [deviceData, setDeviceData] = React.useState({})
-    const device = props.device   
+    const [deviceData, setDeviceData] = React.useState({});
+    const device = props.device;  
    
-    function readDeviceParameters() {
-      axiosInstance.get(BASE_URL + "/device/parameters/", { params: { id: device.id }} )
-        .then(responce => { 
-            if (responce) {
-                const deviceParameters = responce.data
-                setDeviceData({...deviceParameters}) 
-            }
-        }) 
+    const readDeviceParameters = () => {
+        getDeviceParameters( device.id, 
+            (responce) => { responce && setDeviceData({...responce.data}) }
+        );
     }
-    
+
     useEffect(() => {
       readDeviceParameters();
       const deviceParametersUpdateInterval = setInterval(readDeviceParameters, 5000);
       return () => {
         clearInterval(deviceParametersUpdateInterval);
       };
-    }, [])
-
+    }, []);
 
     return (
         <React.Fragment>

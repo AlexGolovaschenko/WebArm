@@ -52,8 +52,9 @@ INSTALLED_APPS = [
     'facilities.apps.FacilitiesConfig',
     'devices.apps.DevicesConfig',
     'connectors.apps.ConnectorsConfig',
+    'tags.apps.TagsConfig',
     'widgets.apps.WidgetsConfig',
-    'eventslogs.apps.EventslogsConfig',
+    'eventlogs.apps.EventlogsConfig',
 ]
 
 MIDDLEWARE = [
@@ -175,7 +176,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+# Celery
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_DEFAULT_DELIVERY_MODE = 'transient'
+
 
 # Load local settings
 try:

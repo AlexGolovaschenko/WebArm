@@ -1,27 +1,21 @@
-import React, { useEffect } from 'react' 
+import React, { useEffect } from 'react';
 
-import TagIndicator from './components/TagsIndicator/TagIndicator'
-import axiosInstance from "../backendAPI/axiosClient"
-import getBaseUrl from '../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
-
+import TagIndicator from './components/TagsIndicator/TagIndicator';
+import {getTagValue} from "../backendAPI/backendAPI";
 
 
 export default function WidgetIndicator(props) {
-  const [tags, setTags] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
-  const device_id = props.device_id
-  const displayedTags =  props.widget.tags  
-  const tag = tags[0] // TODO: widget display just 1 tag now
+  const [tags, setTags] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const device_id = props.device_id;
+  const displayedTags =  props.widget.tags;  
+  const tag = tags[0]; // TODO: widget display just 1 tag now
 
-  function readDeviceTags() {
-    axiosInstance.get(BASE_URL + "/device/tags/value/",  { params: { id: device_id, tags: displayedTags }} )
-    .then((responce) => {
-      responce && setTags(responce.data)
-    })  
-  }
-
-
+  const readDeviceTags = () => {
+    getTagValue(device_id, displayedTags, 
+      (responce) => responce && setTags(responce)
+    );
+  };
 
   useEffect(() => {
     readDeviceTags();
@@ -31,8 +25,7 @@ export default function WidgetIndicator(props) {
       clearTimeout(loadingTimeout);      
       clearInterval(tagsUpdateInterval);
     };
-  }, [])
-
+  }, []);
 
   return (
     <React.Fragment>

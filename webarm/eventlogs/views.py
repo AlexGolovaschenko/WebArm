@@ -10,7 +10,7 @@ from devices.models import Device
 from .models import Log, Record, Event
 from .serializers import LogRecordSerializer, EventSerializer
 
-from devices.utils import get_device_obj_from_request
+from devices.views import get_device_obj_from_request
 
 
 # class EventsLogView(APIView):

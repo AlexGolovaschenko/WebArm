@@ -4,11 +4,8 @@ import {useHistory, useParams} from "react-router-dom"
 import Loader from '../../base/components/Loader'
 
 import {
-  getDeviceParameters, 
-  postDeviceParameters, 
-  getDeviceModbusParameters, 
-  postDeviceModbusParameters,
-  getDeviceTagsParameters
+  getDeviceParameters, postDeviceParameters, getDeviceModbusParameters, 
+  postDeviceModbusParameters, getDeviceTagsParameters
 } from '../../backendAPI/backendAPI'
 
 import { TextField, NumberField, SelectField, 

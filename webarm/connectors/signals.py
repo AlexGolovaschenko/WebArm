@@ -1,6 +1,5 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
 from django.utils.crypto import get_random_string
 
 from .models import Connector
@@ -9,7 +8,6 @@ from .models import Connector
 def get_new_token(sender, instance, **kwargs):
     if not instance.token:
         instance.token = get_unique_token()
-
     if not instance.registration_code:
         instance.registration_code = get_unique_registration_code()
 

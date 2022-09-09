@@ -1,10 +1,8 @@
 from django.urls import path
 
-from .views import (
-    ModbusDeviceView,
-)
+from .con_rest import RestApiConnectorView
 
-app_name = 'connector'
+
 urlpatterns = [
-    path('http-api/', ModbusDeviceView.as_view()),
+     path('rest-api-1/', RestApiConnectorView.as_view()),
 ]

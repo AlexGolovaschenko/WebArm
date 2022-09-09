@@ -1,30 +1,30 @@
-import React from 'react'
-import RecordsRow from './RecordsRow'
-import Loader from '../../../base/components/Loader'
+import React from 'react';
+import RecordsRow from './RecordsRow';
+import Loader from '../../../base/components/Loader';
 
 
 export default function TagsCurrentValueList(props) {
   // eslint-disable-next-line no-unused-vars
-  const [modal, setModal] = React.useState(false) // use it just for force update this component
-  const modalButton = React.useRef(null)
-  const graphCard = React.useRef(null)
-  const toggleCategorySelection = props.toggleCategorySelection
-  const categories = props.categories
+  const [modal, setModal] = React.useState(false); // use it just for force update this component
+  const modalButton = React.useRef(null);
+  const graphCard = React.useRef(null);
+  const toggleCategorySelection = props.toggleCategorySelection;
+  const categories = props.categories;
 
   const toggleModal = () => {
     const cl = ' full-screen-card'
     if (graphCard.current.className.includes(cl)) {
-      graphCard.current.className = graphCard.current.className.replace(cl, '')
-      modalButton.current.className = modalButton.current.className.replace('fa-compress', 'fa-expand') 
-      modalButton.current.className = modalButton.current.className.replace('text-primary', 'text-light')      
-      setModal(false)
+      graphCard.current.className = graphCard.current.className.replace(cl, '');
+      modalButton.current.className = modalButton.current.className.replace('fa-compress', 'fa-expand'); 
+      modalButton.current.className = modalButton.current.className.replace('text-primary', 'text-light');      
+      setModal(false);
     } else {
-      graphCard.current.className += cl
-      modalButton.current.className = modalButton.current.className.replace('fa-expand', 'fa-compress') 
-      modalButton.current.className = modalButton.current.className.replace('text-light', 'text-primary')       
-      setModal(true)
+      graphCard.current.className += cl;
+      modalButton.current.className = modalButton.current.className.replace('fa-expand', 'fa-compress'); 
+      modalButton.current.className = modalButton.current.className.replace('text-light', 'text-primary');       
+      setModal(true);
     }
-  }
+  };
 
   return (
     <div ref={graphCard} className='card shadow-sm py-2 desk-bg-color-secondary desk-text-color-primary h-100'>
@@ -49,7 +49,10 @@ export default function TagsCurrentValueList(props) {
         :
         <>
           { props.records.length > 0 ? <RecordsTable records={props.records}/> : <NoRecords /> }
-          <PaginationBar readNextPage={props.readNextPage} readPreviousPage={props.readPreviousPage} changePage={props.changePage} pagination={props.pagination} />
+          <PaginationBar readNextPage={props.readNextPage} 
+            readPreviousPage={props.readPreviousPage} 
+            changePage={props.changePage} pagination={props.pagination} 
+          />
         </>
       }
     </div>
@@ -88,8 +91,8 @@ function NoRecords() {
 
 
 function CategorySelectionPanel(props) {
-  const toggleCategorySelection = props.toggleCategorySelection
-  const categories = props.categories
+  const toggleCategorySelection = props.toggleCategorySelection;
+  const categories = props.categories;
   return(
     <>
       <div className='d-inline mr-3'>
@@ -119,10 +122,10 @@ function CategorySecetionButton(props) {
 
 
 function PaginationBar(props) {
-  const list = Array.apply(null, Array(props.pagination.num_pages))
-
+  const list = Array.apply(null, Array(props.pagination.num_pages));
+  
   if (props.pagination.num_pages <= 1) {
-    return null
+    return null;
   }
 
   return (

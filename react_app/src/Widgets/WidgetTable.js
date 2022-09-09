@@ -1,26 +1,21 @@
-import React, { useEffect } from 'react' 
+import React, { useEffect } from 'react'; 
 
-import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList'
-import axiosInstance from "../backendAPI/axiosClient";
-import getBaseUrl from '../backendAPI/localSettings'
-const BASE_URL = getBaseUrl()
-
+import TagsCurrentValueList from './components/TagsList/TagsCurrentValueList';
+import {getTagValue} from "../backendAPI/backendAPI";
 
 
 export default function WidgetTable(props) {
-  const [tags, setTags] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
+  const [tags, setTags] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
   const device_id = props.device_id;
   const displayedTags =  props.widget.tags;
 
-  function readDeviceTags() {
-    axiosInstance.get(BASE_URL + "/device/tags/value/", { params: { id: device_id, tags: displayedTags }} )
-    .then((responce) => {
-      responce && setTags(responce.data)     
-    })  
-  }
+  const readDeviceTags = () => {
+    getTagValue(device_id, displayedTags, 
+      (responce) => responce && setTags(responce)
+    );
+  };
   
-  // read parameters
   useEffect(() => {
     readDeviceTags();
     const loadingTimeout = setTimeout( () => { setLoading(false) }, 1000);
@@ -31,7 +26,6 @@ export default function WidgetTable(props) {
     };
   }, [])
 
-  // render the page
   return (
     <React.Fragment>
         <TagsCurrentValueList
