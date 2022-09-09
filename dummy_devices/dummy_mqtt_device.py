@@ -179,14 +179,17 @@ class RequestHandler:
 class DummyDevice:
     _registers = {
         256: [16756, 52429],    # =15.3
-        258: [25]
+        258: [25],
+        259: [50],
+        300: [1245],
+        301: [52313],
     }
 
     def __init__(self):
         pass
 
     def get_register_value(self, reg):
-        return self._registers.get(reg, 0)
+        return self._registers.get(reg, [0])
 
 
 

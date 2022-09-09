@@ -4,7 +4,6 @@ from django.utils.crypto import get_random_string
 
 from .models import Connector
 
-
 @receiver(pre_save, sender=Connector)
 def get_new_token(sender, instance, **kwargs):
     if not instance.token:

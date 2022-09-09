@@ -136,7 +136,7 @@ class DeviceCom:
     def __init__(self, connector, device):
         if connector is not device.connector:
             raise Exception('Given device is not belongs to given connector')
-        self.connector_id = device.id
+        self.connector_id = connector.id
         self.device_id = device.id
         self._tags_done = {}
         self._refresh_tags_list(self.device.tag_set.all())
@@ -180,7 +180,7 @@ class DeviceCom:
 
         # create request payload
         payload = {
-            'id': self.device_id,
+            'id': self.device_id,                                   #TODO: use tag.id for request indentification (it's better than device.id, all tags have different ids)
             'adr': self._get_modbus_address(),
             'r': tags_list[0].modbustagparameters.register_address,
             'f': tags_list[0].modbustagparameters.read_function,
@@ -238,7 +238,8 @@ class DeviceCom:
     def _is_need_update(self):
         # return True if it's time to update device tags
         period = timezone.timedelta(seconds=self.device.polling_period)
-        if self.device.last_update <= (timezone.now()-period):
+        las_update = self.device.last_update
+        if (las_update is None) or (las_update <= (timezone.now()-period)):
             return True
         return False
 
@@ -343,10 +344,21 @@ class PullQueue:
         # Collect list of connectors with theirs devices for pulling
         mqtt_connectors = Connector.objects.filter(connector_type=CONNECTOR_MQTT_1)
         for con in mqtt_connectors:
-            self._pull_queue[con.id] = {
-                'weating_for_response':False, 
-                'devices':{dev.id: DeviceCom(con, dev) for dev in con.device_set.all()}
-                }
+            entry = self._pull_queue.get(con.id, None)
+            if entry is None:
+                # create new entry
+                self._pull_queue[con.id] = {
+                    'weating_for_response':False, 
+                    'devices':{dev.id: DeviceCom(con, dev) for dev in con.device_set.all()}
+                    }
+            else:
+                # update existing entry
+                devices = con.device_set.all()
+                for dev in devices:
+                    com = self._pull_queue[con.id]['devices'].get(dev.id, None)
+                    if com is None:
+                        self._pull_queue[con.id]['devices'][dev.id] = DeviceCom(con, dev)
+        print('MQTT Pull Queue has been updated')
 
     def next(self, many=False):
         # Return next device for pulling (or list of devices if many=True)
@@ -363,6 +375,19 @@ class PullQueue:
                     items = next_device
                     break
         return items if items else None
+
+    def get_requests_list(self):
+        # return prepared requsts for pulling (connector_id, topic, payload)
+        rq_list = []
+        com_list = self.next(many=True)
+        if com_list is None:
+            print('Queue is empty OR all connectors are busy')
+            return rq_list
+        for com in com_list:
+            if payload := com.create_read_request():
+                topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
+                rq_list.append((com.connector_id, topic, payload))
+        return rq_list
 
     def pass_com_response(self, con_id, response):
         dev_id = response.get('id', None)
@@ -389,8 +414,8 @@ class PullQueue:
 
 #-------------------------------------------------------------------------------
 class PullHandler:
-    def __init__(self, mqtt_client, autorequest=False):
-        self._mqtt = mqtt_client
+    def __init__(self, autosubscribe=False, autorequest=False):
+        self._mqtt = MqttClient()
         self._queue = PullQueue()
         self._mqtt.registry_callback('on_connect', self.print_on_connect)
         self._mqtt.registry_callback('on_publish', self.print_on_publish)
@@ -398,6 +423,11 @@ class PullHandler:
         self._mqtt.registry_callback('on_message', self.print_on_message)
         self._mqtt.registry_callback('on_message', self.handle_response)
         self.autorequest = autorequest
+        if autosubscribe:
+            self.subscribe('ci-cloud/#')
+
+    def update_pull_queue(self):
+        self._queue.init_pull_queue()
 
     def subscribe(self, topic='ci-cloud/#'):
         self._mqtt.subscribe(topic)
@@ -416,7 +446,7 @@ class PullHandler:
         print("MQTT received:" + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     def make_requests(self):
-        for rq in self._get_requests_list():
+        for rq in self._queue.get_requests_list():
             self._make_request(*rq) 
 
     def handle_response(self, client, userdata, msg):
@@ -436,18 +466,6 @@ class PullHandler:
         topic = TOPIC_TEMPLATE.format(token=token, topic='ping')
         request = 'ping'
         self._mqtt.publish(topic, request)
-
-    def _get_requests_list(self):
-        rq_list = []
-        com_list = self._queue.next(many=True)
-        if com_list is None:
-            print('Queue is empty OR all connectors are busy')
-            return rq_list
-        for com in com_list:
-            if payload := com.create_read_request():
-                topic = TOPIC_TEMPLATE.format(token=com.connector.token, topic='com')
-                rq_list.append((com.connector_id, topic, payload))
-        return rq_list
             
     def _make_request(self, connector_id, topic, payload):
         if self._mqtt is None:
